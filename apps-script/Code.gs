@@ -442,9 +442,12 @@ var MONTH_TH = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.'
 var MONTH_EN = {jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5, jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11};
 
 function deadlineMonth_(dl) {
-  var m = String(dl || '').toLowerCase().match(/(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/);
-  return m ? MONTH_EN[m[1]] : -1;
+  var s = String(dl || '').toLowerCase(), m = s.match(/(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/);
+  if (m) return MONTH_EN[m[1]];
+  var iso = s.match(/\d{4}-(\d{2})-\d{2}/);
+  return iso ? +iso[1] - 1 : -1;
 }
+function deadlineYear_(dl) { var m = String(dl || '').match(/(20\d{2})/); return m ? +m[1] : 0; }
 
 // Rule-based plan in the same shape the AI returns; used when the AI is unavailable.
 function fallbackPlan_(r, g, a, today) {
@@ -467,15 +470,31 @@ function fallbackPlan_(r, g, a, today) {
   if (r.csca) prep.push('เตรียมสอบ CSCA' + (r.cscaSub ? ' วิชา ' + r.cscaSub : ''));
   prep.push('เตรียมเอกสารหลัก: หนังสือเดินทาง ใบแสดงผลการเรียน และเอกสารที่มหาวิทยาลัยกำหนด');
   if (r.sch) prep.push('เตรียมเอกสารยื่นทุนไปพร้อมกับใบสมัคร');
-  var dm = deadlineMonth_(r.dl);
-  var dLabel = dm > -1 ? MONTH_TH[dm] : 'วันปิดรับสมัคร';
-  tl.push({when: 'ตอนนี้', task: 'คุยกับทีมเพื่อยืนยันหลักสูตรและวางแผนการสอบ'});
-  if (r.lang !== 'en' && r.hsk) tl.push({when: g.hskGap ? 'ภายใน 3–6 เดือน' : 'ภายใน 1–3 เดือน', task: (g.hskGap ? 'เรียนเพิ่มและสอบ HSK ' : 'สอบหรือเตรียมใบผล HSK ') + r.hsk + (r.hskk ? ' และ HSKK' : '')});
-  if (r.lang !== 'zh' && r.ielts) tl.push({when: g.ieltsGap ? 'ภายใน 3–6 เดือน' : 'ภายใน 1–3 เดือน', task: 'สอบหรือเตรียมใบผล IELTS ' + r.ielts + ' ขึ้นไป'});
-  if (r.csca) tl.push({when: 'ก่อนยื่นสมัคร', task: 'สอบ CSCA และเก็บผลสอบไว้ยื่น'});
-  tl.push({when: '1–2 เดือนก่อน' + (dm > -1 ? ' ' + dLabel : 'ปิดรับ'), task: 'รวบรวมเอกสารและยื่นใบสมัคร' + (r.sch ? ' พร้อมใบสมัครทุน' : '')});
-  tl.push({when: dLabel + (r.past ? ' (อ้างอิงรอบก่อน)' : ''), task: 'ปิดรับสมัคร' + (r.past ? ' รอบใหม่มักประกาศช่วงเวลาใกล้เคียงเดิม ทีมจะยืนยันให้' : '')});
-  tl.push({when: 'หลังได้รับผล', task: 'ขอวีซ่านักเรียน เตรียมที่พัก และเข้าร่วม Pre-Departure กับทีม'});
+  var dm = deadlineMonth_(r.dl), tm = String(today || '').match(/^(\d{4})-(\d{2})/);
+  if (dm > -1 && tm) {
+    // Months counted as year*12+month. A round that hasn't opened yet reuses last
+    // round's deadline month and is shown without a year.
+    var now = +tm[1] * 12 + (+tm[2] - 1), dy = deadlineYear_(r.dl), dl;
+    if (!r.past && dy) dl = dy * 12 + dm;
+    else { dl = Math.floor(now / 12) * 12 + dm; if (dl <= now) dl += 12; }
+    var showYear = !r.past;
+    var lab = function (x) { x = Math.max(now, x); return MONTH_TH[x % 12] + (showYear ? ' ' + Math.floor(x / 12) : ''); };
+    var lgap = (r.lang !== 'en' && g.hskGap) || (r.lang !== 'zh' && g.ieltsGap);
+    tl.push({when: lab(now), task: 'คุยกับทีมเพื่อยืนยันหลักสูตรและวางแผนการสอบ'});
+    if (r.lang !== 'en' && r.hsk) tl.push({when: lab(dl - (lgap ? 4 : 3)), task: (g.hskGap ? 'เรียนเพิ่มและสอบ HSK ' : 'สอบหรือเตรียมใบผล HSK ') + r.hsk + (r.hskk ? ' และ HSKK' : '')});
+    if (r.lang !== 'zh' && r.ielts) tl.push({when: lab(dl - (lgap ? 4 : 3)), task: 'สอบหรือเตรียมใบผล IELTS ' + r.ielts + ' ขึ้นไป'});
+    if (r.csca) tl.push({when: lab(dl - 2), task: 'สอบ CSCA และเก็บผลสอบไว้ยื่น'});
+    tl.push({when: lab(dl - 1), task: 'รวบรวมเอกสารและยื่นใบสมัคร' + (r.sch ? ' พร้อมใบสมัครทุน' : '')});
+    tl.push({when: lab(dl), task: 'ปิดรับสมัคร' + (r.past ? ' (อ้างอิงเดือนของรอบที่ผ่านมา ทีมจะยืนยันวันของรอบใหม่ให้)' : '')});
+    tl.push({when: lab(dl + 2), task: 'ได้รับผล ขอวีซ่านักเรียน เตรียมที่พัก และเข้าร่วม Pre-Departure กับทีม'});
+  } else {
+    tl.push({when: 'ตอนนี้', task: 'คุยกับทีมเพื่อยืนยันหลักสูตรและวางแผนการสอบ'});
+    if (r.lang !== 'en' && r.hsk) tl.push({when: 'ภายใน 3–6 เดือน', task: 'สอบหรือเตรียมใบผล HSK ' + r.hsk + (r.hskk ? ' และ HSKK' : '')});
+    if (r.lang !== 'zh' && r.ielts) tl.push({when: 'ภายใน 3–6 เดือน', task: 'สอบหรือเตรียมใบผล IELTS ' + r.ielts + ' ขึ้นไป'});
+    if (r.csca) tl.push({when: 'ก่อนยื่นสมัคร', task: 'สอบ CSCA และเก็บผลสอบไว้ยื่น'});
+    tl.push({when: 'ก่อนปิดรับ', task: 'รวบรวมเอกสารและยื่นใบสมัคร' + (r.sch ? ' พร้อมใบสมัครทุน' : '')});
+    tl.push({when: 'หลังได้รับผล', task: 'ขอวีซ่านักเรียน เตรียมที่พัก และเข้าร่วม Pre-Departure กับทีม'});
+  }
   return {
     headline: (g.exact ? short + ' สาขา ' + r.prog + ' ตรงกับเป้าหมายของน้องมากที่สุดจากคำตอบทั้งหมด' : short + ' สาขา ' + r.prog + ' เป็นตัวเลือกที่ใกล้เคียงที่สุด แม้ยังมีบางข้อที่ต้องเตรียมเพิ่ม'),
     why_fit: why.slice(0, 4), watch_out: watch.slice(0, 3), prepare: prep.slice(0, 5), timeline: tl.slice(0, 7)
@@ -492,7 +511,7 @@ var AI_SYSTEM = [
   '',
   'Facts: use only the data given for each programme. Never invent fees, requirements, rankings, deadlines, scholarships or anything about campus life. If something is missing, say the team will confirm it (ทีมจะยืนยันให้). Never promise admission, a visa or a scholarship; "scholarship available" means the student can apply, not that they will receive it. If cycle_past is true, say the dates are from the previous round and the new round is usually announced around the same time.',
   '',
-  'Timeline: 5 to 7 steps from today (given) until departure, based on the deadline. Write months as Thai abbreviations with Christian-era years, for example ก.ย. 2027. Cover the language test, CSCA if required, documents, the application, the scholarship application if available, and visa and pre-departure. Keep the steps in order.',
+  'Timeline: 5 to 7 steps from today (given) until departure, worked back from the deadline. Use real Thai month abbreviations for every step. If cycle_past is false, add the Christian-era year (for example มี.ค. 2027). If cycle_past is true, the new round has not opened yet: base the months on the previous round\'s deadline, write months WITHOUT a year (for example มี.ค.), and say in one step that the team will confirm the new round\'s dates. Cover the language test, CSCA if required, documents, the application, the scholarship application if available, and visa and pre-departure. Keep the steps in order.',
   '',
   'Writing: Thai, warm and encouraging, like an older sibling (พี่ ๆ ชิวชิว) talking to the student (น้อง). Short sentences, one idea per bullet, at most two sentences each, no emoji, no markdown. watch_out lists honest gaps (language, budget, city, data still being verified) and is an empty array when there are none.'
 ].join('\n');

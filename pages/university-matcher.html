@@ -582,6 +582,16 @@
   function baht(n){return '฿'+fmt(Math.round(n/1000)*1000);}
   function yuan(n){return '¥'+fmt(n);}
   function cityTH(c){return CITY_TH[c]||c;}
+  var MON_TH=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'],MON_EN={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
+  // A round that hasn't opened yet (p.past) shows day + month only, from last round.
+  function fmtDl(p){
+    var s=String(p.dl||''),m=s.match(/(\d{1,2})?\s*(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?(?:\s+(\d{1,2})(?:,|(?=\s|$)))?\s*(20\d{2})?/i),iso=s.match(/(20\d{2})-(\d{2})-(\d{2})/);
+    var d,mo,y;
+    if(iso){y=iso[1];mo=+iso[2]-1;d=+iso[3];}
+    else if(m){mo=MON_EN[m[2].toLowerCase()];d=m[1]||(m[3]?parseInt(m[3],10):'');y=m[4]||'';}
+    else return p.past?s.replace(/\s*20\d{2}/,''):s;
+    return (d?d+' ':'')+MON_TH[mo]+(!p.past&&y?' '+y:'');
+  }
   function safeImg(u){return /^https:\/\/[^\s'"()<>\\]+$/.test(u||'')?u:'';}
   function banner(photo,cn,name){
     var img=safeImg(photo);
@@ -737,7 +747,7 @@
     var costF=cost?'<b>≈ '+baht(cost*RATE)+'/ปี</b><small>'+yuan(cost)+(p.tot?' รวมค่าเรียน ที่พัก และค่าครองชีพ':' (เฉพาะค่าเรียน)')+'</small>':'<b>รอยืนยัน</b><small>ทีมจะแจ้งในรายงาน</small>';
     var hskF=g.useZh||p.lang==='zh'?(p.hsk?'<b>'+esc(p.hskTxt?p.hskTxt.replace(/\s*\+\s*HSKK.*$/i,''):'HSK '+p.hsk)+'</b><small>'+(p.hskk?'+ HSKK '+esc(p.hskkLv||''):'&nbsp;')+'</small>':'<b>ไม่ระบุ</b><small>&nbsp;</small>'):
       '<b>'+(p.ielts?'IELTS '+p.ielts:'ไม่ระบุ')+'</b><small>'+(p.toefl?'หรือ TOEFL '+p.toefl:'หลักสูตรสอนภาษาอังกฤษ')+'</small>';
-    var dlF=p.dl?'<b>'+esc(p.dl)+'</b><small>'+(p.past&&p.cyc?'อ้างอิงรอบ '+esc(p.cyc)+' · รอประกาศรอบใหม่':'&nbsp;')+'</small>':'<b>รอประกาศ</b><small>&nbsp;</small>';
+    var dlF=p.dl?'<b>'+esc(fmtDl(p))+'</b><small>'+(p.past?'อ้างอิงรอบที่ผ่านมา · ทีมจะยืนยันวันของรอบใหม่':'&nbsp;')+'</small>':'<b>รอประกาศ</b><small>&nbsp;</small>';
     var missing=R.filter(function(r){return r[0]==='warn';}).map(function(r){return r[1];});
 
     lastMatch={a:a,res:res};
@@ -870,7 +880,7 @@
       '<div class="um-pfacts"><span><b>สอนเป็น</b> '+(p.lang==='zh'?'ภาษาจีน':p.lang==='en'?'ภาษาอังกฤษ':'จีน/อังกฤษ')+'</span>'+(p.dur?'<span><b>ระยะเวลา</b> '+esc(p.dur)+' ปี</span>':'')+req.join('')+
       (p.hskk?'<span><b>HSKK</b> '+esc(p.hskkLv||'ต้องมี')+'</span>':'')+
       (p.csca?'<span><b>CSCA</b> <a href="'+SITE+'/csca/">'+(p.cscaSub?esc(p.cscaSub):'ต้องสอบ')+'</a></span>':'<span><b>CSCA</b> ไม่ต้องสอบ</span>')+
-      (p.dl?'<span><b>ปิดรับ</b> '+esc(p.dl)+(p.past&&p.cyc?' (รอบ '+esc(p.cyc)+')':'')+'</span>':'')+
+      (p.dl?'<span><b>ปิดรับ</b> '+esc(fmtDl(p))+(p.past?' (อ้างอิงรอบที่ผ่านมา)':'')+'</span>':'')+
       (p.campus?'<span><b>วิทยาเขต</b> '+esc(p.campus)+'</span>':'')+
       (p.open?'<span class="um-tag open">● เปิดรับ 2027</span>':'')+(p.sch?'<span class="um-tag sch">🎁 มีทุน</span>':'')+
       (p.review?'<span class="um-tag">⚠ รอยืนยันข้อมูล</span>':'')+'</div></div>';
