@@ -32,7 +32,7 @@
 
 /* ═══ 1. HERO ═══ */
 .um-hero{position:relative;color:#5C4A3E;overflow:hidden;background:radial-gradient(ellipse at 0% 0%,#FFFCF7 0%,rgba(255,252,247,0) 55%),radial-gradient(ellipse at 0% 100%,#FFE6D2 0%,rgba(255,230,210,0) 60%),radial-gradient(ellipse at 78% 50%,#FFF3CC 0%,rgba(255,243,204,0) 58%),#FFF6EC}
-.um-hero .um-wrap{position:relative;padding-top:84px;padding-bottom:104px}
+.um-hero .um-wrap{position:relative;padding-top:68px;padding-bottom:104px}
 .um-hero-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);align-items:center;gap:32px}
 .um-hero-txt{min-width:0;position:relative;z-index:1}
 .um-hero-art{min-width:0;position:relative;display:flex;justify-content:center;align-items:center}
@@ -303,7 +303,7 @@
   .um-wrap{padding:0 16px}
   .um-sec{padding:64px 0}
   /* phone: one column — headline, picture, button, numbers — all centred */
-  .um-hero .um-wrap{padding-top:96px;padding-bottom:88px}
+  .um-hero .um-wrap{padding-top:72px;padding-bottom:88px}
   .um-hero-grid{grid-template-columns:minmax(0,1fr);gap:0;text-align:center}
   .um-hero-txt{display:contents}
   .um-kicker{order:1;font-size:.74rem;letter-spacing:1.5px;justify-self:center}
@@ -1114,6 +1114,20 @@
       countEl.textContent='';
       listEl.innerHTML='<div class="um-empty">โหลดข้อมูลไม่สำเร็จ กรุณารีเฟรชหน้านี้อีกครั้ง</div>';
     });
+  }
+
+  // In-page buttons scroll without adding #um-… to the address, so a copied/shared link always opens at the top.
+  // A link that already carries one (e.g. shared earlier) is cleaned and the page starts at the hero.
+  root.addEventListener('click',function(e){
+    var a=e.target.closest&&e.target.closest('a[href^="#um-"]');
+    if(!a||e.defaultPrevented)return;
+    var t=document.getElementById(a.getAttribute('href').slice(1));
+    if(!t)return;
+    e.preventDefault();t.scrollIntoView({behavior:REDUCED?'auto':'smooth',block:'start'});
+  });
+  if(/^#um-/.test(location.hash)&&history.replaceState){
+    history.replaceState(null,'',location.pathname+location.search);
+    window.scrollTo(0,0);window.addEventListener('load',function(){window.scrollTo(0,0);});
   }
 
   var finder=$('.um-finder');
