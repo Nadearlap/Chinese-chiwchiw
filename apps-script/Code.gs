@@ -391,8 +391,9 @@ function bestMatch_(rows, profiles, a, deps) {
     var useZh = r.lang === 'zh' || (r.lang === 'both' && a.lang !== 'en');
     g.useZh = useZh;
     // Only score a language test the student was actually asked about.
-    if (useZh && a.lang !== 'en') { g.hskGap = r.hsk ? Math.max(0, r.hsk - myHsk) : 0; pen += Math.min(36, g.hskGap * 12); }
-    else if (!useZh && a.lang !== 'zh') { g.ieltsGap = r.ielts ? Math.max(0, Math.round((r.ielts - myIelts) * 10) / 10) : 0; pen += Math.min(40, g.ieltsGap * 20); }
+    var gapW = a.when === 'later' || a.when === 'explore' ? 0.5 : 1; // more time to raise a test score
+    if (useZh && a.lang !== 'en') { g.hskGap = r.hsk ? Math.max(0, r.hsk - myHsk) : 0; pen += Math.min(36, g.hskGap * 12) * gapW; }
+    else if (!useZh && a.lang !== 'zh') { g.ieltsGap = r.ielts ? Math.max(0, Math.round((r.ielts - myIelts) * 10) / 10) : 0; pen += Math.min(40, g.ieltsGap * 20) * gapW; }
     else { g.hskGap = 0; g.ieltsGap = 0; g.testUnknown = true; }
     var cost = r.tot || r.tu;
     g.thb = cost ? Math.round(cost * CONFIG.thbPerRmb) : 0;
@@ -470,8 +471,27 @@ function fallbackPlan_(r, g, a, today) {
   if (r.csca) prep.push('เตรียมสอบ CSCA' + (r.cscaSub ? ' วิชา ' + r.cscaSub : ''));
   prep.push('เตรียมเอกสารหลัก: หนังสือเดินทาง ใบแสดงผลการเรียน และเอกสารที่มหาวิทยาลัยกำหนด');
   if (r.sch) prep.push('เตรียมเอกสารยื่นทุนไปพร้อมกับใบสมัคร');
+  var when = a.when === 'later' || a.when === 'explore' ? a.when : 'next';
+  if (when === 'explore') prep = ['เทียบมหาวิทยาลัยนี้กับอีก 2–3 แห่งในรายชื่อด้านล่าง ดูค่าใช้จ่าย เมือง และเกณฑ์ภาษา',
+    'ลองเรียนภาษาจีนหรือไปค่ายระยะสั้นก่อน เพื่อดูว่าชอบการใช้ชีวิตที่จีนไหม'].concat(prep).slice(0, 5);
   var dm = deadlineMonth_(r.dl), tm = String(today || '').match(/^(\d{4})-(\d{2})/);
-  if (dm > -1 && tm) {
+  var dmLabel = dm > -1 ? MONTH_TH[dm] : '';
+  if (when !== 'next') {
+    // Not applying this round: phases relative to the application year, no fixed dates.
+    if (when === 'explore') {
+      tl.push({when: 'ตอนนี้', task: 'ดูรายชื่อมหาวิทยาลัยด้านล่าง เทียบ 2–3 ที่ที่สนใจ แล้วคุยกับทีมได้ฟรี'});
+      tl.push({when: 'ช่วงหาข้อมูล', task: 'ลองเรียนภาษาจีนหรือไปค่ายระยะสั้น เพื่อดูว่าชอบการเรียนที่จีนไหม'});
+      tl.push({when: 'เมื่อพร้อม', task: 'เลือกปีที่จะเริ่มเรียน แล้วให้ทีมวาง Timeline ตามรอบสมัครจริง'});
+    } else {
+      tl.push({when: 'ตอนนี้', task: 'คุยกับทีมเพื่อยืนยันหลักสูตรและวางแผนระยะยาว'});
+    }
+    if (r.lang !== 'en' && r.hsk) tl.push({when: 'ประมาณ 1 ปีก่อนยื่นสมัคร', task: 'ปูพื้นภาษาจีนและสอบ HSK ' + r.hsk + (r.hskk ? ' และ HSKK' : '') + ' ให้ถึงเกณฑ์'});
+    if (r.lang !== 'zh' && r.ielts) tl.push({when: 'ประมาณ 1 ปีก่อนยื่นสมัคร', task: 'เตรียมสอบ IELTS ให้ได้ ' + r.ielts + ' ขึ้นไป'});
+    if (r.csca) tl.push({when: '2–3 เดือนก่อนปิดรับ', task: 'สอบ CSCA และเก็บผลสอบไว้ยื่น'});
+    tl.push({when: '1–2 เดือนก่อนปิดรับ', task: 'รวบรวมเอกสารและยื่นใบสมัคร' + (r.sch ? ' พร้อมใบสมัครทุน' : '')});
+    tl.push({when: dmLabel ? dmLabel + ' ของปีที่ยื่น' : 'วันปิดรับสมัคร', task: 'ปิดรับสมัคร' + (dmLabel ? ' (อ้างอิงเดือนของรอบที่ผ่านมา ทีมจะยืนยันให้)' : '')});
+    tl.push({when: 'หลังได้รับผล', task: 'ขอวีซ่านักเรียน เตรียมที่พัก และเข้าร่วม Pre-Departure กับทีม'});
+  } else if (dm > -1 && tm) {
     // Months counted as year*12+month. A round that hasn't opened yet reuses last
     // round's deadline month and is shown without a year.
     var now = +tm[1] * 12 + (+tm[2] - 1), dy = deadlineYear_(r.dl), dl;
@@ -495,8 +515,11 @@ function fallbackPlan_(r, g, a, today) {
     tl.push({when: 'ก่อนปิดรับ', task: 'รวบรวมเอกสารและยื่นใบสมัคร' + (r.sch ? ' พร้อมใบสมัครทุน' : '')});
     tl.push({when: 'หลังได้รับผล', task: 'ขอวีซ่านักเรียน เตรียมที่พัก และเข้าร่วม Pre-Departure กับทีม'});
   }
+  var head = g.exact ? short + ' สาขา ' + r.prog + ' ตรงกับเป้าหมายของน้องมากที่สุดจากคำตอบทั้งหมด' : short + ' สาขา ' + r.prog + ' เป็นตัวเลือกที่ใกล้เคียงที่สุด แม้ยังมีบางข้อที่ต้องเตรียมเพิ่ม';
+  if (when === 'explore') head = short + ' สาขา ' + r.prog + ' เป็นจุดเริ่มต้นที่ดีสำหรับเทียบตัวเลือก ยังมีเวลาหาข้อมูลเพิ่มได้ไม่ต้องรีบ';
+  else if (when === 'later' && !g.exact) head = short + ' สาขา ' + r.prog + ' เหมาะกับน้อง และน้องยังมีเวลาเตรียมส่วนที่ยังขาด';
   return {
-    headline: (g.exact ? short + ' สาขา ' + r.prog + ' ตรงกับเป้าหมายของน้องมากที่สุดจากคำตอบทั้งหมด' : short + ' สาขา ' + r.prog + ' เป็นตัวเลือกที่ใกล้เคียงที่สุด แม้ยังมีบางข้อที่ต้องเตรียมเพิ่ม'),
+    headline: head,
     why_fit: why.slice(0, 4), watch_out: watch.slice(0, 3), prepare: prep.slice(0, 5), timeline: tl.slice(0, 7)
   };
 }
@@ -512,6 +535,8 @@ var AI_SYSTEM = [
   'Facts: use only the data given for each programme. Never invent fees, requirements, rankings, deadlines, scholarships or anything about campus life. If something is missing, say the team will confirm it (ทีมจะยืนยันให้). Never promise admission, a visa or a scholarship; "scholarship available" means the student can apply, not that they will receive it. If cycle_past is true, say the dates are from the previous round and the new round is usually announced around the same time.',
   '',
   'Timeline: 5 to 7 steps from today (given) until departure, worked back from the deadline. Use real Thai month abbreviations for every step. If cycle_past is false, add the Christian-era year (for example มี.ค. 2027). If cycle_past is true, the new round has not opened yet: base the months on the previous round\'s deadline, write months WITHOUT a year (for example มี.ค.), and say in one step that the team will confirm the new round\'s dates. Cover the language test, CSCA if required, documents, the application, the scholarship application if available, and visa and pre-departure. Keep the steps in order.',
+  '',
+  'Start plan: if the student is applying in the next round, use the dated timeline above. If they are planning ahead for a later year, use phases relative to the application year (for example ประมาณ 1 ปีก่อนยื่นสมัคร, 2–3 เดือนก่อนปิดรับ) with no years, and treat language gaps as time to prepare. If they are just exploring, do not push them to apply: make the plan about comparing 2–3 options from the list on the page, trying Chinese lessons or a short camp, and choosing a start year with the team; use relative phases with no dates.',
   '',
   'Writing: Thai, warm and encouraging, like an older sibling (พี่ ๆ ชิวชิว) talking to the student (น้อง). Short sentences, one idea per bullet, at most two sentences each, no emoji, no markdown. watch_out lists honest gaps (language, budget, city, data still being verified) and is an empty array when there are none.'
 ].join('\n');
@@ -549,7 +574,8 @@ function aiPlan_(a, shortlist, today) {
       gaps: {major_match: c.g.major, language_match: c.g.lang, hsk_levels_short: c.g.hskGap || 0, ielts_short: c.g.ieltsGap || 0,
         language_test_not_asked: !!c.g.testUnknown, over_budget_thb: c.g.over || 0, city_match: c.g.city}};
   });
-  var student = {degree: {ug: 'bachelor', ma: 'master', phd: 'phd'}[a.deg], fields: arr_(a.groups), unsure_of_field: !!a.anyMajor,
+  var student = {start_plan: {next: 'applying in the next round', later: 'planning ahead for a later year', explore: 'just exploring, not ready to apply yet'}[a.when] || 'applying in the next round',
+    degree: {ug: 'bachelor', ma: 'master', phd: 'phd'}[a.deg], fields: arr_(a.groups), unsure_of_field: !!a.anyMajor,
     typed_field: String(a.text || '').slice(0, 80), teaching_language_wanted: a.lang, hsk_level: a.lang !== 'en' ? (+a.hsk || 0) : null,
     ielts: a.lang !== 'zh' ? (+a.ielts || 0) : null, budget_thb_per_year: +a.budget || 'no limit', cities: arr_(a.cities),
     scholarship: {must: 'very important', nice: 'nice to have', no: 'not needed'}[a.schol] || ''};

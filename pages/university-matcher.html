@@ -331,7 +331,7 @@
     <div class="um-logo"><a href="https://chinesechiwchiw.com/" class="um-logo-link"><span class="um-logo-txt">Chinese <span>Chiwchiw</span></span></a></div>
     <span class="um-eyebrow">✦ AI University Matcher 2027 ✦</span>
     <h1 class="um-h1">หามหาวิทยาลัยจีน<br><span>ที่ใช่สำหรับคุณ</span></h1>
-    <p class="um-lead">ตอบ 7 คำถามสั้น ๆ แล้ว AI จะเลือกมหาวิทยาลัยและสาขาที่เหมาะกับน้องที่สุดให้ 1 แห่ง บอกเหตุผล สิ่งที่ต้องเตรียม และ Timeline ว่าควรทำอะไรเมื่อไหร่</p>
+    <p class="um-lead">ตอบ 8 คำถามสั้น ๆ แล้ว AI จะเลือกมหาวิทยาลัยและสาขาที่เหมาะกับน้องที่สุดให้ 1 แห่ง บอกเหตุผล สิ่งที่ต้องเตรียม และ Timeline ว่าควรทำอะไรเมื่อไหร่</p>
     <div class="um-btns">
       <a class="um-btn um-btn-pri" href="#um-app">🧭 เริ่มจับคู่มหาวิทยาลัย</a>
       <a class="um-btn um-btn-glass" href="#um-finder">ดูรายชื่อมหาวิทยาลัยทั้งหมด ↓</a>
@@ -349,9 +349,19 @@
 
       <!-- 2a. Quiz -->
       <div class="um-quiz">
-        <div class="um-qtop"><span class="um-stepinfo">ข้อ <span class="um-sn">1</span> จาก 7</span></div>
+        <div class="um-qtop"><span class="um-stepinfo">ข้อ <span class="um-sn">1</span> จาก <span class="um-sc">8</span></span></div>
         <div class="um-prog"><div class="um-prog-bar"></div></div>
         <form class="um-form" novalidate>
+          <fieldset class="um-step" data-step="when">
+            <legend class="um-q">ตอนนี้น้องอยู่ช่วงไหน?</legend>
+            <p class="um-qhint">ไม่ต้องรีบตัดสินใจ ระบบจะวางแผนให้ตามจังหวะของน้อง</p>
+            <div class="um-opts">
+              <label class="um-opt"><input type="radio" name="when" value="next"><span class="um-opt-in"><b>🚀 พร้อมยื่นรอบหน้า</b><small>อยากเริ่มเรียนปี <span class="um-y1">2027</span></small></span></label>
+              <label class="um-opt"><input type="radio" name="when" value="later"><span class="um-opt-in"><b>📅 วางแผนล่วงหน้า</b><small>เริ่มเรียนปี <span class="um-y2">2028</span> หรือหลังจากนั้น</small></span></label>
+              <label class="um-opt"><input type="radio" name="when" value="explore"><span class="um-opt-in"><b>🔍 แค่หาข้อมูลก่อน</b><small>อยากรู้ว่ามีทางเลือกอะไรบ้าง</small></span></label>
+            </div>
+          </fieldset>
+
           <fieldset class="um-step" data-step="deg">
             <legend class="um-q">อยากเรียนต่อระดับไหน?</legend>
             <p class="um-qhint">เลือกระดับที่จะยื่นสมัคร</p>
@@ -518,7 +528,7 @@
         <div class="um-list"><div class="um-ugrid"><div class="um-skel"></div><div class="um-skel"></div></div></div>
         <div class="um-more-wrap" hidden><button type="button" class="um-btn um-btn-ghost um-btn-s um-more">แสดงเพิ่ม</button></div>
         <div class="um-fcta">
-          <div><h3>ไม่แน่ใจว่าที่ไหนเหมาะกับน้อง?</h3><p>ตอบ 7 คำถาม แล้วระบบจะเลือกมหาวิทยาลัยที่เหมาะที่สุดให้</p></div>
+          <div><h3>ไม่แน่ใจว่าที่ไหนเหมาะกับน้อง?</h3><p>ตอบ 8 คำถาม แล้ว AI จะเลือกมหาวิทยาลัยที่เหมาะที่สุดให้</p></div>
           <a class="um-btn um-btn-pri um-btn-s" href="#um-app">🧭 หาคู่ที่ใช่ให้ฉัน ↑</a>
         </div>
         <p class="um-note">ข้อมูลรวบรวมจากคู่มือรับสมัครนักศึกษาต่างชาติของแต่ละมหาวิทยาลัย ค่าเรียนเป็นหยวน (RMB) ราคาบาทเป็นค่าประมาณที่ <span class="um-rate">4.6</span> บาท/หยวน หลายรายการยังอ้างอิงรอบ 2026 ระหว่างที่ทีมอัปเดตรอบ 2027 อ่านเรื่องข้อสอบ <a href="https://chinesechiwchiw.com/csca/">CSCA</a> ได้ที่นี่ · ผ่านเกณฑ์ ≠ ได้รับเข้า · มีทุนให้สมัคร ≠ ได้ทุน</p>
@@ -635,13 +645,14 @@
   function val(n){var el=form.querySelector('input[name="'+n+'"]:checked');return el?el.value:'';}
   function vals(n){return $$('input[name="'+n+'"]:checked',form).map(function(e){return e.value;});}
   function answers(){
-    return {deg:val('deg'),groups:vals('major').filter(function(v){return v!=='any';}),anyMajor:vals('major').indexOf('any')>-1,
+    return {when:val('when')||'next',deg:val('deg'),groups:vals('major').filter(function(v){return v!=='any';}),anyMajor:vals('major').indexOf('any')>-1,
       text:($('#um-mtext').value||'').trim().toLowerCase().slice(0,80),lang:val('lang'),
       hsk:parseFloat(val('hsk'))||0,ielts:parseFloat(val('ielts'))||0,budget:parseFloat(val('budget'))||0,
       cities:vals('city').filter(function(v){return v!=='any';}),schol:val('schol')};
   }
   function stepValid(i){
     switch(steps[i].getAttribute('data-step')){
+      case 'when':return !!val('when');
       case 'deg':return !!val('deg');
       case 'major':return vals('major').length>0||!!$('#um-mtext').value.trim();
       case 'lang':return !!val('lang');
@@ -696,10 +707,11 @@
     if(cur<steps.length-1)show(cur+1);else runMatch();
   });
   backBtn.addEventListener('click',function(){if(cur>0)show(cur-1);});
+  (function(){var d=new Date(),ny=d.getFullYear()+(d.getMonth()>=6?1:0);$$('.um-y1').forEach(function(e){e.textContent=ny;});$$('.um-y2').forEach(function(e){e.textContent=ny+1;});$('.um-sc').textContent=steps.length;})();
   show(0);
 
   function profileText(a){
-    var parts=[{ug:'ปริญญาตรี',ma:'ปริญญาโท',phd:'ปริญญาเอก'}[a.deg]];
+    var parts=[{next:'ยื่นรอบหน้า',later:'วางแผนล่วงหน้า',explore:'หาข้อมูลก่อน'}[a.when],{ug:'ปริญญาตรี',ma:'ปริญญาโท',phd:'ปริญญาเอก'}[a.deg]];
     var majors=$$('input[name="major"]:checked',form).map(function(i){return i.nextElementSibling.textContent.replace(/^\S+\s/,'');});
     if(a.text)majors.push(a.text);
     parts.push(majors.join(', ')||'ทุกสาขา');
