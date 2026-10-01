@@ -18,9 +18,9 @@
  * After editing this script later: Deploy → Manage deployments → Edit → Version: New.
  *
  * OPTIONAL TABS for university photos and descriptions:
- *   "University Profiles"     = import "WordPress university images (…).csv" as is
- *                               (University, Logo URL, Campus photo URL, Photo credit, Photo source page)
- *   "University Descriptions" = import university-descriptions.csv (University, Description)
+ *   Any tab name works. The script uses every tab whose first row has a
+ *   "University" column plus a description, logo or photo column, e.g.
+ *   the imported "WordPress university images (…).csv" and university-descriptions.csv.
  *   University matches Master Data with or without the "(CODE)" at the end.
  *   URLs must start with https://. The photo credit is shown on the photo
  *   (Wikimedia licences require it).
@@ -45,8 +45,6 @@
 
 var CONFIG = {
   dataSheet: 'Master Data',
-  profileSheet: 'University Profiles',
-  descSheet: 'University Descriptions',
   leadsSheet: 'Matcher Leads',
   onlyCanApply: true,      // only programmes where "Chinese Chiwchiw Can Apply?" starts with Yes
   thbPerRmb: 4.6,          // keep in sync with data-rate on the page
@@ -148,9 +146,14 @@ function getData_() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sh = ss.getSheetByName(CONFIG.dataSheet);
   var data = {rows: buildRows_(sh.getDataRange().getDisplayValues()), profiles: {}};
-  [CONFIG.profileSheet, CONFIG.descSheet].forEach(function (name) {
-    var t = ss.getSheetByName(name);
-    if (t) mergeProfiles_(data.profiles, buildProfiles_(t.getDataRange().getDisplayValues()));
+  // Any tab whose first row has "University" plus a description, logo or photo column
+  // counts as profile data, whatever the tab is called.
+  ss.getSheets().forEach(function (t) {
+    var n = t.getName();
+    if (n === CONFIG.dataSheet || n === CONFIG.leadsSheet || t.getLastRow() < 2) return;
+    var head = t.getRange(1, 1, 1, Math.max(1, t.getLastColumn())).getDisplayValues()[0].join('|').toLowerCase();
+    if (!/(^|\|)university(\||$)/.test(head) || !/description|logo|photo/.test(head)) return;
+    mergeProfiles_(data.profiles, buildProfiles_(t.getDataRange().getDisplayValues()));
   });
   var str = JSON.stringify(data), size = 90000, parts = {}, count = Math.ceil(str.length / size);
   for (var k = 0; k < count; k++) parts['um:' + k] = str.substr(k * size, size);

@@ -26,7 +26,6 @@
 .um-wrap{max-width:1180px;margin:0 auto;padding:0 28px}
 .um-sec{padding:88px 0}
 .um-eyebrow{display:inline-block;font-family:'Kanit',sans-serif;font-weight:700;font-size:.82rem;letter-spacing:2px;color:#FF6B00;background:rgba(255,107,0,.08);border:1px solid rgba(255,107,0,.2);padding:6px 16px;border-radius:50px;margin-bottom:16px}
-.um-hero .um-eyebrow{color:#FFB347;background:rgba(255,179,71,.1);border-color:rgba(255,179,71,.3)}
 #uni-matcher .um-h2{font-size:clamp(1.9rem,4vw,2.9rem);font-weight:900;line-height:1.25;color:#1A0A00!important}
 #uni-matcher .um-h2 span{color:#FF6B00!important}
 .um-lead{font-size:clamp(1rem,1.8vw,1.1rem);line-height:1.85;color:#5C4A3E;max-width:680px;margin:14px 0 0}
@@ -45,20 +44,22 @@
 #uni-matcher :focus-visible{outline:3px solid #FFB347;outline-offset:2px}
 
 /* ═══ 1. HERO ═══ */
-.um-hero{position:relative;background:#1A0A00;color:#fff;overflow:hidden}
-.um-hero::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 85% 20%,rgba(107,70,193,.45),transparent 45%),radial-gradient(circle at 8% 90%,rgba(255,140,0,.25),transparent 42%),linear-gradient(160deg,#2A1305 0%,#1A0A00 60%);pointer-events:none}
-.um-hero-zh{position:absolute;right:-10px;bottom:-50px;font-family:'Kanit',sans-serif;font-weight:900;font-size:clamp(8rem,20vw,15rem);line-height:1;color:rgba(255,255,255,.035);pointer-events:none;user-select:none}
+.um-hero{position:relative;background:#FFF4E8;color:#5C4A3E;overflow:hidden}
+.um-hero::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 88% 12%,rgba(255,179,0,.28),transparent 42%),radial-gradient(circle at 6% 92%,rgba(255,107,0,.16),transparent 40%),linear-gradient(180deg,#FFF8F0 0%,#FFEFDD 100%);pointer-events:none}
+.um-hero-zh{position:absolute;right:-10px;bottom:-50px;font-family:'Kanit',sans-serif;font-weight:900;font-size:clamp(8rem,20vw,15rem);line-height:1;color:rgba(255,107,0,.06);pointer-events:none;user-select:none}
 .um-hero .um-wrap{position:relative;padding-top:56px;padding-bottom:110px}
 .um-logo{display:flex;align-items:center;gap:10px;margin-bottom:44px;min-height:44px}
 .um-logo img{height:44px;width:auto;display:block}
-.um-logo-txt{font-family:'Kanit',sans-serif;font-weight:800;font-size:1.15rem;color:#fff;letter-spacing:.5px}
-.um-logo-txt span{color:#FFB347}
-#uni-matcher .um-h1{font-size:clamp(2.1rem,5vw,3.6rem);font-weight:900;line-height:1.2;color:#fff!important;max-width:760px}
-#uni-matcher .um-h1 span{color:#FFB347!important}
-.um-hero .um-lead{color:rgba(255,255,255,.82);margin-bottom:26px}
+.um-logo-txt{font-family:'Kanit',sans-serif;font-weight:800;font-size:1.15rem;color:#1A0A00;letter-spacing:.5px}
+.um-logo-txt span{color:#FF6B00}
+#uni-matcher .um-h1{font-size:clamp(2.1rem,5vw,3.6rem);font-weight:900;line-height:1.2;color:#1A0A00!important;max-width:760px;margin:0}
+#uni-matcher .um-h1 span{color:#FF6B00!important}
+.um-h1-img{display:block;width:100%;max-width:720px;height:auto}
+.um-h1-img+.um-h1-txt{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.um-hero .um-lead{color:#5C4A3E;margin-bottom:26px}
 .um-stats{display:flex;flex-wrap:wrap;gap:12px 32px;margin-top:30px;font-family:'Kanit',sans-serif}
-.um-stats b{display:block;font-size:1.7rem;font-weight:800;color:#fff;line-height:1.1}
-.um-stats span{font-size:.88rem;color:rgba(255,255,255,.7)}
+.um-stats b{display:block;font-size:1.7rem;font-weight:800;color:#1A0A00;line-height:1.1}
+.um-stats span{font-size:.88rem;color:#7A6050}
 
 /* ═══ 2. QUIZ ═══ */
 .um-appsec{padding-top:0;padding-bottom:72px;margin-top:-56px;position:relative;z-index:2}
@@ -341,11 +342,11 @@
   <div class="um-wrap">
     <div class="um-logo"><a href="https://chinesechiwchiw.com/" class="um-logo-link"><span class="um-logo-txt">Chinese <span>Chiwchiw</span></span></a></div>
     <span class="um-eyebrow">✦ AI University Matcher 2027 ✦</span>
-    <h1 class="um-h1">หามหาวิทยาลัยจีน<br><span>ที่ใช่สำหรับคุณ</span></h1>
+    <h1 class="um-h1"><img class="um-h1-img" src="https://chinesechiwchiw.com/wp-content/uploads/2026/10/University-matcher-heading.png" alt="" onerror="this.parentNode.removeChild(this)"><span class="um-h1-txt">หามหาวิทยาลัยจีน<br><span>ที่ใช่สำหรับคุณ</span></span></h1>
     <p class="um-lead">ตอบ 8 คำถามสั้น ๆ แล้ว AI จะเลือกมหาวิทยาลัยและสาขาที่เหมาะกับนักเรียนที่สุดให้ 1 แห่ง บอกเหตุผล สิ่งที่ต้องเตรียม และ Timeline ว่าควรทำอะไรเมื่อไหร่</p>
     <div class="um-btns">
       <a class="um-btn um-btn-pri" href="#um-app">🧭 เริ่มจับคู่มหาวิทยาลัย</a>
-      <a class="um-btn um-btn-glass" href="#um-finder">ดูรายชื่อมหาวิทยาลัยทั้งหมด ↓</a>
+      <a class="um-btn um-btn-ghost" href="#um-finder">ดูรายชื่อมหาวิทยาลัยทั้งหมด ↓</a>
     </div>
     <div class="um-stats" aria-live="polite"></div>
   </div>
