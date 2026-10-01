@@ -143,6 +143,9 @@
 .um-field label i{font-style:normal;color:#FF6B00}
 #uni-matcher .um-field input{width:100%;border:2px solid #EDE5DC;border-radius:12px;padding:11px 14px;font-size:1rem;background:#fff;color:#1A0A00;outline:0;box-shadow:none;height:auto}
 #uni-matcher .um-field input:focus{border-color:#FF6B00}
+.um-consent a{color:#C24E00!important;font-weight:700;text-decoration:underline!important}
+.um-consent i{font-style:normal;color:#FF6B00}
+.um-consent+.um-consent{margin-top:10px}
 .um-consent{display:flex;gap:10px;align-items:flex-start;margin:16px 0 0;font-size:.88rem;line-height:1.65;cursor:pointer}
 #uni-matcher .um-consent input{width:18px;height:18px;margin-top:3px;accent-color:#FF6B00;flex:none}
 .um-hp{position:absolute!important;left:-9999px!important;width:1px;height:1px;overflow:hidden}
@@ -755,7 +758,8 @@
         '<div class="um-field"><label for="um-l-phone">เบอร์โทรศัพท์</label><input id="um-l-phone" name="phone" type="tel" autocomplete="tel" maxlength="30"></div>'+
       '</div>'+
       '<div class="um-hp" aria-hidden="true"><label for="um-l-web">Website</label><input id="um-l-web" name="website" type="text" tabindex="-1" autocomplete="off"></div>'+
-      '<label class="um-consent"><input type="checkbox" name="consent" id="um-l-consent"><span>ยินยอมให้ Chinese Chiwchiw เก็บข้อมูลนี้เพื่อส่งรายงานผลจับคู่และติดต่อกลับเรื่องการเรียนต่อ</span></label>'+
+      '<label class="um-consent"><input type="checkbox" name="consent" id="um-l-consent"><span>ฉันได้อ่านและยอมรับ <a href="'+SITE+'/privacy-policy/" target="_blank" rel="noopener">นโยบายความเป็นส่วนตัว</a> และยินยอมให้ Chinese Chiwchiw ใช้ข้อมูลนี้เพื่อส่งรายงานผลจับคู่ ติดต่อกลับเรื่องการเรียนต่อ และวิเคราะห์เพื่อพัฒนาบริการ <i>*</i></span></label>'+
+      '<label class="um-consent"><input type="checkbox" name="marketing" id="um-l-marketing"><span>ฉันต้องการรับข่าวสาร โปรโมชัน และเคล็ดลับเรียนต่อจีนทางอีเมล (ยกเลิกได้ทุกเมื่อ)</span></label>'+
       '<p class="um-formmsg" role="alert"></p>'+
       '<button type="submit" class="um-btn um-btn-pri">📩 ส่งรายงานให้ฉัน</button>'+
       '</form></div>';
@@ -765,11 +769,11 @@
     f.addEventListener('submit',function(e){
       e.preventDefault();
       var msg=$('.um-formmsg',f),btn=$('button[type=submit]',f);
-      var d={name:f.name.value.trim(),email:f.email.value.trim(),line:f.line.value.trim(),phone:f.phone.value.trim(),hp:f.website.value,consent:f.consent.checked};
+      var d={name:f.name.value.trim(),email:f.email.value.trim(),line:f.line.value.trim(),phone:f.phone.value.trim(),hp:f.website.value,consent:f.consent.checked,marketing:f.marketing.checked};
       if(!d.name){msg.textContent='กรุณากรอกชื่อ';f.name.focus();return;}
       if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(d.email)){msg.textContent='กรุณากรอกอีเมลให้ถูกต้อง';f.email.focus();return;}
       if(d.phone&&!/^[0-9+\-\s()]{6,30}$/.test(d.phone)){msg.textContent='กรุณากรอกเบอร์โทรเป็นตัวเลข';f.phone.focus();return;}
-      if(!d.consent){msg.textContent='กรุณากดยินยอมก่อนส่งข้อมูล';return;}
+      if(!d.consent){msg.textContent='กรุณากดยอมรับนโยบายความเป็นส่วนตัวก่อนส่งข้อมูล';return;}
       msg.textContent='';btn.disabled=true;btn.textContent='กำลังส่ง…';
       var m=lastMatch||{},p=m.res&&m.res.item;
       d.answers=m.a?profileText(m.a):'';

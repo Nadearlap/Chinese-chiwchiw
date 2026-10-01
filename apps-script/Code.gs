@@ -151,10 +151,11 @@ function saveLead_(b) {
     var sh = ss.getSheetByName(CONFIG.leadsSheet);
     if (!sh) {
       sh = ss.insertSheet(CONFIG.leadsSheet);
-      sh.appendRow(['Timestamp', 'Name', 'Email', 'LINE ID', 'Phone', 'Quiz answers', 'Matched Programme ID', 'Matched University', 'Matched Programme', 'Exact match?', 'Report sent?']);
+      sh.appendRow(['Timestamp', 'Name', 'Email', 'LINE ID', 'Phone', 'Quiz answers', 'Matched Programme ID', 'Matched University', 'Matched Programme', 'Exact match?', 'Privacy consent', 'Email list opt-in', 'Report sent?']);
     }
     sh.appendRow([new Date(), safe_(name), safe_(email), safe_(line), safe_(phone), safe_(clean_(b.answers, 600)),
-      safe_(clean_(b.matchId, 40)), safe_(clean_(b.matchUni, 150)), safe_(clean_(b.matchProg, 200)), b.exact ? 'Yes' : 'Closest', '']);
+      safe_(clean_(b.matchId, 40)), safe_(clean_(b.matchUni, 150)), safe_(clean_(b.matchProg, 200)), b.exact ? 'Yes' : 'Closest',
+      'Yes', b.marketing === true ? 'Yes' : 'No', '']);
   } finally {
     lock.releaseLock();
   }
