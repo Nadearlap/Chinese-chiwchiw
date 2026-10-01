@@ -874,15 +874,19 @@
       if(top<70)window.scrollTo({top:window.pageYOffset+top-90,behavior:REDUCED?'auto':'smooth'});
     }
   }
+  // Shown straight away if the live numbers haven't arrived yet; replaced by the live list (with counts) when they do.
+  var CITY_FALLBACK=['Beijing','Shanghai','Guangzhou','Wuhan','Shenzhen','Zhuhai','Dalian','Nanjing',"Xi'an",'Changsha','Hangzhou','Chengdu','Qingdao','Harbin','Nanning','Chongqing','Hefei','Suzhou','Xiamen','Wuxi','Tianjin','Kunming','Ningbo','Fuzhou','Changchun','Jinan','Zhengzhou','Shenyang','Guiyang','Lanzhou'];
   function renderQuizCities(){
     var box=$('.um-cities');
-    if(!META){metaP.then(function(){if(steps[cur].getAttribute('data-step')==='city')renderQuizCities();},function(){});return;}
-    var lv={ug:'UG',ma:'PG',phd:'PHD'}[val('deg')]||'UG',picked=vals('city'),C=META.cities;
+    var lv={ug:'UG',ma:'PG',phd:'PHD'}[val('deg')]||'UG',picked=vals('city');
+    var list=META?Object.keys(META.cities).filter(function(c){return META.cities[c][lv]>0;}).sort(function(a,b){return META.cities[b][lv]-META.cities[a][lv];}):CITY_FALLBACK;
+    picked.forEach(function(c){if(c!=='any'&&list.indexOf(c)<0)list=list.concat(c);});   // never drop a city already ticked
     var html='<label class="um-chip"><input type="checkbox" name="city" value="any"'+(!picked.length||picked.indexOf('any')>-1?' checked':'')+'><span>🌏 ที่ไหนก็ได้</span></label>';
-    Object.keys(C).filter(function(c){return C[c][lv]>0;}).sort(function(a,b){return C[b][lv]-C[a][lv];}).forEach(function(c){
-      html+='<label class="um-chip"><input type="checkbox" name="city" value="'+esc(c)+'"'+(picked.indexOf(c)>-1?' checked':'')+'><span>📍 '+esc(cityTH(c))+' <i>'+C[c][lv]+'</i></span></label>';
+    list.forEach(function(c){
+      html+='<label class="um-chip"><input type="checkbox" name="city" value="'+esc(c)+'"'+(picked.indexOf(c)>-1?' checked':'')+'><span>📍 '+esc(cityTH(c))+(META&&META.cities[c]?' <i>'+META.cities[c][lv]+'</i>':'')+'</span></label>';
     });
     box.innerHTML=html;
+    if(!META)metaP.then(function(){if(steps[cur].getAttribute('data-step')==='city')renderQuizCities();},function(){});
   }
   form.addEventListener('change',function(e){
     var t=e.target;
