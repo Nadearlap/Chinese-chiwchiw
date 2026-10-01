@@ -51,6 +51,7 @@ var CONFIG = {
   pageSize: 12,
   maxPageSize: 24,
   cacheSeconds: 600,       // sheet edits show on the site within ~10 minutes
+  answerSeconds: 1800,     // a ready-made answer (list page, search) is reused for 30 minutes
   aiModel: 'claude-sonnet-5-5',
   aiEffort: 'low',         // low keeps answers fast; medium/high think longer and cost more
   aiShortlist: 15,
@@ -125,7 +126,7 @@ function doGet(e) {
     out = {error: 'unavailable'};
   }
   var text = JSON.stringify(out);
-  if (rkey && !out.error && text.length < 95000) { try { cache.put(rkey, text, CONFIG.cacheSeconds); } catch (err) {} }
+  if (rkey && !out.error && text.length < 95000) { try { cache.put(rkey, text, CONFIG.answerSeconds); } catch (err) {} }
   return ContentService.createTextOutput(text).setMimeType(ContentService.MimeType.JSON);
 }
 
@@ -271,7 +272,7 @@ function refreshMatcherData() {
   var first = add('search', defaultSearch_('uni'));
   for (var pg = 2; first.total && pg <= Math.ceil(first.total / first.size); pg++) add('search', defaultSearch_('uni', pg));
   for (var pp = 1; pp <= 3; pp++) add('search', defaultSearch_('prog', pp));
-  try { cache.putAll(parts, 1800); } catch (err) {}
+  try { cache.putAll(parts, CONFIG.answerSeconds + 600); } catch (err) {}
   props.setProperties({autoRefresh: 'on', lastRefresh: String(Date.now()), refreshSeconds: String(Math.round((Date.now() - started) / 1000))});
 }
 
