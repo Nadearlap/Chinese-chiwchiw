@@ -1,17 +1,16 @@
 <!-- ═══════════════════════════════════════════════════════════════
-     Chinese Chiwchiw — University Matcher  ·  page slug: /หามหาวิทยาลัยจีน/
+     Chinese Chiwchiw — University Matcher (public)  ·  page slug: /หามหาวิทยาลัยจีน/
      Paste everything into ONE Elementor "Custom HTML" block.
      Prefix: um-   Root: #uni-matcher
 
-     DATA SETUP (once):
-     1. In the University Programme Database sheet, add a tab "Public Matcher"
-        and put this formula in A1 (copies only student-safe columns,
-        only rows where "Chinese Chiwchiw Can Apply?" starts with Yes):
-        =VSTACK(CHOOSECOLS('Master Data'!A1:BT1,1,2,3,4,5,6,7,8,9,10,11,12,14,16,18,19,20,21,22,23,25,27,30,36,39,45,46,47,51,52,54,55,57,63,66,67,69,70),CHOOSECOLS(FILTER('Master Data'!A2:BT,REGEXMATCH('Master Data'!AD2:AD,"^Yes")),1,2,3,4,5,6,7,8,9,10,11,12,14,16,18,19,20,21,22,23,25,27,30,36,39,45,46,47,51,52,54,55,57,63,66,67,69,70))
-     2. File → Share → Publish to web → choose ONLY the "Public Matcher" tab
-        → format "Comma-separated values (.csv)" → Publish → copy the link.
-     3. Paste that link into data-csv="…" on the root <div> below.
-     data-rate = baht per 1 yuan, used to convert costs. Update when it moves.
+     PRIVACY: this page contains NO programme data. It asks the private
+     Apps Script (apps-script/Code.gs) for one quiz match or one page of
+     results at a time. The Google Sheet itself is never published.
+
+     SET BEFORE GOING LIVE (on the root <div> below):
+       data-api  = the Apps Script Web app URL (ends in /exec)
+       data-logo = Chinese Chiwchiw logo URL from the WordPress media library
+       data-rate = baht per 1 yuan (keep equal to thbPerRmb in Code.gs)
      ═══════════════════════════════════════════════════════════════ -->
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700;800;900&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap');
@@ -21,19 +20,17 @@
 #uni-matcher [hidden]{display:none!important}
 #uni-matcher a{text-decoration:none!important}
 #uni-matcher h1,#uni-matcher h2,#uni-matcher h3,#uni-matcher h4{font-family:'Kanit',sans-serif;margin:0;letter-spacing:0}
+#uni-matcher button,#uni-matcher input,#uni-matcher select{font-family:inherit;margin:0}
 #uni-matcher button{font-family:'Kanit',sans-serif}
 #uni-matcher fieldset{border:0;margin:0;padding:0;min-width:0}
 .um-wrap{max-width:1180px;margin:0 auto;padding:0 28px}
 .um-sec{padding:88px 0}
-
 .um-eyebrow{display:inline-block;font-family:'Kanit',sans-serif;font-weight:700;font-size:.82rem;letter-spacing:2px;color:#FF6B00;background:rgba(255,107,0,.08);border:1px solid rgba(255,107,0,.2);padding:6px 16px;border-radius:50px;margin-bottom:16px}
-.um-dark .um-eyebrow,.um-hero .um-eyebrow{color:#FFB347;background:rgba(255,179,71,.1);border-color:rgba(255,179,71,.3)}
+.um-hero .um-eyebrow{color:#FFB347;background:rgba(255,179,71,.1);border-color:rgba(255,179,71,.3)}
 #uni-matcher .um-h2{font-size:clamp(1.9rem,4vw,2.9rem);font-weight:900;line-height:1.25;color:#1A0A00!important}
 #uni-matcher .um-h2 span{color:#FF6B00!important}
-#uni-matcher .um-dark .um-h2{color:#fff!important}
-#uni-matcher .um-dark .um-h2 span{color:#FFB347!important}
 .um-lead{font-size:clamp(1rem,1.8vw,1.1rem);line-height:1.85;color:#5C4A3E;max-width:680px;margin:14px 0 0}
-.um-head{text-align:center;margin-bottom:44px}
+.um-head{text-align:center;margin-bottom:36px}
 .um-head .um-lead{margin-left:auto;margin-right:auto}
 
 /* buttons */
@@ -42,24 +39,29 @@
 #uni-matcher .um-btn:hover{transform:translateY(-2px)}
 #uni-matcher .um-btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
 #uni-matcher .um-btn-pri{color:#1A0A00!important;background:linear-gradient(135deg,#FFB300,#FF6B00);box-shadow:0 6px 24px rgba(255,140,0,.45)}
-#uni-matcher .um-btn-line{color:#fff!important;background:#06C755;box-shadow:0 6px 20px rgba(6,199,85,.3)}
 #uni-matcher .um-btn-ghost{color:#1A0A00!important;background:#fff;border:2px solid #EDE5DC}
-#uni-matcher .um-btn-glass{color:#fff!important;background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.85);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
-#uni-matcher .um-link{background:none;border:0;padding:0;cursor:pointer;font-family:'Kanit',sans-serif;font-weight:700;color:#FF6B00!important;font-size:inherit}
+#uni-matcher .um-btn-glass{color:#fff!important;background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.85)}
+#uni-matcher .um-btn-s{padding:10px 20px;font-size:.92rem}
+#uni-matcher :focus-visible{outline:3px solid #FFB347;outline-offset:2px}
 
 /* ═══ 1. HERO ═══ */
 .um-hero{position:relative;background:#1A0A00;color:#fff;overflow:hidden}
 .um-hero::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 85% 20%,rgba(107,70,193,.45),transparent 45%),radial-gradient(circle at 8% 90%,rgba(255,140,0,.25),transparent 42%),linear-gradient(160deg,#2A1305 0%,#1A0A00 60%);pointer-events:none}
 .um-hero-zh{position:absolute;right:-10px;bottom:-50px;font-family:'Kanit',sans-serif;font-weight:900;font-size:clamp(8rem,20vw,15rem);line-height:1;color:rgba(255,255,255,.035);pointer-events:none;user-select:none}
-.um-hero .um-wrap{position:relative;padding-top:96px;padding-bottom:96px}
+.um-hero .um-wrap{position:relative;padding-top:56px;padding-bottom:110px}
+.um-logo{display:flex;align-items:center;gap:10px;margin-bottom:44px;min-height:44px}
+.um-logo img{height:44px;width:auto;display:block}
+.um-logo-txt{font-family:'Kanit',sans-serif;font-weight:800;font-size:1.15rem;color:#fff;letter-spacing:.5px}
+.um-logo-txt span{color:#FFB347}
 #uni-matcher .um-h1{font-size:clamp(2.1rem,5vw,3.6rem);font-weight:900;line-height:1.2;color:#fff!important;max-width:760px}
 #uni-matcher .um-h1 span{color:#FFB347!important}
-.um-hero .um-lead{color:rgba(255,255,255,.82);margin-bottom:30px}
-.um-hero-bold{font-weight:700;color:#fff;margin:0 0 28px}
-.um-trust{display:flex;flex-wrap:wrap;gap:10px 22px;margin-top:30px;font-family:'Kanit',sans-serif;font-weight:600;font-size:.92rem;color:rgba(255,255,255,.75)}
+.um-hero .um-lead{color:rgba(255,255,255,.82);margin-bottom:26px}
+.um-stats{display:flex;flex-wrap:wrap;gap:12px 32px;margin-top:30px;font-family:'Kanit',sans-serif}
+.um-stats b{display:block;font-size:1.7rem;font-weight:800;color:#fff;line-height:1.1}
+.um-stats span{font-size:.88rem;color:rgba(255,255,255,.7)}
 
-/* ═══ 2. MATCHER APP ═══ */
-.um-appsec{padding-top:0;margin-top:-40px;position:relative;z-index:2;scroll-margin-top:110px}
+/* ═══ 2. QUIZ ═══ */
+.um-appsec{padding-top:0;padding-bottom:72px;margin-top:-56px;position:relative;z-index:2}
 .um-app{background:#fff;border:1px solid #EDE5DC;border-radius:22px;box-shadow:0 14px 50px rgba(26,10,0,.1);padding:40px 44px;scroll-margin-top:110px}
 .um-nojs{text-align:center;padding:20px}
 .um-js .um-nojs{display:none}
@@ -68,21 +70,17 @@
 .um-js.um-v-loading .um-quiz,.um-js.um-v-results .um-quiz{display:none}
 .um-js.um-v-loading .um-loading{display:block}
 .um-js.um-v-results .um-results{display:block}
-
 .um-qtop{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px}
 .um-stepinfo{font-family:'Kanit',sans-serif;font-weight:700;color:#FF6B00;font-size:.95rem}
-.um-db{font-size:.85rem;color:#9A7A60}
 .um-prog{height:6px;background:#F8F4EE;border-radius:50px;overflow:hidden;margin-bottom:30px}
 .um-prog-bar{height:100%;width:14%;background:linear-gradient(90deg,#FFB300,#FF6B00);border-radius:50px;transition:width .4s ease}
 .um-step{display:none}
 .um-step.um-on{display:block;animation:umIn .35s ease}
 @keyframes umIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-#uni-matcher .um-q{font-size:clamp(1.35rem,3vw,1.8rem);font-weight:800;color:#1A0A00!important;line-height:1.35;margin-bottom:6px}
+#uni-matcher .um-q{font-family:'Kanit',sans-serif;font-size:clamp(1.35rem,3vw,1.8rem);font-weight:800;color:#1A0A00!important;line-height:1.35;margin-bottom:6px;padding:0}
 .um-qhint{color:#7A6050;font-size:.95rem;margin:0 0 22px}
 .um-sub{font-family:'Kanit',sans-serif;font-weight:700;color:#1A0A00;margin:18px 0 10px;font-size:1rem}
-
 .um-opts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.um-opts.um-2{grid-template-columns:repeat(2,1fr)}
 .um-opt{position:relative;cursor:pointer;display:block;margin:0}
 .um-opt input,.um-chip input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
 .um-opt-in{display:flex;flex-direction:column;gap:2px;height:100%;padding:16px 18px;border:2px solid #EDE5DC;border-radius:16px;background:#FFFBF7;transition:border-color .2s,background .2s,transform .2s}
@@ -91,7 +89,6 @@
 .um-opt-in small{font-size:.85rem;color:#7A6050;line-height:1.5}
 .um-opt input:checked+.um-opt-in{border-color:#FF6B00;background:#FFF3E8;box-shadow:0 0 0 3px rgba(255,107,0,.12)}
 .um-opt input:focus-visible+.um-opt-in,.um-chip input:focus-visible+span{outline:3px solid #FFB347;outline-offset:2px}
-
 .um-chips{display:flex;flex-wrap:wrap;gap:10px}
 .um-chip{cursor:pointer;margin:0;position:relative}
 .um-chip span{display:inline-flex;align-items:center;gap:6px;font-family:'Kanit',sans-serif;font-weight:600;font-size:.98rem;color:#5C4A3E;background:#FFFBF7;border:2px solid #EDE5DC;padding:8px 18px;border-radius:50px;transition:all .2s;line-height:1.4}
@@ -99,14 +96,11 @@
 .um-chip:hover span{border-color:#FFB347}
 .um-chip input:checked+span{border-color:#FF6B00;background:#FF6B00;color:#fff}
 .um-chip input:checked+span i{color:rgba(255,255,255,.8)}
-#uni-matcher .um-text{width:100%;max-width:440px;margin-top:16px;border:2px solid #EDE5DC!important;border-radius:50px!important;padding:11px 20px!important;font-family:'Noto Sans Thai',sans-serif!important;font-size:.98rem!important;color:#1A0A00!important;background:#FFFBF7!important;outline:0!important;box-shadow:none!important;height:auto!important}
-#uni-matcher .um-text:focus{border-color:#FF6B00!important}
-
+#uni-matcher .um-text{width:100%;max-width:440px;margin-top:16px;border:2px solid #EDE5DC;border-radius:50px;padding:11px 20px;font-size:.98rem;color:#1A0A00;background:#FFFBF7;outline:0;box-shadow:none;height:auto}
+#uni-matcher .um-text:focus{border-color:#FF6B00}
 .um-nav{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:32px;padding-top:24px;border-top:1px solid #F1E6DA}
 #uni-matcher .um-back{background:none;border:0;cursor:pointer;font-weight:700;color:#7A6050;font-size:1rem;padding:10px 4px}
 #uni-matcher .um-back:disabled{visibility:hidden}
-
-/* loading */
 .um-loading{text-align:center;padding:40px 10px}
 .um-spin{width:54px;height:54px;margin:0 auto 18px;border-radius:50%;border:5px solid #F8F4EE;border-top-color:#FF6B00;animation:umSpin 1s linear infinite}
 @keyframes umSpin{to{transform:rotate(360deg)}}
@@ -115,135 +109,229 @@
 .um-think li{opacity:.25;transition:opacity .3s}
 .um-think li.um-done{opacity:1}
 
-/* results */
-.um-rhead{text-align:center;margin-bottom:22px}
-.um-profile{display:inline-flex;flex-wrap:wrap;justify-content:center;gap:6px 14px;margin:14px auto 0;font-size:.92rem;color:#5C4A3E;background:#FFFBF7;border:1px solid #EDE5DC;border-radius:16px;padding:10px 18px}
-.um-insights{display:grid;gap:10px;margin:0 0 24px}
-.um-ins{display:flex;gap:10px;align-items:flex-start;background:#FFF8EF;border:1px solid #F6DFC4;border-left:4px solid #FFB300;border-radius:12px;padding:12px 16px;font-size:.95rem;line-height:1.7}
-.um-ins a{font-family:'Kanit',sans-serif;font-weight:700;color:#FF6B00!important;white-space:nowrap}
-.um-tools{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
-.um-tabs{display:flex;gap:8px;overflow-x:auto;padding:2px;-webkit-overflow-scrolling:touch}
-#uni-matcher .um-tab{flex:none;cursor:pointer;font-weight:700;font-size:.92rem;color:#5C4A3E;background:#fff;border:1px solid #EDE5DC;padding:8px 16px;border-radius:50px;line-height:1.3}
-#uni-matcher .um-tab[aria-pressed="true"]{background:#1A0A00;border-color:#1A0A00;color:#fff}
-#uni-matcher .um-find{flex:1;min-width:200px;max-width:320px;border:1px solid #EDE5DC!important;border-radius:50px!important;padding:9px 18px!important;font-family:'Noto Sans Thai',sans-serif!important;font-size:.95rem!important;background:#FFFBF7!important;color:#1A0A00!important;outline:0!important;box-shadow:none!important;height:auto!important;margin:0!important}
-.um-list{display:grid;gap:16px}
-.um-uni{border:1px solid #EDE5DC;border-radius:18px;padding:22px 24px;background:#fff;box-shadow:0 4px 20px rgba(0,0,0,.05)}
-.um-uni-h{display:flex;justify-content:space-between;align-items:flex-start;gap:14px}
-#uni-matcher .um-uni h3{font-size:1.2rem;font-weight:800;color:#1A0A00!important;line-height:1.4}
-.um-zh{margin:2px 0 0;font-size:.92rem;color:#7A6050}
-.um-meta{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 6px}
-.um-meta span{font-family:'Kanit',sans-serif;font-weight:600;font-size:.85rem;color:#5C4A3E;background:#F8F4EE;padding:3px 12px;border-radius:50px}
-.um-meta .um-warnchip{background:#FFF4D6;color:#8A5A00}
-.um-tier{flex:none;font-family:'Kanit',sans-serif;font-weight:800;font-size:.85rem;padding:4px 14px;border-radius:50px;white-space:nowrap;line-height:1.5}
-.um-tier.um-sm{font-size:.75rem;padding:2px 10px}
-.um-t-safer{background:rgba(0,163,140,.12);color:#00806E}
-.um-t-match{background:rgba(255,107,0,.12);color:#D45500}
-.um-t-reach{background:rgba(107,70,193,.12);color:#6B46C1}
-.um-progs{list-style:none;margin:10px 0 0;padding:0}
-.um-progs li{padding:14px 0;border-top:1px dashed #EDE5DC}
-.um-ph{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
-.um-ph b{font-family:'Kanit',sans-serif;font-weight:700;color:#1A0A00;font-size:1rem;line-height:1.45}
-.um-pm{font-size:.85rem;color:#9A7A60;margin:2px 0 8px}
+/* single match */
+.um-mhead{text-align:center;margin-bottom:22px}
+.um-mcard{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);border:1px solid #EDE5DC;border-radius:20px;overflow:hidden;background:#fff}
+.um-mban{position:relative;min-height:260px;background:#2A1305 center/cover no-repeat}
+.um-mban .um-banzh{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Kanit',sans-serif;font-weight:800;font-size:2.4rem;color:rgba(255,255,255,.9);text-align:center;padding:20px;line-height:1.2}
+.um-mbody{padding:28px 30px}
+.um-badge{display:inline-block;font-family:'Kanit',sans-serif;font-weight:800;font-size:.85rem;padding:4px 14px;border-radius:50px;line-height:1.5}
+.um-b-exact{background:rgba(0,163,140,.12);color:#00806E}
+.um-b-close{background:rgba(107,70,193,.12);color:#6B46C1}
+#uni-matcher .um-mbody h3{font-size:1.55rem;font-weight:900;color:#1A0A00!important;line-height:1.3;margin-top:10px}
+.um-zh{margin:2px 0 0;font-size:.95rem;color:#7A6050}
+.um-mmajor{font-family:'Kanit',sans-serif;font-weight:700;color:#FF6B00;font-size:1.1rem;margin:12px 0 0;line-height:1.45}
+.um-mfacts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:18px 0 14px}
+.um-mfacts div{background:#FFFBF7;border:1px solid #F1E6DA;border-radius:14px;padding:12px 14px;min-width:0}
+.um-mfacts span{display:block;font-family:'Kanit',sans-serif;font-weight:600;font-size:.78rem;color:#9A7A60;letter-spacing:.5px}
+.um-mfacts b{display:block;font-family:'Kanit',sans-serif;font-weight:800;color:#1A0A00;font-size:1.08rem;line-height:1.35;margin-top:2px}
+.um-mfacts small{display:block;font-size:.78rem;color:#7A6050;line-height:1.5;margin-top:2px}
 .um-rs{display:flex;flex-wrap:wrap;gap:6px}
-.um-r{font-size:.8rem;line-height:1.5;padding:2px 10px;border-radius:50px;background:#F8F4EE;color:#5C4A3E}
+.um-r{font-size:.82rem;line-height:1.5;padding:3px 11px;border-radius:50px;background:#F8F4EE;color:#5C4A3E}
 .um-r.ok{background:#E9F8EF;color:#17733F}
 .um-r.warn{background:#FFF4D6;color:#8A5A00}
-.um-r.no{background:#FDECEC;color:#A12C2C}
-#uni-matcher a.um-r{color:#6B46C1!important;background:rgba(107,70,193,.08)}
-.um-uni-f{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid #F1E6DA}
-#uni-matcher .um-ask{font-family:'Kanit',sans-serif;font-weight:700;font-size:.92rem;color:#06A047!important}
-.um-more-wrap{text-align:center;margin-top:22px}
-.um-empty{text-align:center;padding:30px 10px}
-.um-empty-ico{font-size:2.6rem;line-height:1}
-#uni-matcher .um-empty h3{font-size:1.35rem;font-weight:800;color:#1A0A00!important;margin:10px 0 6px}
-.um-empty .um-btns{justify-content:center;margin-top:18px}
-.um-honest{margin-top:26px;background:#FFFBF7;border-left:3px solid #FF6B00;border-radius:0 12px 12px 0;padding:14px 18px;font-size:.88rem;line-height:1.75;color:#7A6050}
-.um-rcta{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:26px}
+#uni-matcher a.um-csca{display:inline-block;margin-top:12px;font-family:'Kanit',sans-serif;font-weight:700;font-size:.9rem;color:#6B46C1!important}
+.um-gap{margin:14px 0 0;background:#FFFBF7;border-left:3px solid #6B46C1;border-radius:0 12px 12px 0;padding:10px 14px;font-size:.9rem;line-height:1.7}
+.um-readmore-wrap{text-align:center;margin-top:20px}
 
-/* ═══ 3. HOW IT WORKS ═══ */
-.um-how{background:#fff}
-.um-grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-.um-card{background:#FFFBF7;border:1px solid #EDE5DC;border-radius:18px;padding:26px 24px}
-.um-num{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;background:#6B46C1;color:#fff;font-family:'Kanit',sans-serif;font-weight:800;margin-bottom:12px}
-#uni-matcher .um-card h3{font-size:1.15rem;font-weight:800;color:#1A0A00!important;margin-bottom:6px;line-height:1.4}
-.um-card p{margin:0;font-size:.95rem;line-height:1.75}
-.um-legend{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:22px}
-.um-leg{display:flex;gap:12px;align-items:flex-start;background:#fff;border:1px solid #EDE5DC;border-radius:14px;padding:14px 16px;font-size:.92rem;line-height:1.65}
-.um-callout{margin-top:28px;background:#FFFBF7;border-left:3px solid #FF6B00;border-radius:0 14px 14px 0;padding:18px 22px;font-size:.95rem;line-height:1.8}
-.um-callout b{color:#1A0A00}
-.um-callout a{font-weight:700;color:#FF6B00!important}
+/* lead form */
+.um-leadbox{margin-top:28px;background:#FFF8EF;border:1px solid #F6DFC4;border-radius:20px;padding:28px 30px}
+#uni-matcher .um-leadbox h3{font-size:1.35rem;font-weight:800;color:#1A0A00!important;line-height:1.4}
+.um-leadbox>p{margin:6px 0 18px;font-size:.95rem}
+.um-fgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.um-field label{display:block;font-family:'Kanit',sans-serif;font-weight:700;font-size:.88rem;color:#1A0A00;margin-bottom:4px}
+.um-field label i{font-style:normal;color:#FF6B00}
+#uni-matcher .um-field input{width:100%;border:2px solid #EDE5DC;border-radius:12px;padding:11px 14px;font-size:1rem;background:#fff;color:#1A0A00;outline:0;box-shadow:none;height:auto}
+#uni-matcher .um-field input:focus{border-color:#FF6B00}
+.um-consent{display:flex;gap:10px;align-items:flex-start;margin:16px 0 0;font-size:.88rem;line-height:1.65;cursor:pointer}
+#uni-matcher .um-consent input{width:18px;height:18px;margin-top:3px;accent-color:#FF6B00;flex:none}
+.um-hp{position:absolute!important;left:-9999px!important;width:1px;height:1px;overflow:hidden}
+.um-formmsg{margin:12px 0 0;font-size:.9rem;color:#A12C2C;min-height:1px}
+.um-leadbox .um-btn{margin-top:18px}
+.um-thanks{text-align:center;padding:10px 0}
+.um-ico{font-size:2.4rem;line-height:1}
+.um-err{text-align:center;padding:24px 10px}
 
-/* ═══ 4. FINAL CTA ═══ */
-.um-dark{background:#1A0A00;color:rgba(255,255,255,.82);position:relative;overflow:hidden}
-.um-dark::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(255,107,0,.25),transparent 55%);pointer-events:none}
-.um-dark .um-wrap{position:relative;text-align:center}
-.um-dark .um-lead{color:rgba(255,255,255,.78);margin:14px auto 30px}
-.um-dark .um-btns{justify-content:center}
-.um-ticks{margin:26px 0 0;font-size:.92rem;color:rgba(255,255,255,.65)}
-
-.um-js .um-rv{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
-.um-js .um-rv.um-in{opacity:1;transform:none}
+/* ═══ 3. FINDER ═══ */
+.um-finder{background:#fff;scroll-margin-top:90px}
+.um-sbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;background:#FFFBF7;border:1px solid #EDE5DC;border-radius:18px;padding:12px}
+#uni-matcher .um-q-in{flex:1 1 280px;min-width:0;border:2px solid #EDE5DC;border-radius:50px;padding:12px 20px;font-size:1rem;background:#fff;color:#1A0A00;outline:0;box-shadow:none;height:auto}
+#uni-matcher .um-q-in:focus{border-color:#FF6B00}
+.um-views{display:inline-flex;background:#F8F4EE;border-radius:50px;padding:4px}
+#uni-matcher .um-views button{border:0;background:transparent;padding:9px 20px;border-radius:50px;cursor:pointer;font-weight:700;font-size:.95rem;color:#7A6050}
+#uni-matcher .um-views button[aria-pressed="true"]{background:#1A0A00;color:#fff}
+.um-layout{display:grid;grid-template-columns:290px minmax(0,1fr);gap:24px;margin-top:22px;align-items:start}
+.um-filters{background:#FFFBF7;border:1px solid #EDE5DC;border-radius:18px;padding:20px;display:grid;gap:20px;position:sticky;top:100px;max-height:calc(100vh - 120px);overflow-y:auto}
+.um-fh{display:flex;justify-content:space-between;align-items:center}
+#uni-matcher .um-fh h3{font-size:1.1rem;font-weight:800;color:#1A0A00!important}
+#uni-matcher .um-clear{border:0;background:none;cursor:pointer;font-weight:700;font-size:.88rem;color:#FF6B00;padding:0}
+.um-fg{display:grid;gap:8px}
+.um-fl{font-family:'Kanit',sans-serif;font-weight:700;font-size:.8rem;letter-spacing:1px;color:#9A7A60}
+.um-fchips{display:flex;flex-wrap:wrap;gap:6px}
+#uni-matcher .um-fc{border:1px solid #EDE5DC;background:#fff;border-radius:50px;padding:5px 12px;font-family:'Kanit',sans-serif;font-weight:600;font-size:.85rem;color:#5C4A3E;cursor:pointer;line-height:1.4}
+#uni-matcher .um-fc[aria-pressed="true"]{background:#FF6B00;border-color:#FF6B00;color:#fff}
+#uni-matcher .um-fc i{font-style:normal;opacity:.7;font-size:.75rem;margin-left:3px}
+#uni-matcher .um-city-q{width:100%;border:1px solid #EDE5DC;border-radius:50px;padding:7px 14px;font-size:.88rem;background:#fff;color:#1A0A00;outline:0;height:auto;box-shadow:none}
+.um-cityscroll{max-height:150px;overflow-y:auto;padding:2px}
+.um-field-g{border:1px solid #F1E6DA;border-radius:12px;background:#fff}
+.um-field-g summary{cursor:pointer;list-style:none;padding:9px 12px;font-family:'Kanit',sans-serif;font-weight:700;font-size:.9rem;color:#1A0A00;display:flex;justify-content:space-between;gap:8px}
+.um-field-g summary::-webkit-details-marker{display:none}
+.um-field-g summary::after{content:"▾";color:#9A7A60}
+.um-field-g[open] summary::after{content:"▴"}
+.um-field-g summary b{font-weight:700;color:#FF6B00;font-size:.8rem}
+.um-field-g .um-fchips{padding:0 10px 10px}
+#uni-matcher .um-filters select{width:100%;border:1px solid #EDE5DC;border-radius:10px;padding:8px 10px;background:#fff;font-size:.92rem;color:#1A0A00;height:auto}
+#uni-matcher .um-filters input[type=range]{width:100%;accent-color:#FF6B00}
+.um-rangev{font-family:'Kanit',sans-serif;font-weight:700;font-size:.88rem;color:#C24E00}
+.um-check{display:flex;gap:8px;align-items:center;font-size:.92rem;cursor:pointer;line-height:1.5}
+#uni-matcher .um-check input{width:17px;height:17px;accent-color:#FF6B00;flex:none}
+.um-rbar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}
+.um-count{font-family:'Kanit',sans-serif;font-weight:700;color:#1A0A00}
+#uni-matcher .um-rbar select{border:1px solid #EDE5DC;border-radius:10px;padding:8px 10px;background:#fff;font-size:.92rem;color:#1A0A00;height:auto}
+#uni-matcher .um-ftoggle{display:none;border:1px solid #EDE5DC;background:#fff;border-radius:50px;padding:8px 16px;cursor:pointer;font-weight:700;font-size:.92rem;color:#1A0A00}
+.um-ugrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+#uni-matcher .um-ucard{display:flex;flex-direction:column;text-align:left;width:100%;background:#fff;border:1px solid #EDE5DC;border-radius:18px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.05);cursor:pointer;padding:0;transition:transform .2s,box-shadow .2s;color:#5C4A3E;font-family:'Noto Sans Thai',sans-serif;font-size:1rem;line-height:1.7}
+#uni-matcher .um-ucard:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,.09)}
+.um-uban{position:relative;height:150px;background:#2A1305 center/cover no-repeat;flex:none}
+.um-uban .um-banzh{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Kanit',sans-serif;font-weight:800;font-size:1.7rem;color:rgba(255,255,255,.88);text-align:center;padding:12px;line-height:1.2}
+.um-tierb{position:absolute;left:12px;top:12px;font-family:'Kanit',sans-serif;font-weight:800;font-size:.72rem;letter-spacing:.5px;padding:3px 10px;border-radius:50px;background:rgba(26,10,0,.75);color:#FFB347}
+.um-ubody{padding:18px 20px 20px;display:flex;flex-direction:column;flex:1}
+.um-uname{font-family:'Kanit',sans-serif;font-weight:800;font-size:1.15rem;color:#1A0A00;line-height:1.35}
+.um-ucn{font-weight:500;font-size:.88rem;color:#9A7A60;margin-left:6px}
+.um-umeta{font-size:.88rem;color:#7A6050;margin-top:2px}
+.um-udesc{font-size:.92rem;line-height:1.7;margin:10px 0 12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:3.1em}
+.um-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 14px;padding-top:12px;border-top:1px dashed #EDE5DC}
+.um-facts span{display:block;font-family:'Kanit',sans-serif;font-weight:600;font-size:.72rem;letter-spacing:.5px;color:#9A7A60}
+.um-facts b{display:block;font-family:'Kanit',sans-serif;font-weight:700;font-size:.92rem;color:#1A0A00;line-height:1.4}
+.um-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.um-tag{font-size:.78rem;padding:2px 10px;border-radius:50px;background:#F8F4EE;color:#5C4A3E;line-height:1.6}
+.um-tag.open{background:#E9F8EF;color:#17733F}
+.um-tag.sch{background:#FFF4D6;color:#8A5A00}
+.um-ugo{margin-top:auto;padding-top:14px;font-family:'Kanit',sans-serif;font-weight:700;font-size:.92rem;color:#FF6B00}
+.um-plist{display:grid;gap:10px}
+.um-prow{background:#fff;border:1px solid #EDE5DC;border-radius:14px;padding:14px 16px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 16px}
+.um-pname{font-family:'Kanit',sans-serif;font-weight:700;font-size:1.02rem;color:#1A0A00;line-height:1.45}
+.um-lvl{display:inline-block;font-family:'Kanit',sans-serif;font-weight:700;font-size:.72rem;padding:1px 8px;border-radius:6px;margin-right:6px;vertical-align:2px}
+.um-lvl.UG{background:#FFE7D3;color:#B34700}.um-lvl.PG{background:#E5ECFA;color:#2F5DA8}.um-lvl.PHD{background:#EFE6F8;color:#6A3FA0}.um-lvl.LANG{background:#E3F4EA;color:#1E7A4C}
+.um-puni{font-size:.85rem;color:#9A7A60;line-height:1.5}
+.um-pprice{text-align:right;font-family:'Kanit',sans-serif;font-weight:800;font-size:1.05rem;color:#C24E00;white-space:nowrap;line-height:1.35}
+.um-pprice small{display:block;font-family:'Noto Sans Thai',sans-serif;font-weight:400;font-size:.75rem;color:#9A7A60}
+.um-pfacts{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:4px 16px;font-size:.85rem;color:#5C4A3E;line-height:1.6}
+.um-pfacts b{font-weight:700;color:#1A0A00}
+.um-pfacts a{color:#6B46C1!important;font-weight:600}
+.um-more-wrap{text-align:center;margin-top:18px}
+.um-empty,.um-skel{background:#FFFBF7;border:1px dashed #E4D6C8;border-radius:16px;padding:30px;text-align:center;color:#7A6050}
+.um-skel{border:0;height:260px;background:linear-gradient(90deg,#F6EEE7 0,#FFF7F0 50%,#F6EEE7 100%);background-size:200% 100%;animation:umSk 1.2s linear infinite}
+@keyframes umSk{to{background-position:-200% 0}}
+.um-fcta{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:14px;margin-top:22px;background:#1A0A00;border-radius:18px;padding:22px 24px;color:rgba(255,255,255,.8)}
+#uni-matcher .um-fcta h3{color:#fff!important;font-size:1.15rem;font-weight:800}
+.um-fcta p{margin:2px 0 0;font-size:.92rem}
+.um-note{font-size:.82rem;color:#9A7A60;margin:18px 0 0;line-height:1.7}
+.um-note a{color:#6B46C1!important;font-weight:700}
 
 @media (max-width:900px){
-  .um-opts,.um-grid3,.um-legend{grid-template-columns:1fr 1fr}
+  .um-opts{grid-template-columns:1fr 1fr}
   .um-app{padding:32px 28px}
+  .um-layout{grid-template-columns:1fr}
+  .um-filters{position:static;max-height:none;display:none}
+  .um-filters.um-show{display:grid}
+  #uni-matcher .um-ftoggle{display:inline-block}
+  .um-mcard{grid-template-columns:1fr}
+  .um-mban{min-height:180px}
 }
 @media (max-width:600px){
   .um-wrap{padding:0 16px}
   .um-sec{padding:64px 0}
-  .um-hero .um-wrap{padding-top:72px;padding-bottom:88px}
-  .um-appsec{padding-top:0}
+  .um-hero .um-wrap{padding-top:40px;padding-bottom:96px}
+  .um-logo{margin-bottom:32px}
   .um-app{padding:24px 18px;border-radius:18px}
-  .um-opts,.um-opts.um-2,.um-grid3,.um-legend{grid-template-columns:1fr}
-  .um-uni{padding:18px 16px}
-  .um-uni-h{flex-direction:column;gap:8px}
-  .um-ph{flex-direction:column;gap:4px}
-  #uni-matcher .um-find{max-width:none}
+  .um-opts,.um-ugrid,.um-fgrid,.um-mfacts{grid-template-columns:1fr}
+  .um-mbody,.um-leadbox{padding:22px 18px}
+  .um-prow{grid-template-columns:1fr}
+  .um-pprice{text-align:left}
   #uni-matcher .um-btn{width:100%}
   #uni-matcher .um-nav .um-btn{width:auto}
 }
 @media (prefers-reduced-motion:reduce){
-  #uni-matcher *{transition:none!important;animation:none!important}
-  .um-js .um-rv{opacity:1;transform:none}
+  #uni-matcher *,#um-modal *{transition:none!important;animation:none!important}
+}
+
+/* ═══ COURSE POP-UP (moved to <body> by the script) ═══ */
+#um-modal{position:fixed;inset:0;z-index:999999;display:flex;align-items:center;justify-content:center;padding:24px 16px;font-family:'Noto Sans Thai',sans-serif;font-size:16px;line-height:1.75;color:#5C4A3E}
+#um-modal[hidden]{display:none!important}
+#um-modal *{box-sizing:border-box}
+#um-modal .um-mo-back{position:absolute;inset:0;background:rgba(26,10,0,.55);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+#um-modal .um-mo-box{position:relative;width:min(880px,100%);max-height:min(88vh,900px);overflow-y:auto;background:#FFFBF7;border-radius:22px;box-shadow:0 30px 80px rgba(0,0,0,.35);animation:umPop .25s ease}
+@keyframes umPop{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
+#um-modal .um-mo-x{position:absolute;right:14px;top:14px;z-index:2;width:42px;height:42px;border-radius:50%;border:0;background:rgba(255,255,255,.92);font-size:22px;line-height:1;cursor:pointer;color:#1A0A00;box-shadow:0 4px 14px rgba(0,0,0,.15)}
+#um-modal .um-mo-ban{position:relative;height:200px;background:#2A1305 center/cover no-repeat}
+#um-modal .um-banzh{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Kanit',sans-serif;font-weight:800;font-size:2.2rem;color:rgba(255,255,255,.88);text-align:center;padding:16px}
+#um-modal .um-mo-in{padding:22px 26px 26px;display:grid;gap:14px}
+#um-modal h2{font-family:'Kanit',sans-serif;font-weight:900;font-size:1.5rem;color:#1A0A00;margin:0;line-height:1.3}
+#um-modal h2 span{font-weight:500;font-size:1rem;color:#9A7A60;margin-left:6px}
+#um-modal .um-mo-meta{font-size:.9rem;color:#7A6050}
+#um-modal .um-mo-desc{margin:0;font-size:.95rem}
+#um-modal .um-mo-tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+#um-modal .um-mo-q{flex:1 1 220px;min-width:0;border:2px solid #EDE5DC;border-radius:50px;padding:10px 18px;font-size:.95rem;background:#fff;color:#1A0A00;outline:0;font-family:inherit}
+#um-modal .um-mo-q:focus{border-color:#FF6B00}
+#um-modal .um-count{font-family:'Kanit',sans-serif;font-weight:700;color:#1A0A00;font-size:.95rem}
+#um-modal .um-mo-cta{background:#1A0A00;color:rgba(255,255,255,.8);border-radius:16px;padding:16px 18px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;font-size:.92rem}
+#um-modal .um-mo-cta a{font-family:'Kanit',sans-serif;font-weight:800;color:#1A0A00;background:linear-gradient(135deg,#FFB300,#FF6B00);padding:10px 22px;border-radius:50px;text-decoration:none}
+#um-modal .um-plist{display:grid;gap:10px}
+#um-modal .um-prow{background:#fff;border:1px solid #EDE5DC;border-radius:14px;padding:14px 16px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 16px}
+#um-modal .um-pname{font-family:'Kanit',sans-serif;font-weight:700;font-size:1rem;color:#1A0A00;line-height:1.45}
+#um-modal .um-lvl{display:inline-block;font-family:'Kanit',sans-serif;font-weight:700;font-size:.72rem;padding:1px 8px;border-radius:6px;margin-right:6px;vertical-align:2px}
+#um-modal .um-lvl.UG{background:#FFE7D3;color:#B34700}#um-modal .um-lvl.PG{background:#E5ECFA;color:#2F5DA8}#um-modal .um-lvl.PHD{background:#EFE6F8;color:#6A3FA0}#um-modal .um-lvl.LANG{background:#E3F4EA;color:#1E7A4C}
+#um-modal .um-puni{font-size:.85rem;color:#9A7A60;line-height:1.5}
+#um-modal .um-pprice{text-align:right;font-family:'Kanit',sans-serif;font-weight:800;font-size:1.02rem;color:#C24E00;white-space:nowrap;line-height:1.35}
+#um-modal .um-pprice small{display:block;font-family:'Noto Sans Thai',sans-serif;font-weight:400;font-size:.75rem;color:#9A7A60}
+#um-modal .um-pfacts{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:4px 16px;font-size:.85rem;line-height:1.6}
+#um-modal .um-pfacts b{font-weight:700;color:#1A0A00}
+#um-modal .um-pfacts a{color:#6B46C1;font-weight:600;text-decoration:none}
+#um-modal .um-tag{font-size:.78rem;padding:2px 10px;border-radius:50px;background:#F8F4EE;line-height:1.6}
+#um-modal .um-tag.open{background:#E9F8EF;color:#17733F}
+#um-modal .um-tag.sch{background:#FFF4D6;color:#8A5A00}
+#um-modal .um-more{justify-self:center;border:2px solid #EDE5DC;background:#fff;border-radius:50px;padding:10px 24px;font-family:'Kanit',sans-serif;font-weight:800;cursor:pointer;color:#1A0A00}
+#um-modal .um-empty{background:#fff;border:1px dashed #E4D6C8;border-radius:14px;padding:22px;text-align:center}
+@media (max-width:600px){
+  #um-modal{padding:0;align-items:flex-end}
+  #um-modal .um-mo-box{max-height:92vh;border-radius:20px 20px 0 0}
+  #um-modal .um-mo-ban{height:150px}
+  #um-modal .um-mo-in{padding:18px 16px 22px}
+  #um-modal .um-prow{grid-template-columns:1fr}
+  #um-modal .um-pprice{text-align:left}
 }
 </style>
 
-<div id="uni-matcher" class="um" data-csv="PASTE-PUBLISHED-CSV-LINK-HERE" data-rate="4.6">
+<div id="uni-matcher" class="um" data-api="PASTE-APPS-SCRIPT-WEB-APP-URL" data-logo="" data-rate="4.6">
 
 <!-- ═══ 1. HERO ═══ -->
 <section class="um-hero">
   <div class="um-hero-zh" aria-hidden="true">大学</div>
   <div class="um-wrap">
+    <div class="um-logo"><a href="https://chinesechiwchiw.com/" class="um-logo-link"><span class="um-logo-txt">Chinese <span>Chiwchiw</span></span></a></div>
     <span class="um-eyebrow">✦ University Matcher 2027 ✦</span>
     <h1 class="um-h1">หามหาวิทยาลัยจีน<br><span>ที่ใช่สำหรับคุณ</span></h1>
-    <p class="um-lead">ตอบ 7 คำถามสั้น ๆ — ระดับที่อยากเรียน สาขา ภาษา HSK/IELTS งบ และเมือง แล้วระบบจะจับคู่มหาวิทยาลัยและสาขาจากฐานข้อมูลของทีม พร้อมบอกว่าตรงเกณฑ์ไหน ยังขาดอะไร</p>
-    <p class="um-hero-bold">ไม่รู้จะเริ่มจากมหาลัยไหน? ไม่เป็นไร — เริ่มจากตัวน้องก่อน 🧡</p>
+    <p class="um-lead">ตอบ 7 คำถามสั้น ๆ แล้วระบบจะเลือกมหาวิทยาลัยและสาขาที่เหมาะกับน้องที่สุดให้ 1 แห่ง พร้อมค่าใช้จ่าย เกณฑ์ HSK และวันปิดรับสมัคร</p>
     <div class="um-btns">
       <a class="um-btn um-btn-pri" href="#um-app">🧭 เริ่มจับคู่มหาวิทยาลัย</a>
-      <a class="um-btn um-btn-glass" href="https://chinesechiwchiw.com/เรียนปริญญา/">อ่านคู่มือเรียนปริญญา →</a>
+      <a class="um-btn um-btn-glass" href="#um-finder">ดูรายชื่อมหาวิทยาลัยทั้งหมด ↓</a>
     </div>
-    <div class="um-trust"><span>🎓 ตรี · โท · เอก</span><span>🇨🇳 สอนจีน &amp; อังกฤษ</span><span>🆓 ใช้ฟรี ไม่ต้องสมัคร</span></div>
+    <div class="um-stats" aria-live="polite"></div>
   </div>
 </section>
 
-<!-- ═══ 2. MATCHER APP ═══ -->
+<!-- ═══ 2. MATCHER ═══ -->
 <section class="um-sec um-appsec">
   <div class="um-wrap">
     <div class="um-app" id="um-app">
 
-      <div class="um-nojs">
-        <p>ตัวจับคู่มหาวิทยาลัยต้องเปิด JavaScript ในเบราว์เซอร์ หรือทักพี่ ๆ ให้ช่วยหามหาลัยให้ได้เลย</p>
-        <a class="um-btn um-btn-line" href="https://line.me/ti/p/~@chiwchiw" target="_blank" rel="noopener">💬 ปรึกษาฟรี LINE @chiwchiw</a>
-      </div>
+      <div class="um-nojs"><p>ตัวจับคู่มหาวิทยาลัยต้องเปิด JavaScript ในเบราว์เซอร์</p></div>
 
       <!-- 2a. Quiz -->
       <div class="um-quiz">
-        <div class="um-qtop">
-          <span class="um-stepinfo">ข้อ <span class="um-sn">1</span> จาก 7</span>
-          <span class="um-db">📚 กำลังเตรียมฐานข้อมูล…</span>
-        </div>
+        <div class="um-qtop"><span class="um-stepinfo">ข้อ <span class="um-sn">1</span> จาก 7</span></div>
         <div class="um-prog"><div class="um-prog-bar"></div></div>
-
         <form class="um-form" novalidate>
           <fieldset class="um-step" data-step="deg">
             <legend class="um-q">อยากเรียนต่อระดับไหน?</legend>
@@ -259,18 +347,17 @@
             <legend class="um-q">สนใจสาขาไหนบ้าง?</legend>
             <p class="um-qhint">เลือกได้หลายข้อ</p>
             <div class="um-chips">
-              <label class="um-chip"><input type="checkbox" name="major" value="eng"><span>🛠️ วิศวกรรมศาสตร์</span></label>
-              <label class="um-chip"><input type="checkbox" name="major" value="it"><span>💻 คอมพิวเตอร์ &amp; AI</span></label>
+              <label class="um-chip"><input type="checkbox" name="major" value="eng.cs"><span>💻 คอมพิวเตอร์ &amp; AI</span></label>
+              <label class="um-chip"><input type="checkbox" name="major" value="eng"><span>🛠️ วิศวกรรม</span></label>
               <label class="um-chip"><input type="checkbox" name="major" value="biz"><span>📈 ธุรกิจ &amp; เศรษฐศาสตร์</span></label>
               <label class="um-chip"><input type="checkbox" name="major" value="med"><span>🩺 แพทย์ &amp; สุขภาพ</span></label>
-              <label class="um-chip"><input type="checkbox" name="major" value="lang"><span>📖 ภาษาจีน &amp; การศึกษา</span></label>
-              <label class="um-chip"><input type="checkbox" name="major" value="art"><span>🎨 ศิลปะ ออกแบบ &amp; สถาปัตย์</span></label>
-              <label class="um-chip"><input type="checkbox" name="major" value="law"><span>⚖️ กฎหมาย &amp; รัฐศาสตร์</span></label>
-              <label class="um-chip"><input type="checkbox" name="major" value="sci"><span>🔬 วิทยาศาสตร์</span></label>
-              <label class="um-chip"><input type="checkbox" name="major" value="media"><span>🎬 สื่อสาร &amp; สื่อ</span></label>
-              <label class="um-chip"><input type="checkbox" name="major" value="any"><span>🤔 ยังไม่แน่ใจ — ดูทุกสาขา</span></label>
+              <label class="um-chip"><input type="checkbox" name="major" value="lang"><span>📖 ภาษา &amp; มนุษยศาสตร์</span></label>
+              <label class="um-chip"><input type="checkbox" name="major" value="soc"><span>⚖️ กฎหมาย สังคม &amp; การศึกษา</span></label>
+              <label class="um-chip"><input type="checkbox" name="major" value="art"><span>🎨 ศิลปะ &amp; ออกแบบ</span></label>
+              <label class="um-chip"><input type="checkbox" name="major" value="sci"><span>🔬 วิทยาศาสตร์ &amp; เกษตร</span></label>
+              <label class="um-chip"><input type="checkbox" name="major" value="any"><span>🤔 ยังไม่แน่ใจ</span></label>
             </div>
-            <input class="um-text" type="text" placeholder="หรือพิมพ์ชื่อสาขา (อังกฤษ) เช่น finance, mechanical" autocomplete="off">
+            <input class="um-text" id="um-mtext" type="text" placeholder="หรือพิมพ์ชื่อสาขา (อังกฤษ) เช่น finance, mechanical" autocomplete="off">
           </fieldset>
 
           <fieldset class="um-step" data-step="lang">
@@ -285,7 +372,7 @@
 
           <fieldset class="um-step" data-step="level">
             <legend class="um-q">ตอนนี้ระดับภาษาเป็นยังไงบ้าง?</legend>
-            <p class="um-qhint">ยังไม่มีผลสอบก็ไม่เป็นไร — เลือกระดับที่คิดว่าใกล้เคียงที่สุด</p>
+            <p class="um-qhint">ยังไม่มีผลสอบก็ไม่เป็นไร เลือกระดับที่ใกล้เคียงที่สุด</p>
             <div class="um-lv-zh">
               <div class="um-sub">🇨🇳 HSK</div>
               <div class="um-chips">
@@ -318,13 +405,13 @@
               <label class="um-opt"><input type="radio" name="budget" value="250000"><span class="um-opt-in"><b>ไม่เกิน ฿250,000</b></span></label>
               <label class="um-opt"><input type="radio" name="budget" value="350000"><span class="um-opt-in"><b>ไม่เกิน ฿350,000</b></span></label>
               <label class="um-opt"><input type="radio" name="budget" value="500000"><span class="um-opt-in"><b>ไม่เกิน ฿500,000</b></span></label>
-              <label class="um-opt"><input type="radio" name="budget" value="inf"><span class="um-opt-in"><b>มากกว่านั้น / ยังไม่จำกัด</b></span></label>
+              <label class="um-opt"><input type="radio" name="budget" value="0"><span class="um-opt-in"><b>มากกว่านั้น / ยังไม่จำกัด</b></span></label>
             </div>
           </fieldset>
 
           <fieldset class="um-step" data-step="city">
             <legend class="um-q">อยากไปเมืองไหน?</legend>
-            <p class="um-qhint">เลือกได้หลายเมือง ตัวเลขคือจำนวนสาขาที่เปิดตรงกับระดับและภาษาที่เลือก</p>
+            <p class="um-qhint">เลือกได้หลายเมือง ตัวเลขคือจำนวนหลักสูตรในระดับที่เลือก</p>
             <div class="um-chips um-cities">
               <label class="um-chip"><input type="checkbox" name="city" value="any" checked><span>🌏 ที่ไหนก็ได้</span></label>
             </div>
@@ -332,9 +419,9 @@
 
           <fieldset class="um-step" data-step="schol">
             <legend class="um-q">ทุนการศึกษาสำคัญแค่ไหน?</legend>
-            <p class="um-qhint">ระบบจะดันสาขาที่มีทุนให้สมัครขึ้นมาก่อน (มีทุนให้สมัคร ≠ ได้ทุนแน่นอน)</p>
+            <p class="um-qhint">ระบบจะให้น้ำหนักกับสาขาที่มีทุนให้สมัคร (มีทุนให้สมัคร ≠ ได้ทุนแน่นอน)</p>
             <div class="um-opts">
-              <label class="um-opt"><input type="radio" name="schol" value="must"><span class="um-opt-in"><b>🎁 อยากได้ทุนมาก</b><small>ให้สาขาที่มีทุนขึ้นก่อน</small></span></label>
+              <label class="um-opt"><input type="radio" name="schol" value="must"><span class="um-opt-in"><b>🎁 อยากได้ทุนมาก</b><small>ให้สาขาที่มีทุนมาก่อน</small></span></label>
               <label class="um-opt"><input type="radio" name="schol" value="nice"><span class="um-opt-in"><b>🙂 มีก็ดี</b><small>ไม่ใช่เงื่อนไขหลัก</small></span></label>
               <label class="um-opt"><input type="radio" name="schol" value="no"><span class="um-opt-in"><b>💪 ไม่จำเป็น</b><small>ดูที่ความเหมาะสมอย่างเดียว</small></span></label>
             </div>
@@ -355,53 +442,88 @@
           <li>📚 คัดสาขาตามระดับ สาขา และภาษาที่เลือก</li>
           <li>📝 เทียบเกณฑ์ HSK / IELTS กับระดับของน้อง</li>
           <li>💰 เทียบค่าใช้จ่ายต่อปีกับงบ</li>
-          <li>🧭 จัดกลุ่ม Safer · Match · Reach</li>
+          <li>🧭 เลือกมหาวิทยาลัยที่เหมาะที่สุด 1 แห่ง</li>
         </ul>
       </div>
 
-      <!-- 2c. Results (filled by script) -->
+      <!-- 2c. Result + email form (filled by script) -->
       <div class="um-results" aria-live="polite"></div>
     </div>
   </div>
 </section>
 
-<!-- ═══ 3. HOW THE MATCHING WORKS ═══ -->
-<section class="um-sec um-how">
+<!-- ═══ 3. UNIVERSITY & COURSE LIST ═══ -->
+<section class="um-sec um-finder" id="um-finder">
   <div class="um-wrap">
-    <div class="um-head um-rv">
-      <span class="um-eyebrow">✦ จับคู่ยังไง? ✦</span>
-      <h2 class="um-h2">โปร่งใส <span>ทุกขั้นตอน</span></h2>
-      <p class="um-lead">ไม่ใช่การสุ่ม — ระบบเทียบคำตอบของน้องกับเกณฑ์ที่มหาวิทยาลัยประกาศ แล้วบอกเหตุผลทุกข้อ</p>
+    <div class="um-head">
+      <span class="um-eyebrow">✦ รายชื่อมหาวิทยาลัย &amp; หลักสูตร ✦</span>
+      <h2 class="um-h2">ค้นหา <span>มหาวิทยาลัยในจีน</span> ด้วยตัวเอง</h2>
+      <p class="um-lead">กรองตามเมือง ระดับ สาขา ภาษาที่ใช้สอน ค่าเรียน และเกณฑ์ HSK แล้วกดที่มหาวิทยาลัยเพื่อดูหลักสูตรทั้งหมด</p>
     </div>
-    <div class="um-grid3">
-      <div class="um-card um-rv"><span class="um-num">01</span><h3>คัดตามสิ่งที่น้องต้องการ</h3><p>ระดับปริญญา สาขาที่สนใจ ภาษาที่ใช้เรียน และเมืองที่อยากไป</p></div>
-      <div class="um-card um-rv"><span class="um-num">02</span><h3>เทียบเกณฑ์กับตัวน้อง</h3><p>HSK / IELTS เทียบกับเกณฑ์ขั้นต่ำ และค่าเรียน + ที่พัก + ค่าครองชีพต่อปีเทียบกับงบ</p></div>
-      <div class="um-card um-rv"><span class="um-num">03</span><h3>จัดกลุ่มพร้อมเหตุผล</h3><p>ทุกสาขาบอกชัดว่า ✓ ผ่านอะไร ⚠ ยังขาดอะไร และต้องสอบ <a href="https://chinesechiwchiw.com/csca/" style="color:#6B46C1;font-weight:700">CSCA</a> หรือไม่</p></div>
+
+    <div class="um-sbar">
+      <input class="um-q-in" id="um-fq" type="search" autocomplete="off" placeholder="🔍 ค้นหามหาวิทยาลัย หลักสูตร หรือเมือง เช่น Computer, 上海, เฉิงตู" aria-label="ค้นหา">
+      <div class="um-views" role="group" aria-label="มุมมอง">
+        <button type="button" data-view="uni" aria-pressed="true">มหาวิทยาลัย</button>
+        <button type="button" data-view="prog" aria-pressed="false">หลักสูตร</button>
+      </div>
     </div>
-    <div class="um-legend">
-      <div class="um-leg um-rv"><span class="um-tier um-t-safer">🛟 Safer</span><span>เกินเกณฑ์ภาษา และอยู่ในงบแบบสบาย ๆ</span></div>
-      <div class="um-leg um-rv"><span class="um-tier um-t-match">🎯 Match</span><span>ผ่านเกณฑ์ภาษาและงบตามที่ประกาศ</span></div>
-      <div class="um-leg um-rv"><span class="um-tier um-t-reach">🚀 Reach</span><span>ยังขาดอีกนิด เช่น HSK อีก 1 ระดับ หรือเกินงบเล็กน้อย</span></div>
-    </div>
-    <div class="um-callout um-rv">
-      <b>ข้อควรรู้ก่อนใช้ผล:</b> ระบบดูเฉพาะเกณฑ์ภาษา งบ สาขา และเมือง ยังไม่รวมผลการเรียน เอกสาร สัมภาษณ์ และคะแนน <a href="https://chinesechiwchiw.com/csca/">CSCA</a> — <b>ผ่านเกณฑ์ ≠ ได้รับเข้า</b> และ <b>มีทุนให้สมัคร ≠ ได้ทุน</b>. ค่าใช้จ่ายแปลงจากหยวนที่ประมาณ <span class="um-rate">4.6</span> บาท/หยวน หลายรายการยังอ้างอิงรอบ 2026 ระหว่างที่ทีมอัปเดตรอบ 2027 — ก่อนยื่นจริง ให้พี่ ๆ เช็กข้อมูลล่าสุดให้อีกครั้งนะคะ
+
+    <div class="um-layout">
+      <aside class="um-filters" id="um-filters" aria-label="ตัวกรอง">
+        <div class="um-fh"><h3>ตัวกรอง</h3><button type="button" class="um-clear">ล้างทั้งหมด</button></div>
+        <div class="um-fg"><span class="um-fl">ระดับ</span><div class="um-fchips" data-f="lv"></div></div>
+        <div class="um-fg"><span class="um-fl">เมือง (เลือกได้หลายเมือง)</span><input class="um-city-q" type="search" placeholder="พิมพ์ชื่อเมือง" aria-label="ค้นหาเมือง"><div class="um-cityscroll"><div class="um-fchips" data-f="city"></div></div></div>
+        <div class="um-fg"><span class="um-fl">สาขา / หลักสูตร</span><div class="um-fields"></div></div>
+        <div class="um-fg"><span class="um-fl">ภาษาที่ใช้สอน</span><div class="um-fchips" data-f="lang"></div></div>
+        <div class="um-fg"><label class="um-fl" for="um-myhsk">HSK ที่น้องมี</label>
+          <select id="um-myhsk"><option value="">ไม่ระบุ</option><option value="0">ยังไม่มี HSK</option><option value="2">HSK 1–2</option><option value="3">HSK 3</option><option value="4">HSK 4</option><option value="5">HSK 5</option><option value="6">HSK 6 ขึ้นไป</option></select></div>
+        <div class="um-fg"><label class="um-fl" for="um-max">ค่าเรียนสูงสุดต่อปี</label><input type="range" id="um-max" min="10000" max="120000" step="2000" value="120000"><span class="um-rangev">ไม่จำกัด</span></div>
+        <div class="um-fg"><span class="um-fl">กลุ่มมหาวิทยาลัย</span><div class="um-fchips" data-f="tier"></div></div>
+        <div class="um-fg">
+          <label class="um-check"><input type="checkbox" id="um-f-open">เปิดรับสมัครรอบ 2027 แล้ว</label>
+          <label class="um-check"><input type="checkbox" id="um-f-nohsk">ไม่ต้องใช้ HSK</label>
+          <label class="um-check"><input type="checkbox" id="um-f-nocsca">ไม่ต้องสอบ CSCA</label>
+          <label class="um-check"><input type="checkbox" id="um-f-sch">มีทุนให้สมัคร</label>
+        </div>
+      </aside>
+
+      <div class="um-main" style="min-width:0">
+        <div class="um-rbar">
+          <button type="button" class="um-ftoggle" aria-controls="um-filters" aria-expanded="false">⚙️ ตัวกรอง</button>
+          <span class="um-count" aria-live="polite">กำลังโหลด…</span>
+          <select class="um-sort" aria-label="เรียงลำดับ">
+            <option value="rel">หลักสูตรมากที่สุด</option><option value="low">ค่าเรียนต่ำ → สูง</option><option value="high">ค่าเรียนสูง → ต่ำ</option><option value="az">ชื่อ A–Z</option>
+          </select>
+        </div>
+        <div class="um-list"><div class="um-ugrid"><div class="um-skel"></div><div class="um-skel"></div></div></div>
+        <div class="um-more-wrap" hidden><button type="button" class="um-btn um-btn-ghost um-btn-s um-more">แสดงเพิ่ม</button></div>
+        <div class="um-fcta">
+          <div><h3>ไม่แน่ใจว่าที่ไหนเหมาะกับน้อง?</h3><p>ตอบ 7 คำถาม แล้วระบบจะเลือกมหาวิทยาลัยที่เหมาะที่สุดให้</p></div>
+          <a class="um-btn um-btn-pri um-btn-s" href="#um-app">🧭 หาคู่ที่ใช่ให้ฉัน ↑</a>
+        </div>
+        <p class="um-note">ข้อมูลรวบรวมจากคู่มือรับสมัครนักศึกษาต่างชาติของแต่ละมหาวิทยาลัย ค่าเรียนเป็นหยวน (RMB) ราคาบาทเป็นค่าประมาณที่ <span class="um-rate">4.6</span> บาท/หยวน หลายรายการยังอ้างอิงรอบ 2026 ระหว่างที่ทีมอัปเดตรอบ 2027 อ่านเรื่องข้อสอบ <a href="https://chinesechiwchiw.com/csca/">CSCA</a> ได้ที่นี่ · ผ่านเกณฑ์ ≠ ได้รับเข้า · มีทุนให้สมัคร ≠ ได้ทุน</p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ═══ 4. FINAL CTA ═══ -->
-<section class="um-sec um-dark">
-  <div class="um-wrap um-rv">
-    <span class="um-eyebrow">✦ อยากให้ช่วยเลือก? ✦</span>
-    <h2 class="um-h2">พร้อมเริ่ม <span>เส้นทางไปจีน</span> ของคุณหรือยัง?</h2>
-    <p class="um-lead">ส่งผลจับคู่มาให้พี่ ๆ ดู ทีมจะช่วยเลือกมหาวิทยาลัย วาง Timeline และเตรียมเอกสารให้ทีละขั้น</p>
-    <div class="um-btns">
-      <a class="um-btn um-btn-line" href="https://line.me/ti/p/~@chiwchiw" target="_blank" rel="noopener">💬 ปรึกษาเรียนต่อจีนกับทีม</a>
-      <a class="um-btn um-btn-glass" href="https://chinesechiwchiw.com/ทุน-1-4/">🎓 ดูเส้นทางทุน 1+4</a>
+<!-- Course pop-up: the script moves this to the end of <body> so theme layouts can't trap it -->
+<div id="um-modal" hidden>
+  <div class="um-mo-back" data-close="1"></div>
+  <div class="um-mo-box" role="dialog" aria-modal="true" aria-labelledby="um-mo-title" tabindex="-1">
+    <button type="button" class="um-mo-x" data-close="1" aria-label="ปิด">×</button>
+    <div class="um-mo-ban"></div>
+    <div class="um-mo-in">
+      <div><h2 id="um-mo-title"></h2><div class="um-mo-meta"></div></div>
+      <p class="um-mo-desc"></p>
+      <div class="um-mo-tools"><input class="um-mo-q" type="search" placeholder="ค้นหาหลักสูตรในมหาวิทยาลัยนี้" aria-label="ค้นหาหลักสูตรในมหาวิทยาลัยนี้"><span class="um-count"></span></div>
+      <div class="um-plist um-mo-list"></div>
+      <button type="button" class="um-more um-mo-more" hidden>แสดงเพิ่ม</button>
+      <div class="um-mo-cta"><span>อยากรู้ว่าหลักสูตรไหนเหมาะกับน้องที่สุด?</span><a href="#um-app" data-close="1" data-go="um-app">🧭 ทำแบบจับคู่ ↑</a></div>
     </div>
-    <p class="um-ticks">✓ ปรึกษาฟรี ไม่มีข้อผูกมัด · ✓ ผู้ปกครองคุยกับทีมได้โดยตรง · ✓ ดูแลตั้งแต่สมัครจนถึงจีน</p>
   </div>
-</section>
+</div>
 
 </div>
 
@@ -412,144 +534,87 @@
   root.dataset.ready='1';
   root.classList.add('um-js');
 
-  var CSV=(root.getAttribute('data-csv')||'').trim();
+  var API=(root.getAttribute('data-api')||'').trim();
+  var LOGO=(root.getAttribute('data-logo')||'').trim();
   var RATE=parseFloat(root.getAttribute('data-rate'))||4.6;
-  var LINE_MSG='https://line.me/R/oaMessage/%40chiwchiw/?';
   var SITE='https://chinesechiwchiw.com';
-
+  var REDUCED=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var $=function(s,c){return (c||root).querySelector(s);};
   var $$=function(s,c){return Array.prototype.slice.call((c||root).querySelectorAll(s));};
-  var form=$('.um-form'),steps=$$('.um-step'),backBtn=$('.um-back'),nextBtn=$('.um-next');
-  var resultsEl=$('.um-results'),app=$('#um-app');
-  var cur=0,data=null,loading=null,state=null;
-  var REDUCED=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  $$('.um-rate').forEach(function(el){el.textContent=RATE;});
-
-  var CITY_TH={shanghai:'เซี่ยงไฮ้',beijing:'ปักกิ่ง',chengdu:'เฉิงตู',guangzhou:'กวางโจว',qingdao:'ชิงเต่า',hangzhou:'หางโจว',nanjing:'หนานจิง',wuhan:'อู่ฮั่น',"xi'an":'ซีอาน',xian:'ซีอาน',shenzhen:'เซินเจิ้น',tianjin:'เทียนจิน',kunming:'คุนหมิง',xiamen:'เซี่ยเหมิน',chongqing:'ฉงชิ่ง',harbin:'ฮาร์บิน',dalian:'ต้าเหลียน',changsha:'ฉางซา',jinan:'จี่หนาน',suzhou:'ซูโจว',nanning:'หนานหนิง',hefei:'เหอเฝย',shenyang:'เสิ่นหยาง',zhengzhou:'เจิ้งโจว',fuzhou:'ฝูโจว',changchun:'ฉางชุน',lanzhou:'หลานโจว',guilin:'กุ้ยหลิน',ningbo:'หนิงปัว',zhuhai:'จูไห่',wuxi:'อู๋ซี',haikou:'ไหโข่ว',nanchang:'หนานชาง',guiyang:'กุ้ยหยาง',taiyuan:'ไท่หยวน',shijiazhuang:'สือเจียจวง',hohhot:'ฮูฮอต',urumqi:'อุรุมชี',yantai:'เยียนไถ',weihai:'เวยไห่'};
-  var GROUPS={
-    eng:/engineer|automation|mechani|electric|civil|energy|power|material|aerospace|vehicle|robot|industrial|transport|marine|naval|mining|petroleum|construction/,
-    it:/computer|software|data|artificial intelligence|\bai\b|information|cyber|internet|network|digital|intelligent|electronic/,
-    biz:/business|management|econom|financ|account|marketing|trade|commerce|mba|logistic|touris|hospitality|hotel|insurance/,
-    med:/medic|mbbs|clinic|nurs|pharma|dental|stomatolog|health|tcm|traditional chinese medicine|acupunct|biomedical|rehabilitation/,
-    lang:/chinese language|chinese as|tcsol|linguist|literature|education|teaching|translat|interpret|\blanguage/,
-    art:/\barts?\b|design|architect|landscape|music|film|animation|fashion|painting|planning|dance|drama|photograph/,
-    law:/\blaw\b|legal|politic|international relations|diplomac|public administration|governance|sociolog|international studies/,
-    sci:/physics|chemi|biolog|mathemat|statistic|environment|geograph|geolog|\bscience|agricultur|food/,
-    media:/journalism|communication|media|broadcast|advertis/
-  };
-  var GROUP_TH={eng:'วิศวกรรม',it:'คอมพิวเตอร์ & AI',biz:'ธุรกิจ',med:'แพทย์ & สุขภาพ',lang:'ภาษาจีน & การศึกษา',art:'ศิลปะ & ออกแบบ',law:'กฎหมาย & รัฐศาสตร์',sci:'วิทยาศาสตร์',media:'สื่อสาร & สื่อ'};
-  var DEG_TH={ug:'ปริญญาตรี',ma:'ปริญญาโท',phd:'ปริญญาเอก'};
+  var CITY_TH={Shanghai:'เซี่ยงไฮ้',Beijing:'ปักกิ่ง',Chengdu:'เฉิงตู',Guangzhou:'กวางโจว',Qingdao:'ชิงเต่า',Hangzhou:'หางโจว',Nanjing:'หนานจิง',Wuhan:'อู่ฮั่น',"Xi'an":'ซีอาน',Shenzhen:'เซินเจิ้น',Tianjin:'เทียนจิน',Kunming:'คุนหมิง',Xiamen:'เซี่ยเหมิน',Chongqing:'ฉงชิ่ง',Harbin:'ฮาร์บิน',Dalian:'ต้าเหลียน',Changsha:'ฉางซา',Jinan:'จี่หนาน',Suzhou:'ซูโจว',Nanning:'หนานหนิง',Hefei:'เหอเฝย',Shenyang:'เสิ่นหยาง',Zhengzhou:'เจิ้งโจว',Fuzhou:'ฝูโจว',Wuxi:'อู๋ซี',Ningbo:'หนิงปัว',Zhuhai:'จูไห่'};
+  var LV_TH={UG:'ปริญญาตรี',PG:'ปริญญาโท',PHD:'ปริญญาเอก',LANG:'คอร์สภาษาจีน'};
   var LANG_TH={zh:'สอนเป็นภาษาจีน',en:'สอนเป็นภาษาอังกฤษ',both:'สอนจีน/อังกฤษ'};
-  var HSK_STEPS=[0,2,3,4,5,6],IELTS_STEPS=[0,5,5.5,6,6.5,7],BUDGET_STEPS=[150000,250000,350000,500000,Infinity];
-  var TIER={safer:'🛟 Safer',match:'🎯 Match',reach:'🚀 Reach'};
+  var TIER_TH={C9:'C9 League','985':'985','211':'211',DFC:'Double First-Class',SF:'Sino-Foreign',OT:'อื่น ๆ'};
+  var FIELDS=[
+    ['eng','🛠️ วิศวกรรม & เทคโนโลยี',[['cs','คอมพิวเตอร์ / ซอฟต์แวร์ / AI / ข้อมูล'],['ee','ไฟฟ้า / อิเล็กทรอนิกส์ / สื่อสาร'],['me','เครื่องกล / ยานยนต์ / ระบบอัตโนมัติ'],['civ','โยธา / สถาปัตย์ / ผังเมือง'],['mat','วัสดุ / เคมี / พลังงาน / อื่น ๆ']]],
+    ['biz','📈 ธุรกิจ & เศรษฐศาสตร์',[['ba','บริหารธุรกิจ / การจัดการ / MBA'],['econ','เศรษฐศาสตร์ / การเงิน'],['acc','บัญชี'],['trade','การค้าระหว่างประเทศ / โลจิสติกส์'],['mkt','การตลาด'],['tour','ท่องเที่ยว / โรงแรม']]],
+    ['med','🩺 แพทย์ & สุขภาพ',[['mbbs','แพทยศาสตร์ / คลินิก'],['tcm','แพทย์แผนจีน'],['dent','ทันตแพทย์'],['pharm','เภสัชศาสตร์'],['nurs','พยาบาล'],['ph','สาธารณสุข / ชีวการแพทย์']]],
+    ['lang','📖 ภาษา & มนุษยศาสตร์',[['cnprog','คอร์สภาษาจีน (ไม่รับปริญญา)'],['cnlit','ภาษาจีน / การสอนภาษาจีน'],['forlang','ภาษาต่างประเทศ / การแปล'],['hum','ประวัติศาสตร์ / ปรัชญา / วัฒนธรรม']]],
+    ['soc','⚖️ กฎหมาย สังคม & การศึกษา',[['law','กฎหมาย'],['pol','รัฐศาสตร์ / ความสัมพันธ์ระหว่างประเทศ'],['media','สื่อสารมวลชน'],['edu','ศึกษาศาสตร์ / จิตวิทยา / กีฬา'],['socio','สังคมวิทยา / สังคมสงเคราะห์']]],
+    ['art','🎨 ศิลปะ & ออกแบบ',[['design','ออกแบบ / แอนิเมชัน / แฟชั่น'],['fine','ศิลปกรรม / ดนตรี / ภาพยนตร์']]],
+    ['sci','🔬 วิทยาศาสตร์ & เกษตร',[['math','คณิตศาสตร์ / สถิติ'],['phys','ฟิสิกส์ / เคมี'],['bio','ชีววิทยา / สิ่งแวดล้อม'],['agri','เกษตร / อาหาร']]]
+  ];
+  var FIELD_NAME={};FIELDS.forEach(function(f){FIELD_NAME[f[0]]=f[1].replace(/^\S+\s/,'');});
+  var BAN_COLORS=['#7A2E00','#2A1305','#4B2A7A','#8A3B00','#1F3B5C','#5C2A12'];
 
   function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
-  function num(s){var m=String(s==null?'':s).replace(/,/g,'').match(/\d+(\.\d+)?/);return m?parseFloat(m[0]):0;}
-  function yes(s){return /^\s*(yes|y|true|ใช่|มี)/i.test(s||'');}
-  function baht(n){return '฿'+(Math.round(n/1000)*1000).toLocaleString('en-US');}
-  function cityTH(c){var t=CITY_TH[String(c).toLowerCase()];return t?t:c;}
-
-  function parseCSV(t){
-    var rows=[],row=[],f='',q=false,c;
-    for(var i=0;i<t.length;i++){
-      c=t[i];
-      if(q){if(c==='"'){if(t[i+1]==='"'){f+='"';i++;}else q=false;}else f+=c;}
-      else if(c==='"')q=true;
-      else if(c===','){row.push(f);f='';}
-      else if(c==='\n'){row.push(f);rows.push(row);row=[];f='';}
-      else if(c!=='\r')f+=c;
-    }
-    if(f||row.length){row.push(f);rows.push(row);}
-    return rows;
+  function fmt(n){return Math.round(n).toLocaleString('en-US');}
+  function baht(n){return '฿'+fmt(Math.round(n/1000)*1000);}
+  function yuan(n){return '¥'+fmt(n);}
+  function cityTH(c){return CITY_TH[c]||c;}
+  function safeImg(u){return /^https:\/\/[^\s'"()<>\\]+$/.test(u||'')?u:'';}
+  function banner(photo,cn,name){
+    var img=safeImg(photo);
+    if(img)return 'style="background-image:url(\''+img+'\')"';
+    var h=0;String(name).split('').forEach(function(ch){h=(h*31+ch.charCodeAt(0))>>>0;});
+    return 'style="background:linear-gradient(135deg,'+BAN_COLORS[h%BAN_COLORS.length]+',#1A0A00)"';
   }
+  function bannerText(photo,cn,short){return safeImg(photo)?'':'<span class="um-banzh">'+esc(cn||short)+'</span>';}
 
-  function build(text){
-    var rows=parseCSV(text);
-    if(rows.length<2)throw new Error('no rows');
-    var H={};
-    rows[0].forEach(function(h,i){H[h.trim().toLowerCase()]=i;});
-    if(H['university']==null)throw new Error('missing University column');
-    var out=[];
-    for(var k=1;k<rows.length;k++){
-      var r=rows[k];
-      var g=function(n){var i=H[n.toLowerCase()];return i==null?'':String(r[i]||'').trim();};
-      var uni=g('University'),major=g('Programme / Major');
-      if(!uni||!major)continue;
-      var can=g('Chinese Chiwchiw Can Apply?');
-      if(can&&!yes(can))continue;
-
-      var dl=g('Degree Level').toLowerCase(),pid=g('Programme ID').toUpperCase();
-      var deg=/doctor|phd/.test(dl)?'phd':/master/.test(dl)?'ma':/under|bachelor/.test(dl)?'ug':
-              /^(PHD|DR|D)-/.test(pid)?'phd':/^(PG|MA|MS|MSC|M)-/.test(pid)?'ma':/^UG-/.test(pid)?'ug':'other';
-
-      var hskTxt=g('HSK Requirement'),ieltsTxt=g('IELTS Requirement'),toeflTxt=g('TOEFL Requirement');
-      var hsk=num(g('HSK Level'))||num((hskTxt.match(/hsk\s*([1-9])/i)||[])[1]);
-      if(/^no/i.test(g('HSK Required')))hsk=0;
-      var ielts=num(g('IELTS Minimum Overall'))||num((ieltsTxt.match(/\d(\.\d)?/)||[])[0]);
-      if(ielts>9)ielts=0;
-      var toefl=num(g('TOEFL iBT Minimum'))||num((toeflTxt.match(/\d{2,3}/)||[])[0]);
-
-      var tl=g('Teaching Language').toLowerCase();
-      var en=/english|英/.test(tl),zh=/chinese|中/.test(tl);
-      var lang=en&&zh?'both':en?'en':zh?'zh':(ielts&&!hsk?'en':'zh');
-
-      var p={
-        id:g('Programme ID'),uni:uni,zh:g('University Chinese Name'),city:g('City')||'—',
-        deg:deg,major:major,fac:g('Faculty / School'),lang:lang,dur:g('Duration (Years)'),
-        tui:num(g('Tuition RMB / Year')),total:num(g('Estimated Total RMB / Year')),
-        hsk:hsk,hskScore:num(g('HSK Minimum Score'))||num((hskTxt.match(/\((\d{2,3})/)||[])[1]),
-        hskk:yes(g('HSKK Required'))||/hskk/i.test(hskTxt),hskkLv:g('HSKK Level'),
-        ielts:ielts,toefl:toefl,eng:yes(g('English Test Required'))||ielts>0||toefl>0,
-        csca:yes(g('CSCA Required?')),schol:yes(g('Scholarship Available?')),
-        deadline:g('Final Deadline')||g('Application Deadline'),cycle:g('Admission Cycle'),
-        past:/past/i.test(g('Cycle Status')),review:/review|unverified|low/i.test(g('Data Confidence')),
-        campus:g('Campus'),track:g('Track / Specialisation')
-      };
-      p.hay=(major+' '+p.fac+' '+g('Search Keywords / Tags')+' '+p.track).toLowerCase();
-      p.groups={};
-      for(var key in GROUPS)if(GROUPS[key].test(p.hay))p.groups[key]=1;
-      out.push(p);
-    }
-    if(!out.length)throw new Error('no usable rows');
-    return out;
+  /* ---------- API (the only way this page gets data) ---------- */
+  var apiOK=API&&!/PASTE/i.test(API);
+  function api(action,params){
+    if(!apiOK)return Promise.reject(new Error('API not set'));
+    var u=API+(API.indexOf('?')>-1?'&':'?')+'action='+encodeURIComponent(action);
+    for(var k in params)u+='&'+k+'='+encodeURIComponent(typeof params[k]==='string'?params[k]:JSON.stringify(params[k]));
+    return fetch(u).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}).then(function(j){if(!j||j.error)throw new Error(j&&j.error||'error');return j;});
   }
-
-  function dbInfo(msg){var el=$('.um-db');if(el)el.textContent=msg;}
-  function load(){
-    if(loading)return loading;
-    if(!CSV||/PASTE/i.test(CSV)){
-      if(window.console)console.warn('University Matcher: set data-csv on #uni-matcher to the published CSV link.');
-      loading=Promise.reject(new Error('no csv'));
-    }else{
-      loading=fetch(CSV).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.text();}).then(function(t){
-        data=build(t);
-        var u={};data.forEach(function(p){u[p.uni]=1;});
-        dbInfo('📚 ฐานข้อมูล '+data.length.toLocaleString('en-US')+' สาขา · '+Object.keys(u).length+' มหาวิทยาลัย');
-        return data;
-      });
-    }
-    loading.catch(function(){dbInfo('');});
-    return loading;
+  function apiPost(body){
+    if(!apiOK)return Promise.reject(new Error('API not set'));
+    return fetch(API,{method:'POST',body:JSON.stringify(body)}).then(function(r){return r.json();}).then(function(j){if(!j||!j.ok)throw new Error(j&&j.error||'error');return j;});
   }
+  if(!apiOK&&window.console)console.warn('University Matcher: set data-api on #uni-matcher to the Apps Script Web app URL.');
 
-  /* ---------- quiz ---------- */
+  /* ---------- logo ---------- */
+  if(safeImg(LOGO)){$('.um-logo-link').innerHTML='<img src="'+esc(LOGO)+'" alt="Chinese Chiwchiw">';}
+  $$('.um-rate').forEach(function(el){el.textContent=RATE;});
+
+  /* ---------- meta (counts + city list) ---------- */
+  var META=null,metaP=api('meta',{}).then(function(m){
+    META=m;
+    var cities=Object.keys(m.cities||{});
+    $('.um-stats').innerHTML=[[m.unis,'มหาวิทยาลัย'],[m.progs,'หลักสูตร'],[cities.length,'เมือง'],[m.en,'หลักสูตรสอนภาษาอังกฤษ']].map(function(x){return '<div><b>'+fmt(x[0])+'</b><span>'+x[1]+'</span></div>';}).join('');
+    buildCityFilter();
+    return m;
+  });
+  metaP.catch(function(){});
+
+  /* ═════════════ QUIZ ═════════════ */
+  var form=$('.um-form'),steps=$$('.um-step'),backBtn=$('.um-back'),nextBtn=$('.um-next'),app=$('#um-app'),resultsEl=$('.um-results');
+  var cur=0;
   function val(n){var el=form.querySelector('input[name="'+n+'"]:checked');return el?el.value:'';}
   function vals(n){return $$('input[name="'+n+'"]:checked',form).map(function(e){return e.value;});}
   function answers(){
-    var b=val('budget');
-    return {
-      deg:val('deg'),groups:vals('major').filter(function(v){return v!=='any';}),anyMajor:vals('major').indexOf('any')>-1,
-      text:($('.um-text').value||'').trim().toLowerCase(),lang:val('lang'),
-      hsk:parseFloat(val('hsk'))||0,ielts:parseFloat(val('ielts'))||0,
-      budget:b==='inf'?Infinity:(parseFloat(b)||Infinity),
-      cities:vals('city').filter(function(v){return v!=='any';}),schol:val('schol')
-    };
+    return {deg:val('deg'),groups:vals('major').filter(function(v){return v!=='any';}),anyMajor:vals('major').indexOf('any')>-1,
+      text:($('#um-mtext').value||'').trim().toLowerCase().slice(0,80),lang:val('lang'),
+      hsk:parseFloat(val('hsk'))||0,ielts:parseFloat(val('ielts'))||0,budget:parseFloat(val('budget'))||0,
+      cities:vals('city').filter(function(v){return v!=='any';}),schol:val('schol')};
   }
   function stepValid(i){
     switch(steps[i].getAttribute('data-step')){
       case 'deg':return !!val('deg');
-      case 'major':return vals('major').length>0||!!$('.um-text').value.trim();
+      case 'major':return vals('major').length>0||!!$('#um-mtext').value.trim();
       case 'lang':return !!val('lang');
       case 'level':var l=val('lang');return (l==='en'||!!val('hsk'))&&(l==='zh'||!!val('ielts'));
       case 'budget':return !!val('budget');
@@ -569,30 +634,19 @@
     $('.um-prog-bar').style.width=((i+1)/steps.length*100)+'%';
     var name=steps[i].getAttribute('data-step');
     if(name==='level'){var l=val('lang');$('.um-lv-zh').hidden=l==='en';$('.um-lv-en').hidden=l==='zh';}
-    if(name==='city')renderCities();
+    if(name==='city')renderQuizCities();
     refreshNav();
   }
-  function renderCities(){
+  function renderQuizCities(){
     var box=$('.um-cities');
-    if(!data){
-      box.setAttribute('data-wait','1');
-      load().then(function(){if(steps[cur].getAttribute('data-step')==='city')renderCities();},function(){});
-      return;
-    }
-    var a=answers(),cnt={};
-    data.forEach(function(p){
-      if(p.deg!==a.deg)return;
-      if(a.lang!=='both'&&p.lang!=='both'&&p.lang!==a.lang)return;
-      cnt[p.city]=(cnt[p.city]||0)+1;
-    });
-    var picked=vals('city');
-    var html='<label class="um-chip"><input type="checkbox" name="city" value="any"'+(picked.length===0||picked.indexOf('any')>-1?' checked':'')+'><span>🌏 ที่ไหนก็ได้</span></label>';
-    Object.keys(cnt).sort(function(x,y){return cnt[y]-cnt[x];}).forEach(function(c){
-      html+='<label class="um-chip"><input type="checkbox" name="city" value="'+esc(c)+'"'+(picked.indexOf(c)>-1?' checked':'')+'><span>📍 '+esc(cityTH(c))+' <i>'+cnt[c]+'</i></span></label>';
+    if(!META){metaP.then(function(){if(steps[cur].getAttribute('data-step')==='city')renderQuizCities();},function(){});return;}
+    var lv={ug:'UG',ma:'PG',phd:'PHD'}[val('deg')]||'UG',picked=vals('city'),C=META.cities;
+    var html='<label class="um-chip"><input type="checkbox" name="city" value="any"'+(!picked.length||picked.indexOf('any')>-1?' checked':'')+'><span>🌏 ที่ไหนก็ได้</span></label>';
+    Object.keys(C).filter(function(c){return C[c][lv]>0;}).sort(function(a,b){return C[b][lv]-C[a][lv];}).forEach(function(c){
+      html+='<label class="um-chip"><input type="checkbox" name="city" value="'+esc(c)+'"'+(picked.indexOf(c)>-1?' checked':'')+'><span>📍 '+esc(cityTH(c))+' <i>'+C[c][lv]+'</i></span></label>';
     });
     box.innerHTML=html;
   }
-
   form.addEventListener('change',function(e){
     var t=e.target;
     if(t.type==='checkbox'&&(t.name==='major'||t.name==='city')){
@@ -606,245 +660,310 @@
       setTimeout(function(){if(stepValid(cur))show(cur+1);},REDUCED?0:260);
     }
   });
-  $('.um-text').addEventListener('input',refreshNav);
+  $('#um-mtext').addEventListener('input',refreshNav);
   form.addEventListener('submit',function(e){
     e.preventDefault();
     if(!stepValid(cur))return;
-    if(cur<steps.length-1)show(cur+1);else match();
+    if(cur<steps.length-1)show(cur+1);else runMatch();
   });
   backBtn.addEventListener('click',function(){if(cur>0)show(cur-1);});
-  form.addEventListener('focusin',function(){load();},{once:true});
+  show(0);
 
-  /* ---------- matching ---------- */
-  function majorOk(p,a){
-    if(a.anyMajor||(!a.groups.length&&!a.text))return true;
-    for(var i=0;i<a.groups.length;i++)if(p.groups[a.groups[i]])return true;
-    if(a.text){var toks=a.text.split(/\s+/);return toks.every(function(t){return p.hay.indexOf(t)>-1;});}
-    return false;
-  }
-  function evalP(p,a){
-    if(p.deg!==a.deg)return null;
-    if(a.lang!=='both'&&p.lang!=='both'&&p.lang!==a.lang)return null;
-    if(a.cities.length&&a.cities.indexOf(p.city)<0)return null;
-    if(!majorOk(p,a))return null;
-    var R=[],s=0,stretch=0,fail=0,comfy=0,budComfy=false;
-    var useZh=p.lang==='zh'||(p.lang==='both'&&a.lang!=='en');
-    if(useZh){
-      if(p.hsk){
-        var d=a.hsk-p.hsk,lbl='HSK '+p.hsk+(p.hskScore?' ('+p.hskScore+'+)':'');
-        if(d>=0){R.push(['ok','ผ่านเกณฑ์ '+lbl]);s+=30;if(d>=1)comfy=1;}
-        else if(d===-1){R.push(['warn','ต้องอัปเป็น '+lbl]);s+=14;stretch=1;}
-        else{R.push(['no','ต้องมี '+lbl+' · เตรียมภาษาเพิ่ม']);s+=2;fail=1;}
-      }else{R.push(['ok','ไม่ระบุเกณฑ์ HSK']);s+=24;}
-      if(p.hskk)R.push(['info','ต้องมี HSKK'+(p.hskkLv?' '+p.hskkLv:'')]);
-    }else{
-      if(p.ielts){
-        var e=a.ielts-p.ielts,l2='IELTS '+p.ielts+(p.toefl?' / TOEFL '+p.toefl:'');
-        if(e>=0){R.push(['ok','ผ่านเกณฑ์ '+l2]);s+=30;if(e>=0.5)comfy=1;}
-        else if(e>=-0.5&&a.ielts>0){R.push(['warn','ต้องได้ '+l2]);s+=14;stretch=1;}
-        else{R.push(['no','ต้องมี '+l2]);s+=2;fail=1;}
-      }else if(p.eng){R.push(['info','ต้องมีผลภาษาอังกฤษ · เช็กเกณฑ์กับทีม']);s+=18;}
-      else{R.push(['ok','ไม่ระบุเกณฑ์ภาษาอังกฤษ']);s+=24;}
-    }
-    var cost=p.total||p.tui,thb=cost*RATE,note=p.total?'':' (เฉพาะค่าเรียน)';
-    if(!cost){R.push(['info','ยังไม่มีข้อมูลค่าใช้จ่าย']);s+=6;}
-    else if(a.budget===Infinity){R.push(['ok','≈ '+baht(thb)+'/ปี'+note]);s+=20;budComfy=true;}
-    else if(thb<=a.budget){R.push(['ok','≈ '+baht(thb)+'/ปี'+note+' อยู่ในงบ']);s+=20;budComfy=thb<=a.budget*0.85;}
-    else if(thb<=a.budget*1.15){R.push(['warn','≈ '+baht(thb)+'/ปี'+note+' เกินงบเล็กน้อย']);s+=6;stretch=1;}
-    else return {out:'budget'};
-    if(p.schol){R.push(['ok','มีทุนให้สมัคร']);s+=a.schol==='must'?12:a.schol==='nice'?6:0;}
-    else if(a.schol==='must'){R.push(['info','ไม่พบข้อมูลทุนของสาขานี้']);s-=4;}
-    if(p.csca)R.push(['csca','📝 ต้องสอบ CSCA']);
-    if(a.text&&p.major.toLowerCase().indexOf(a.text)>-1)s+=8;
-    var tier=(fail||stretch)?'reach':(comfy&&budComfy?'safer':'match');
-    if(tier!=='reach')s+=20;
-    return {p:p,s:s,tier:tier,R:R,thb:cost?thb:0};
-  }
-  function runAll(a){
-    var res=[];
-    data.forEach(function(p){var r=evalP(p,a);if(r&&!r.out)res.push(r);});
-    return res;
-  }
-  function goodCount(list){var n=0;list.forEach(function(r){if(r.tier!=='reach')n++;});return n;}
-  function nextOf(arr,v){var i=arr.indexOf(v);return i>-1&&i<arr.length-1?arr[i+1]:null;}
-  function clone(a,patch){var b={};for(var k in a)b[k]=a[k];for(var j in patch)b[j]=patch[j];return b;}
-
-  function insights(a,res){
-    var out=[],good=goodCount(res),n;
-    if(a.lang!=='en'){
-      var nh=nextOf(HSK_STEPS,a.hsk);
-      if(nh!=null){n=goodCount(runAll(clone(a,{hsk:nh})))-good;
-        if(n>0)out.push('💡 ถ้าอัปเป็น <b>HSK '+nh+'</b> จะผ่านเกณฑ์ภาษาเพิ่มอีก <b>'+n+' สาขา</b> <a href="'+SITE+'/หลักสูตรภาษาจีน/">ดูคอร์สภาษาจีน →</a>');}
-    }
-    if(a.lang!=='zh'){
-      var ni=nextOf(IELTS_STEPS,a.ielts);
-      if(ni!=null){n=goodCount(runAll(clone(a,{ielts:ni})))-good;
-        if(n>0)out.push('💡 ถ้าได้ <b>IELTS '+ni+'</b> จะผ่านเกณฑ์เพิ่มอีก <b>'+n+' สาขา</b>');}
-    }
-    var nb=nextOf(BUDGET_STEPS,a.budget);
-    if(nb!=null){n=runAll(clone(a,{budget:nb})).length-res.length;
-      if(n>0)out.push('💡 ถ้าขยายงบเป็น <b>'+(nb===Infinity?'ไม่จำกัด':baht(nb)+'/ปี')+'</b> จะเจอเพิ่มอีก <b>'+n+' สาขา</b>');}
-    if(a.cities.length){n=runAll(clone(a,{cities:[]})).length-res.length;
-      if(n>0)out.push('💡 ถ้าเปิดรับ <b>ทุกเมือง</b> จะเจอเพิ่มอีก <b>'+n+' สาขา</b>');}
-    if(res.length&&!good&&a.lang!=='en'&&a.hsk<4){
-      out.unshift(a.deg==='ug'
-        ?'🎓 HSK ยังไม่ถึงเกณฑ์? เส้นทาง <b>ทุน 1+4</b> (เรียนภาษา 1 ปี แล้วต่อปริญญาตรี) อาจเหมาะกว่า <a href="'+SITE+'/ทุน-1-4/">ดูทุน 1+4 →</a>'
-        :'📚 HSK ยังไม่ถึงเกณฑ์? เรียนภาษาที่จีนก่อน 1 เทอม / 1 ปี แล้วค่อยยื่น <a href="'+SITE+'/long-term-language-programmes-in-china/">ดูโปรแกรมภาษา →</a>');
-    }
-    return out.slice(0,3);
-  }
-
-  function profileText(a,plain){
-    var parts=[DEG_TH[a.deg]||''];
-    parts.push(a.anyMajor||(!a.groups.length&&!a.text)?'ทุกสาขา':a.groups.map(function(g){return GROUP_TH[g];}).concat(a.text?[a.text]:[]).join(', '));
+  function profileText(a){
+    var parts=[{ug:'ปริญญาตรี',ma:'ปริญญาโท',phd:'ปริญญาเอก'}[a.deg]];
+    var majors=$$('input[name="major"]:checked',form).map(function(i){return i.nextElementSibling.textContent.replace(/^\S+\s/,'');});
+    if(a.text)majors.push(a.text);
+    parts.push(majors.join(', ')||'ทุกสาขา');
     parts.push(a.lang==='zh'?'สอนจีน':a.lang==='en'?'สอนอังกฤษ':'สอนจีน/อังกฤษ');
     if(a.lang!=='en')parts.push(a.hsk?'HSK '+(a.hsk===2?'1–2':a.hsk===6?'6+':a.hsk):'ยังไม่มี HSK');
     if(a.lang!=='zh')parts.push(a.ielts?'IELTS '+a.ielts:'ยังไม่มี IELTS');
-    parts.push(a.budget===Infinity?'งบไม่จำกัด':'งบ ≤ '+baht(a.budget)+'/ปี');
+    parts.push(a.budget?'งบ ≤ '+baht(a.budget)+'/ปี':'งบไม่จำกัด');
     parts.push(a.cities.length?a.cities.map(cityTH).join(', '):'ทุกเมือง');
-    return plain?parts.join(' · '):parts.map(esc).join(' · ');
+    parts.push({must:'อยากได้ทุนมาก',nice:'ทุนมีก็ดี',no:'ไม่จำเป็นต้องมีทุน'}[a.schol]);
+    return parts.join(' · ');
   }
 
-  function match(){
+  var lastMatch=null;
+  function runMatch(){
     var a=answers(),t0=Date.now();
     root.classList.add('um-v-loading');
-    var lis=$$('.um-think li');
-    lis.forEach(function(li){li.classList.remove('um-done');});
-    lis.forEach(function(li,i){setTimeout(function(){li.classList.add('um-done');},REDUCED?0:220*(i+1));});
+    $$('.um-think li').forEach(function(li,i){li.classList.remove('um-done');setTimeout(function(){li.classList.add('um-done');},REDUCED?0:250*(i+1));});
     app.scrollIntoView({behavior:REDUCED?'auto':'smooth',block:'start'});
-    load().then(function(){
-      var res=runAll(a);
-      res.sort(function(x,y){return y.s-x.s;});
-      state={a:a,res:res,tier:'all',find:'',page:1,ins:insights(a,res)};
-      setTimeout(function(){
-        root.classList.remove('um-v-loading');root.classList.add('um-v-results');
-        renderResults();
-      },REDUCED?0:Math.max(0,1100-(Date.now()-t0)));
+    api('match',{a:a}).then(function(res){
+      setTimeout(function(){root.classList.remove('um-v-loading');root.classList.add('um-v-results');renderMatch(res,a);},REDUCED?0:Math.max(0,1300-(Date.now()-t0)));
     },function(){
       root.classList.remove('um-v-loading');root.classList.add('um-v-results');
-      var msg='สวัสดีค่ะ/ครับ พี่ ๆ ชิวชิว อยากให้ช่วยหามหาวิทยาลัยที่เหมาะค่ะ/ครับ\nโปรไฟล์: '+profileText(a,true);
-      resultsEl.innerHTML='<div class="um-empty"><div class="um-empty-ico">🐼</div><h3>ตอนนี้ระบบจับคู่ยังโหลดข้อมูลไม่ได้</h3><p>ไม่เป็นไร — ส่งคำตอบนี้ให้พี่ ๆ ทาง LINE แล้วทีมจะช่วยจับคู่ให้เอง</p><p class="um-profile">'+profileText(a)+'</p><div class="um-btns"><a class="um-btn um-btn-line" target="_blank" rel="noopener" href="'+LINE_MSG+encodeURIComponent(msg)+'">💬 ส่งคำตอบให้ทีมทาง LINE</a><button type="button" class="um-btn um-btn-ghost um-edit">✏️ แก้คำตอบ</button></div></div>';
+      resultsEl.innerHTML='<div class="um-err"><div class="um-ico">🐼</div><h3 style="color:#1A0A00">ระบบจับคู่ขัดข้องชั่วคราว</h3><p>ลองรีเฟรชหน้านี้อีกครั้งในอีกสักครู่</p></div>';
     });
   }
 
-  function groupByUni(list){
-    var map={},order=[];
-    list.forEach(function(r){
-      var k=r.p.uni;
-      if(!map[k]){map[k]={uni:k,zh:r.p.zh,cities:{},items:[],best:r,min:Infinity,max:0,schol:false,review:false};order.push(k);}
-      var g=map[k];g.items.push(r);g.cities[r.p.city]=1;
-      if(r.thb){g.min=Math.min(g.min,r.thb);g.max=Math.max(g.max,r.thb);}
-      if(r.p.schol)g.schol=true;if(r.p.review)g.review=true;
-    });
-    return order.map(function(k){return map[k];});
-  }
-  function filtered(){
-    var f=state.find.toLowerCase();
-    return state.res.filter(function(r){
-      if(state.tier!=='all'&&r.tier!==state.tier)return false;
-      if(f&&(r.p.uni+' '+r.p.zh+' '+r.p.major+' '+r.p.city+' '+cityTH(r.p.city)).toLowerCase().indexOf(f)<0)return false;
-      return true;
-    });
-  }
-  function progHTML(r){
-    var p=r.p,meta=[];
-    if(p.dur)meta.push(esc(p.dur)+' ปี');
-    meta.push(LANG_TH[p.lang]);
-    if(p.campus)meta.push('วิทยาเขต '+esc(p.campus));
-    if(p.deadline)meta.push('ปิดรับ '+esc(p.deadline)+(p.past&&p.cycle?' (อ้างอิงรอบ '+esc(p.cycle)+')':''));
-    var rs=r.R.map(function(x){
-      if(x[0]==='csca')return '<a class="um-r" href="'+SITE+'/csca/">'+esc(x[1])+' →</a>';
-      var ic=x[0]==='ok'?'✓ ':x[0]==='warn'?'⚠ ':x[0]==='no'?'✕ ':'';
-      return '<span class="um-r '+x[0]+'">'+ic+esc(x[1])+'</span>';
-    }).join('');
-    if(p.review)rs+='<span class="um-r warn">⚠ ข้อมูลรอยืนยัน</span>';
-    return '<li><div class="um-ph"><b>'+esc(p.major)+(p.track?' · '+esc(p.track):'')+'</b><span class="um-tier um-sm um-t-'+r.tier+'">'+TIER[r.tier]+'</span></div><div class="um-pm">'+meta.join(' · ')+'</div><div class="um-rs">'+rs+'</div></li>';
-  }
-  function uniHTML(g,idx){
-    var cities=Object.keys(g.cities).map(function(c){return '📍 '+esc(cityTH(c));}).join(' · ');
-    var cost=g.max?(g.min===g.max?'≈ '+baht(g.min):'≈ '+baht(g.min)+'–'+baht(g.max).slice(1))+'/ปี':'';
-    var first=g.items.slice(0,3).map(progHTML).join('');
-    var rest=g.items.length-3;
-    var msg='สวัสดีค่ะ/ครับ พี่ ๆ ชิวชิว สนใจ '+g.uni+' ('+g.items.slice(0,3).map(function(r){return r.p.major;}).join(', ')+')\nโปรไฟล์: '+profileText(state.a,true)+'\nอยากให้ช่วยดูความเป็นไปได้ค่ะ/ครับ';
-    return '<article class="um-uni"><div class="um-uni-h"><div><h3>'+esc(g.uni)+'</h3><p class="um-zh">'+(g.zh?esc(g.zh)+' · ':'')+cities+'</p></div><span class="um-tier um-t-'+g.best.tier+'">'+TIER[g.best.tier]+'</span></div>'+
-      '<div class="um-meta">'+(cost?'<span>💰 '+cost+'</span>':'')+'<span>📚 '+g.items.length+' สาขาที่ตรง</span>'+(g.schol?'<span>🎁 มีทุนให้สมัคร</span>':'')+(g.review?'<span class="um-warnchip">⚠ บางข้อมูลรอยืนยัน</span>':'')+'</div>'+
-      '<ul class="um-progs">'+first+'</ul>'+
-      '<div class="um-uni-f">'+(rest>0?'<button type="button" class="um-link um-expand" data-i="'+idx+'">ดูอีก '+rest+' สาขา ▾</button>':'<span></span>')+
-      '<a class="um-ask" target="_blank" rel="noopener" href="'+LINE_MSG+encodeURIComponent(msg)+'">💬 ถามพี่ ๆ เรื่องมหาลัยนี้</a></div></article>';
-  }
-
-  var groupsCache=[];
-  function renderList(){
-    var list=filtered(),groups=groupByUni(list),shown=groups.slice(0,state.page*8);
-    groupsCache=groups;
-    var html=shown.length?shown.map(uniHTML).join(''):'<div class="um-empty"><div class="um-empty-ico">🔍</div><h3>ไม่พบในกลุ่มนี้</h3><p>ลองเลือกแท็บอื่น หรือล้างคำค้นหา</p></div>';
-    $('.um-list').innerHTML=html;
-    var more=$('.um-more-wrap');
-    more.hidden=groups.length<=shown.length;
-    if(!more.hidden)$('.um-more').textContent='ดูมหาวิทยาลัยเพิ่ม (อีก '+(groups.length-shown.length)+') ▾';
-  }
-  function renderResults(){
-    var a=state.a,res=state.res;
-    if(!res.length){
-      resultsEl.innerHTML='<div class="um-empty"><div class="um-empty-ico">🐼</div><h3>ยังไม่เจอสาขาที่ตรงทุกข้อ</h3><p>ไม่เป็นไร — ลองปรับคำตอบ เช่น เพิ่มงบ เปิดรับทุกเมือง หรือเลือกภาษา "ได้ทั้งคู่" หรือให้พี่ ๆ ช่วยหาให้</p><p class="um-profile">'+profileText(a)+'</p>'+
-        (state.ins.length?'<div class="um-insights" style="text-align:left">'+state.ins.map(function(t){return '<div class="um-ins">'+t+'</div>';}).join('')+'</div>':'')+
-        '<div class="um-btns"><button type="button" class="um-btn um-btn-pri um-edit">✏️ แก้คำตอบ</button><a class="um-btn um-btn-line" target="_blank" rel="noopener" href="'+LINE_MSG+encodeURIComponent('สวัสดีค่ะ/ครับ อยากให้ช่วยหามหาวิทยาลัยค่ะ/ครับ\nโปรไฟล์: '+profileText(a,true))+'">💬 ให้ทีมช่วยแนะนำ (LINE)</a></div></div>';
-      return;
+  function renderMatch(res,a){
+    var p=res.item;
+    if(!p){
+      lastMatch={a:a,res:res};
+      resultsEl.innerHTML='<div class="um-err"><div class="um-ico">🔍</div><h3 style="color:#1A0A00">ยังไม่มีหลักสูตรในระดับนี้ในระบบ</h3><p>ทิ้งข้อมูลไว้ แล้วทีมจะช่วยหาตัวเลือกให้ทางอีเมล</p></div>'+leadHTML();
+      bindLead();return;
     }
-    var cnt={safer:0,match:0,reach:0};res.forEach(function(r){cnt[r.tier]++;});
-    var nUni=groupByUni(res).length;
-    var top=groupByUni(res).slice(0,3).map(function(g,i){return (i+1)+') '+g.uni+' – '+g.items[0].p.major;}).join('\n');
-    var msg='สวัสดีค่ะ/ครับ พี่ ๆ ชิวชิว ลองใช้ University Matcher แล้วค่ะ/ครับ\nโปรไฟล์: '+profileText(a,true)+'\nมหาลัยที่ระบบแนะนำ:\n'+top+'\nอยากให้ช่วยแนะนำต่อค่ะ/ครับ';
+    var u=res.uni,g=res.gaps,exact=res.exact,R=[];
+    R.push(g.major?['ok','ตรงสาขาที่สนใจ']:['warn','สาขาใกล้เคียง (ไม่ตรงกลุ่มที่เลือก)']);
+    R.push(g.lang?['ok',LANG_TH[p.lang]]:['warn',LANG_TH[p.lang]+' (ไม่ตรงภาษาที่เลือก)']);
+    if(g.testUnknown)R.push(['warn',g.useZh?(p.hsk?'ต้องใช้ผล HSK '+p.hsk:'ต้องใช้ภาษาจีน'):(p.ielts?'ต้องใช้ผล IELTS '+p.ielts:'ต้องใช้ผลภาษาอังกฤษ')]);
+    else if(g.useZh)R.push(p.hsk?(g.hskGap?['warn','ต้องอัป HSK อีก '+g.hskGap+' ระดับ']:['ok','ผ่านเกณฑ์ HSK']):['ok','ไม่ระบุเกณฑ์ HSK']);
+    else R.push(p.ielts?(g.ieltsGap?['warn','ต้องได้ IELTS เพิ่มอีก '+g.ieltsGap]:['ok','ผ่านเกณฑ์ IELTS']):['ok','ไม่ระบุเกณฑ์ IELTS']);
+    if(a.budget)R.push(g.over?['warn','เกินงบประมาณ ≈ '+baht(g.over)+'/ปี']:(g.thb?['ok','อยู่ในงบ']:['warn','ยังไม่มีข้อมูลค่าใช้จ่าย']));
+    if(a.cities.length&&!g.city)R.push(['warn','อยู่นอกเมืองที่เลือก']);
+    if(p.sch)R.push(['ok','มีทุนให้สมัคร']);
+
+    var cost=p.tot||p.tu;
+    var costF=cost?'<b>≈ '+baht(cost*RATE)+'/ปี</b><small>'+yuan(cost)+(p.tot?' รวมค่าเรียน ที่พัก และค่าครองชีพ':' (เฉพาะค่าเรียน)')+'</small>':'<b>รอยืนยัน</b><small>ทีมจะแจ้งในรายงาน</small>';
+    var hskF=g.useZh||p.lang==='zh'?(p.hsk?'<b>'+esc(p.hskTxt?p.hskTxt.replace(/\s*\+\s*HSKK.*$/i,''):'HSK '+p.hsk)+'</b><small>'+(p.hskk?'+ HSKK '+esc(p.hskkLv||''):'&nbsp;')+'</small>':'<b>ไม่ระบุ</b><small>&nbsp;</small>'):
+      '<b>'+(p.ielts?'IELTS '+p.ielts:'ไม่ระบุ')+'</b><small>'+(p.toefl?'หรือ TOEFL '+p.toefl:'หลักสูตรสอนภาษาอังกฤษ')+'</small>';
+    var dlF=p.dl?'<b>'+esc(p.dl)+'</b><small>'+(p.past&&p.cyc?'อ้างอิงรอบ '+esc(p.cyc)+' · รอประกาศรอบใหม่':'&nbsp;')+'</small>':'<b>รอประกาศ</b><small>&nbsp;</small>';
+    var missing=R.filter(function(r){return r[0]==='warn';}).map(function(r){return r[1];});
+
+    lastMatch={a:a,res:res};
     resultsEl.innerHTML=
-      '<div class="um-rhead"><span class="um-eyebrow">✦ ผลจับคู่ของน้อง ✦</span><h2 class="um-h2">เจอ <span>'+nUni+' มหาวิทยาลัย</span> · '+res.length+' สาขา</h2>'+
-      '<p class="um-profile">'+profileText(a)+' · <button type="button" class="um-link um-edit">✏️ แก้คำตอบ</button></p></div>'+
-      (state.ins.length?'<div class="um-insights">'+state.ins.map(function(t){return '<div class="um-ins">'+t+'</div>';}).join('')+'</div>':'')+
-      '<div class="um-tools"><div class="um-tabs" role="toolbar" aria-label="กรองผล">'+
-        '<button type="button" class="um-tab" data-t="all" aria-pressed="true">ทั้งหมด '+res.length+'</button>'+
-        '<button type="button" class="um-tab" data-t="safer" aria-pressed="false">'+TIER.safer+' '+cnt.safer+'</button>'+
-        '<button type="button" class="um-tab" data-t="match" aria-pressed="false">'+TIER.match+' '+cnt.match+'</button>'+
-        '<button type="button" class="um-tab" data-t="reach" aria-pressed="false">'+TIER.reach+' '+cnt.reach+'</button>'+
-      '</div><input class="um-find" type="search" placeholder="🔍 ค้นหาชื่อมหาลัย / สาขา / เมือง" aria-label="ค้นหาในผลลัพธ์"></div>'+
-      '<div class="um-list"></div><div class="um-more-wrap"><button type="button" class="um-btn um-btn-ghost um-more"></button></div>'+
-      '<div class="um-honest">ผลนี้เป็นการจับคู่เบื้องต้นจากเกณฑ์ภาษา งบ สาขา และเมือง — ยังไม่รวมผลการเรียน เอกสาร สัมภาษณ์ และ <a href="'+SITE+'/csca/" style="color:#6B46C1;font-weight:700">CSCA</a> · ผ่านเกณฑ์ ≠ ได้รับเข้า · มีทุนให้สมัคร ≠ ได้ทุน · ค่าใช้จ่ายแปลงที่ ≈ '+RATE+' บาท/หยวน</div>'+
-      '<div class="um-rcta"><a class="um-btn um-btn-line" target="_blank" rel="noopener" href="'+LINE_MSG+encodeURIComponent(msg)+'">💬 ส่งผลนี้ให้พี่ ๆ ทาง LINE</a><button type="button" class="um-btn um-btn-ghost um-restart">🔄 เริ่มใหม่</button></div>';
-    renderList();
+      '<div class="um-mhead"><span class="um-eyebrow">'+(exact?'✦ มหาวิทยาลัยที่เหมาะกับน้องที่สุด ✦':'✦ ตัวเลือกที่ใกล้เคียงที่สุด ✦')+'</span></div>'+
+      '<article class="um-mcard"><div class="um-mban" '+banner(u.photo,u.cn,u.name)+'>'+bannerText(u.photo,u.cn,u.short)+'</div>'+
+      '<div class="um-mbody"><span class="um-badge '+(exact?'um-b-exact':'um-b-close')+'">'+(exact?'🎯 ตรงเกณฑ์ที่น้องเลือก':'🧭 ใกล้เคียงที่สุด')+'</span>'+
+      '<h3>'+esc(u.short)+'</h3><p class="um-zh">'+(u.cn?esc(u.cn)+' · ':'')+'📍 '+esc(cityTH(u.city))+'</p>'+
+      '<p class="um-mmajor">'+LV_TH[p.lv]+' · '+esc(p.prog)+(p.track?' ('+esc(p.track)+')':'')+'</p>'+
+      '<div class="um-mfacts"><div><span>ค่าใช้จ่ายต่อปี</span>'+costF+'</div><div><span>'+(g.useZh||p.lang==='zh'?'เกณฑ์ HSK':'เกณฑ์ภาษาอังกฤษ')+'</span>'+hskF+'</div><div><span>ปิดรับสมัคร</span>'+dlF+'</div></div>'+
+      '<div class="um-rs">'+R.map(function(r){return '<span class="um-r '+r[0]+'">'+(r[0]==='ok'?'✓ ':'⚠ ')+esc(r[1])+'</span>';}).join('')+'</div>'+
+      (p.csca?'<a class="um-csca" href="'+SITE+'/csca/">📝 ต้องสอบ CSCA'+(p.cscaSub?': '+esc(p.cscaSub):'')+' →</a>':'')+
+      (!exact?'<p class="um-gap">ยังไม่มีหลักสูตรที่ตรงทุกข้อ นี่คือตัวเลือกที่ใกล้เคียงที่สุด'+(missing.length?' สิ่งที่ยังไม่ตรง: '+esc(missing.join(' · ')):'')+'</p>':'')+
+      (p.review?'<p class="um-gap" style="border-left-color:#FFB300">⚠ ข้อมูลบางส่วนของหลักสูตรนี้ทีมกำลังตรวจสอบ</p>':'')+
+      '</div></article>'+
+      '<div class="um-readmore-wrap"><a class="um-btn um-btn-ghost um-readmore" href="#um-finder">📖 อ่านข้อมูลเพิ่มเติม ↓</a></div>'+
+      leadHTML();
+    bindLead();
+    $('.um-readmore',resultsEl).addEventListener('click',function(e){
+      e.preventDefault();
+      $('#um-fq').value=u.short;F.q='';F.uni=u.name;setView('uni');runSearch(false);
+      $('#um-finder').scrollIntoView({behavior:REDUCED?'auto':'smooth',block:'start'});
+    });
   }
 
-  resultsEl.addEventListener('click',function(e){
-    var t=e.target.closest('button');
-    if(!t)return;
-    if(t.classList.contains('um-edit')){root.classList.remove('um-v-results');show(0);app.scrollIntoView({behavior:'smooth',block:'start'});}
-    else if(t.classList.contains('um-restart')){form.reset();$$('input[name="city"]',form).forEach(function(b){b.checked=b.value==='any';});root.classList.remove('um-v-results');show(0);app.scrollIntoView({behavior:'smooth',block:'start'});}
-    else if(t.classList.contains('um-tab')){state.tier=t.getAttribute('data-t');state.page=1;$$('.um-tab',resultsEl).forEach(function(b){b.setAttribute('aria-pressed',b===t?'true':'false');});renderList();}
-    else if(t.classList.contains('um-more')){state.page++;renderList();}
-    else if(t.classList.contains('um-expand')){
-      var g=groupsCache[+t.getAttribute('data-i')];
-      if(!g)return;
-      var ul=t.closest('.um-uni').querySelector('.um-progs'),extra=g.items.slice(3,43);
-      ul.insertAdjacentHTML('beforeend',extra.map(progHTML).join('')+(g.items.length>43?'<li class="um-pm">และอีก '+(g.items.length-43)+' สาขา — ทักพี่ ๆ เพื่อดูรายการเต็ม</li>':''));
-      t.remove();
-    }
-  });
-  var findT;
-  resultsEl.addEventListener('input',function(e){
-    if(!e.target.classList.contains('um-find'))return;
-    clearTimeout(findT);
-    findT=setTimeout(function(){state.find=e.target.value.trim();state.page=1;renderList();},150);
-  });
+  function leadHTML(){
+    return '<div class="um-leadbox"><form class="um-lead" novalidate>'+
+      '<h3>📩 รับรายงานผลจับคู่ฉบับเต็มทางอีเมล</h3>'+
+      '<p>ทิ้งข้อมูลไว้ แล้วทีม Chinese Chiwchiw จะส่งรายงานพร้อมตัวเลือกอื่นที่เหมาะกับน้องไปให้ทางอีเมล</p>'+
+      '<div class="um-fgrid">'+
+        '<div class="um-field"><label for="um-l-name">ชื่อ <i>*</i></label><input id="um-l-name" name="name" type="text" autocomplete="name" maxlength="100" required></div>'+
+        '<div class="um-field"><label for="um-l-email">อีเมล <i>*</i></label><input id="um-l-email" name="email" type="email" autocomplete="email" maxlength="150" required></div>'+
+        '<div class="um-field"><label for="um-l-line">LINE ID</label><input id="um-l-line" name="line" type="text" maxlength="60" autocomplete="off"></div>'+
+        '<div class="um-field"><label for="um-l-phone">เบอร์โทรศัพท์</label><input id="um-l-phone" name="phone" type="tel" autocomplete="tel" maxlength="30"></div>'+
+      '</div>'+
+      '<div class="um-hp" aria-hidden="true"><label for="um-l-web">Website</label><input id="um-l-web" name="website" type="text" tabindex="-1" autocomplete="off"></div>'+
+      '<label class="um-consent"><input type="checkbox" name="consent" id="um-l-consent"><span>ยินยอมให้ Chinese Chiwchiw เก็บข้อมูลนี้เพื่อส่งรายงานผลจับคู่และติดต่อกลับเรื่องการเรียนต่อ</span></label>'+
+      '<p class="um-formmsg" role="alert"></p>'+
+      '<button type="submit" class="um-btn um-btn-pri">📩 ส่งรายงานให้ฉัน</button>'+
+      '</form></div>';
+  }
+  function bindLead(){
+    var f=$('.um-lead',resultsEl);if(!f)return;
+    f.addEventListener('submit',function(e){
+      e.preventDefault();
+      var msg=$('.um-formmsg',f),btn=$('button[type=submit]',f);
+      var d={name:f.name.value.trim(),email:f.email.value.trim(),line:f.line.value.trim(),phone:f.phone.value.trim(),hp:f.website.value,consent:f.consent.checked};
+      if(!d.name){msg.textContent='กรุณากรอกชื่อ';f.name.focus();return;}
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(d.email)){msg.textContent='กรุณากรอกอีเมลให้ถูกต้อง';f.email.focus();return;}
+      if(d.phone&&!/^[0-9+\-\s()]{6,30}$/.test(d.phone)){msg.textContent='กรุณากรอกเบอร์โทรเป็นตัวเลข';f.phone.focus();return;}
+      if(!d.consent){msg.textContent='กรุณากดยินยอมก่อนส่งข้อมูล';return;}
+      msg.textContent='';btn.disabled=true;btn.textContent='กำลังส่ง…';
+      var m=lastMatch||{},p=m.res&&m.res.item;
+      d.answers=m.a?profileText(m.a):'';
+      d.matchId=p?p.id:'';d.matchUni=p?p.u:'';d.matchProg=p?p.prog:'';d.exact=!!(m.res&&m.res.exact);
+      apiPost(d).then(function(){
+        f.parentNode.innerHTML='<div class="um-thanks"><div class="um-ico">✅</div><h3>ได้รับข้อมูลแล้ว ขอบคุณค่ะ</h3><p>ทีม Chinese Chiwchiw จะส่งรายงานผลจับคู่ไปที่ <b>'+esc(d.email)+'</b></p></div>';
+      },function(){
+        btn.disabled=false;btn.textContent='📩 ส่งรายงานให้ฉัน';
+        msg.textContent='ส่งไม่สำเร็จ ลองใหม่อีกครั้งในอีกสักครู่';
+      });
+    });
+  }
 
-  show(0);
+  /* ═════════════ FINDER ═════════════ */
+  var F={view:'uni',q:'',uni:'',lv:[],city:[],sub:[],lang:[],tier:[],max:0,myHsk:'',open:false,nohsk:false,nocsca:false,sch:false,sort:'rel',page:1};
+  var seq=0,listEl=$('.um-list'),moreWrap=$('.um-more-wrap'),countEl=$('.um-count',$('.um-finder'));
+
+  function chips(key,items){
+    $('.um-fchips[data-f="'+key+'"]').innerHTML=items.map(function(x){return '<button type="button" class="um-fc" data-k="'+key+'" data-v="'+esc(x[0])+'" aria-pressed="'+(F[key].indexOf(x[0])>-1)+'">'+esc(x[1])+(x[2]!=null?'<i>'+x[2]+'</i>':'')+'</button>';}).join('');
+  }
+  function buildStaticFilters(){
+    chips('lv',[['UG','ปริญญาตรี'],['PG','ปริญญาโท'],['PHD','ปริญญาเอก'],['LANG','คอร์สภาษาจีน']]);
+    chips('lang',[['zh','ภาษาจีน'],['en','ภาษาอังกฤษ']]);
+    chips('tier',[['C9','C9 League'],['985','985'],['211','211'],['DFC','Double First-Class'],['SF','Sino-Foreign'],['OT','อื่น ๆ']]);
+    $('.um-fields').innerHTML=FIELDS.map(function(f){
+      return '<details class="um-field-g"><summary>'+esc(f[1])+'<b class="um-fgc" data-g="'+f[0]+'"></b></summary><div class="um-fchips">'+
+        '<button type="button" class="um-fc" data-k="sub" data-v="'+f[0]+'" aria-pressed="false">ทุกสาขาในกลุ่มนี้</button>'+
+        f[2].map(function(s){return '<button type="button" class="um-fc" data-k="sub" data-v="'+f[0]+'.'+s[0]+'" aria-pressed="false">'+esc(s[1])+'</button>';}).join('')+
+        '</div></details>';
+    }).join('');
+  }
+  function buildCityFilter(){
+    if(!META)return;
+    var C=META.cities;
+    chips('city',Object.keys(C).sort(function(a,b){return C[b].all-C[a].all;}).map(function(c){return [c,cityTH(c),C[c].all];}));
+  }
+  function syncFieldCounts(){
+    $$('.um-fgc').forEach(function(b){var g=b.getAttribute('data-g'),n=F.sub.filter(function(v){return v===g||v.indexOf(g+'.')===0;}).length;b.textContent=n?n+' ✓':'';});
+  }
+  buildStaticFilters();
+
+  function setView(v){F.view=v;$$('.um-views button').forEach(function(b){b.setAttribute('aria-pressed',b.getAttribute('data-view')===v?'true':'false');});}
+  function filterParams(){var o={};for(var k in F)if(k!=='view'&&k!=='page')o[k]=F[k];return o;}
+
+  function uniCard(u){
+    var fee=u.feeMin?(u.feeMin===u.feeMax?yuan(u.feeMin):yuan(u.feeMin)+' – '+yuan(u.feeMax)):'รอยืนยัน';
+    var desc=u.desc||(esc(u.short)+' ตั้งอยู่ที่'+esc(cityTH(u.city))+(u.prov&&u.prov!==u.city?' มณฑล '+esc(u.prov):'')+' เปิดรับนักศึกษาต่างชาติ '+u.n+' หลักสูตรที่ตรงกับตัวกรอง'+(u.feeMin?' ค่าเรียนเริ่มต้นประมาณ '+yuan(u.feeMin)+'/ปี':''));
+    var tier=u.tiers&&u.tiers.length?'<span class="um-tierb">'+esc(TIER_TH[u.tiers[0]])+'</span>':'';
+    return '<button type="button" class="um-ucard" data-uni="'+esc(u.name)+'"><div class="um-uban" '+banner(u.photo,u.cn,u.name)+'>'+bannerText(u.photo,u.cn,u.short)+tier+'</div>'+
+      '<div class="um-ubody"><span class="um-uname">'+esc(u.short)+(u.cn?'<span class="um-ucn">'+esc(u.cn)+'</span>':'')+'</span>'+
+      '<span class="um-umeta">📍 '+esc(cityTH(u.city))+'</span>'+
+      '<span class="um-udesc">'+(u.desc?esc(desc):desc)+'</span>'+
+      '<span class="um-facts"><span><span>หลักสูตร</span><b>'+u.n+'</b></span><span><span>ค่าเรียน/ปี</span><b>'+fee+'</b></span>'+
+      '<span><span>ระดับที่เปิด</span><b>'+u.levels.map(function(l){return LV_TH[l];}).join(' · ')+'</b></span><span><span>สาขาเด่น</span><b>'+(u.top.map(function(k){return FIELD_NAME[k]||'';}).filter(Boolean).join(' · ')||'—')+'</b></span></span>'+
+      '<span class="um-tags">'+(u.open?'<span class="um-tag open">● เปิดรับ 2027</span>':'')+(u.sch?'<span class="um-tag sch">🎁 มีทุน</span>':'')+(u.en?'<span class="um-tag">'+u.en+' หลักสูตรภาษาอังกฤษ</span>':'')+'</span>'+
+      '<span class="um-ugo">ดูหลักสูตรทั้งหมด →</span></div></button>';
+  }
+  function progRow(p,withUni){
+    var cost=p.tot||p.tu,req=[];
+    if(p.lang!=='en'&&p.hsk)req.push('<span><b>HSK</b> '+esc((p.hskTxt||('HSK '+p.hsk)).replace(/\s*\+\s*HSKK.*$/i,''))+'</span>');
+    else if(p.lang!=='en')req.push('<span><b>HSK</b> ไม่ระบุ</span>');
+    if(p.lang!=='zh'&&(p.ielts||p.toefl))req.push('<span><b>IELTS/TOEFL</b> '+[p.ielts?'IELTS '+p.ielts:'',p.toefl?'TOEFL '+p.toefl:''].filter(Boolean).join(' / ')+'</span>');
+    return '<div class="um-prow"><div style="min-width:0"><div class="um-pname"><span class="um-lvl '+p.lv+'">'+LV_TH[p.lv]+'</span>'+esc(p.prog)+(p.track?' · '+esc(p.track):'')+'</div>'+
+      '<div class="um-puni">'+(withUni?esc(p.u.replace(/\s*\([^)]*\)\s*$/,''))+' · 📍 '+esc(cityTH(p.city))+(p.school?' · ':''):'')+esc(p.school||'')+'</div></div>'+
+      '<div class="um-pprice">'+(p.tu?yuan(p.tu)+'<small>ค่าเรียน/ปี ≈ '+baht(p.tu*RATE)+(p.tot&&p.tot>p.tu?'<br>รวมที่พัก+ค่าครองชีพ ≈ '+baht(p.tot*RATE):'')+'</small>':'<small>ค่าเรียน: รอยืนยัน</small>')+'</div>'+
+      '<div class="um-pfacts"><span><b>สอนเป็น</b> '+(p.lang==='zh'?'ภาษาจีน':p.lang==='en'?'ภาษาอังกฤษ':'จีน/อังกฤษ')+'</span>'+(p.dur?'<span><b>ระยะเวลา</b> '+esc(p.dur)+' ปี</span>':'')+req.join('')+
+      (p.hskk?'<span><b>HSKK</b> '+esc(p.hskkLv||'ต้องมี')+'</span>':'')+
+      (p.csca?'<span><b>CSCA</b> <a href="'+SITE+'/csca/">'+(p.cscaSub?esc(p.cscaSub):'ต้องสอบ')+'</a></span>':'<span><b>CSCA</b> ไม่ต้องสอบ</span>')+
+      (p.dl?'<span><b>ปิดรับ</b> '+esc(p.dl)+(p.past&&p.cyc?' (รอบ '+esc(p.cyc)+')':'')+'</span>':'')+
+      (p.campus?'<span><b>วิทยาเขต</b> '+esc(p.campus)+'</span>':'')+
+      (p.open?'<span class="um-tag open">● เปิดรับ 2027</span>':'')+(p.sch?'<span class="um-tag sch">🎁 มีทุน</span>':'')+
+      (p.review?'<span class="um-tag">⚠ รอยืนยันข้อมูล</span>':'')+'</div></div>';
+  }
+
+  function runSearch(append){
+    if(!append)F.page=1;
+    var my=++seq,f=filterParams();f.view=F.view;f.page=F.page;
+    if(!append){listEl.innerHTML=F.view==='uni'?'<div class="um-ugrid"><div class="um-skel"></div><div class="um-skel"></div></div>':'<div class="um-skel" style="height:160px"></div>';moreWrap.hidden=true;}
+    api('search',{f:f}).then(function(res){
+      if(my!==seq)return;
+      var shown=(res.page-1)*res.size+res.items.length;
+      countEl.textContent=res.view==='uni'?'พบ '+fmt(res.total)+' มหาวิทยาลัย · '+fmt(res.progTotal)+' หลักสูตร':'พบ '+fmt(res.total)+' หลักสูตร';
+      if(!res.total){listEl.innerHTML='<div class="um-empty">ไม่พบผลลัพธ์ ลองลดตัวกรองหรือค้นหาคำอื่น</div>';moreWrap.hidden=true;return;}
+      var html=res.view==='uni'?res.items.map(uniCard).join(''):res.items.map(function(p){return progRow(p,true);}).join('');
+      if(append)$(res.view==='uni'?'.um-ugrid':'.um-plist',listEl).insertAdjacentHTML('beforeend',html);
+      else listEl.innerHTML=res.view==='uni'?'<div class="um-ugrid">'+html+'</div>':'<div class="um-plist">'+html+'</div>';
+      moreWrap.hidden=shown>=res.total;
+    },function(){
+      if(my!==seq)return;
+      countEl.textContent='';
+      listEl.innerHTML='<div class="um-empty">โหลดข้อมูลไม่สำเร็จ กรุณารีเฟรชหน้านี้อีกครั้ง</div>';
+    });
+  }
+
+  var finder=$('.um-finder');
+  finder.addEventListener('click',function(e){
+    var b=e.target.closest('button');if(!b)return;
+    if(b.classList.contains('um-fc')){
+      var k=b.getAttribute('data-k'),v=b.getAttribute('data-v'),arr=F[k],i=arr.indexOf(v);
+      if(i>-1)arr.splice(i,1);else arr.push(v);
+      b.setAttribute('aria-pressed',i<0?'true':'false');
+      if(k==='sub')syncFieldCounts();
+      runSearch(false);
+    }else if(b.hasAttribute('data-view')){setView(b.getAttribute('data-view'));runSearch(false);}
+    else if(b.classList.contains('um-more')){F.page++;runSearch(true);}
+    else if(b.classList.contains('um-clear')){
+      F.lv=[];F.city=[];F.sub=[];F.lang=[];F.tier=[];F.max=0;F.myHsk='';F.open=F.nohsk=F.nocsca=F.sch=false;F.q='';F.uni='';
+      $('#um-fq').value='';$('#um-max').value=120000;$('.um-rangev').textContent='ไม่จำกัด';$('#um-myhsk').value='';
+      ['open','nohsk','nocsca','sch'].forEach(function(k){$('#um-f-'+k).checked=false;});
+      $$('.um-fc',finder).forEach(function(c){c.setAttribute('aria-pressed','false');});syncFieldCounts();
+      runSearch(false);
+    }else if(b.classList.contains('um-ftoggle')){var fl=$('#um-filters'),on=!fl.classList.contains('um-show');fl.classList.toggle('um-show',on);b.setAttribute('aria-expanded',on?'true':'false');}
+    else if(b.classList.contains('um-ucard')){openUni(b.getAttribute('data-uni'),b);}
+  });
+  var qT;
+  $('#um-fq').addEventListener('input',function(e){clearTimeout(qT);qT=setTimeout(function(){F.uni='';F.q=e.target.value.trim().slice(0,80);runSearch(false);},350);});
+  $('.um-city-q').addEventListener('input',function(e){var q=e.target.value.trim().toLowerCase();$$('.um-fc[data-k="city"]').forEach(function(c){c.hidden=!!q&&(c.getAttribute('data-v')+' '+c.textContent).toLowerCase().indexOf(q)<0;});});
+  $('.um-sort').addEventListener('change',function(e){F.sort=e.target.value;runSearch(false);});
+  $('#um-myhsk').addEventListener('change',function(e){F.myHsk=e.target.value;runSearch(false);});
+  var mT;
+  $('#um-max').addEventListener('input',function(e){
+    var v=+e.target.value;F.max=v>=120000?0:v;
+    $('.um-rangev').textContent=F.max?'≤ '+yuan(F.max)+' (≈ '+baht(F.max*RATE)+')':'ไม่จำกัด';
+    clearTimeout(mT);mT=setTimeout(function(){runSearch(false);},300);
+  });
+  ['open','nohsk','nocsca','sch'].forEach(function(k){$('#um-f-'+k).addEventListener('change',function(e){F[k]=e.target.checked;runSearch(false);});});
 
   if('IntersectionObserver' in window){
-    var lo=new IntersectionObserver(function(es){if(es[0].isIntersecting){load();lo.disconnect();}},{rootMargin:'400px'});
-    lo.observe(app);
-    var io=new IntersectionObserver(function(es){
-      es.forEach(function(en){if(en.isIntersecting){en.target.classList.add('um-in');io.unobserve(en.target);}});
-    },{threshold:.1});
-    $$('.um-rv').forEach(function(el){io.observe(el);});
-  }else{
-    load();
-    $$('.um-rv').forEach(function(el){el.classList.add('um-in');});
+    var io=new IntersectionObserver(function(es){if(es[0].isIntersecting){runSearch(false);io.disconnect();}},{rootMargin:'600px'});
+    io.observe(finder);
+  }else runSearch(false);
+
+  /* ═════════════ COURSE POP-UP ═════════════ */
+  var modal=document.getElementById('um-modal');
+  document.body.appendChild(modal);
+  var M={name:'',dq:'',page:1,seq:0,last:null};
+  var moList=modal.querySelector('.um-mo-list'),moMore=modal.querySelector('.um-mo-more'),moCount=modal.querySelector('.um-count'),moQ=modal.querySelector('.um-mo-q');
+
+  function openUni(name,from){
+    M.name=name;M.dq='';M.page=1;M.last=from||document.activeElement;
+    moQ.value='';
+    modal.querySelector('#um-mo-title').textContent='';
+    modal.querySelector('.um-mo-meta').textContent='';
+    modal.querySelector('.um-mo-desc').textContent='';
+    modal.querySelector('.um-mo-ban').removeAttribute('style');
+    modal.querySelector('.um-mo-ban').innerHTML='';
+    moList.innerHTML='<div class="um-empty">กำลังโหลดหลักสูตร…</div>';moMore.hidden=true;moCount.textContent='';
+    modal.hidden=false;document.documentElement.style.overflow='hidden';
+    modal.querySelector('.um-mo-x').focus();
+    loadUni(false);
   }
+  function loadUni(append){
+    var my=++M.seq,f=filterParams();delete f.q;delete f.uni;f.dq=M.dq;f.page=M.page;
+    api('uni',{name:M.name,f:f}).then(function(res){
+      if(my!==M.seq)return;
+      var u=res.uni,ban=modal.querySelector('.um-mo-ban');
+      var bs=banner(u.photo,u.cn,u.name).replace(/^style="|"$/g,'').replace(/&quot;/g,'"');
+      ban.setAttribute('style',bs);ban.innerHTML=bannerText(u.photo,u.cn,u.short);
+      modal.querySelector('#um-mo-title').innerHTML=esc(u.short)+(u.cn?'<span>'+esc(u.cn)+'</span>':'');
+      modal.querySelector('.um-mo-meta').textContent='📍 '+cityTH(u.city)+(u.tiers&&u.tiers.length?' · '+TIER_TH[u.tiers[0]]:'')+' · '+u.n+' หลักสูตร';
+      modal.querySelector('.um-mo-desc').textContent=u.desc||'';
+      modal.querySelector('.um-mo-desc').hidden=!u.desc;
+      moCount.textContent='แสดง '+fmt(res.total)+' หลักสูตรที่ตรงกับตัวกรอง';
+      var html=res.items.map(function(p){return progRow(p,false);}).join('');
+      if(append)moList.insertAdjacentHTML('beforeend',html);
+      else moList.innerHTML=html||'<div class="um-empty">ไม่พบหลักสูตรที่ตรงกับตัวกรอง</div>';
+      moMore.hidden=(res.page-1)*res.size+res.items.length>=res.total;
+    },function(){if(my===M.seq)moList.innerHTML='<div class="um-empty">โหลดข้อมูลไม่สำเร็จ ลองใหม่อีกครั้ง</div>';});
+  }
+  function closeUni(){
+    if(modal.hidden)return;
+    modal.hidden=true;document.documentElement.style.overflow='';
+    if(M.last&&M.last.focus)M.last.focus();
+  }
+  modal.addEventListener('click',function(e){
+    var c=e.target.closest('[data-close]');
+    if(c){
+      if(c.getAttribute('data-go')){e.preventDefault();closeUni();app.scrollIntoView({behavior:REDUCED?'auto':'smooth',block:'start'});return;}
+      closeUni();return;
+    }
+    if(e.target===moMore){M.page++;loadUni(true);}
+  });
+  var dT;
+  moQ.addEventListener('input',function(){clearTimeout(dT);dT=setTimeout(function(){M.dq=moQ.value.trim().slice(0,80);M.page=1;loadUni(false);},300);});
+  document.addEventListener('keydown',function(e){
+    if(modal.hidden)return;
+    if(e.key==='Escape'){closeUni();return;}
+    if(e.key==='Tab'){
+      var fs=Array.prototype.slice.call(modal.querySelectorAll('button:not([hidden]),input,a[href]')).filter(function(el){return el.offsetParent!==null;});
+      if(!fs.length)return;
+      var first=fs[0],last=fs[fs.length-1];
+      if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
+      else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
+    }
+  });
 })();
 </script>
