@@ -345,8 +345,8 @@
 }
 </style>
 
-<!-- data-api = Apps Script web app URL · data-logo = logo URL from WordPress · data-rate = baht per 1 yuan (same as thbPerRmb in Code.gs) -->
-<div id="uni-matcher" class="um" data-api="https://script.google.com/macros/s/AKfycbwlXLb5YqPvjANh6KZ696bh0EHlDRxFyq9u9UHyMMwUhFR7n5UJCFlp2GLxtwmx4mq1/exec" data-logo="" data-rate="4.6">
+<!-- data-api = Apps Script web app URL · data-logo-base = WordPress folder with "<university-name>-logo.png" files · data-rate = baht per 1 yuan (same as thbPerRmb in Code.gs) -->
+<div id="uni-matcher" class="um" data-api="https://script.google.com/macros/s/AKfycbwlXLb5YqPvjANh6KZ696bh0EHlDRxFyq9u9UHyMMwUhFR7n5UJCFlp2GLxtwmx4mq1/exec" data-logo="" data-logo-base="https://chinesechiwchiw.com/wp-content/uploads/2026/10/" data-rate="4.6">
 
 <!-- ═══ 1. HERO ═══ -->
 <section class="um-hero">
@@ -596,6 +596,7 @@
   var API=(root.getAttribute('data-api')||'').trim();
   var LOGO=(root.getAttribute('data-logo')||'').trim();
   var RATE=parseFloat(root.getAttribute('data-rate'))||4.6;
+  var LOGO_BASE=(root.getAttribute('data-logo-base')||'').trim();
   var SITE='https://chinesechiwchiw.com';
   var REDUCED=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var $=function(s,c){return (c||root).querySelector(s);};
@@ -643,7 +644,24 @@
   function reqTags(p){return (p.req||[]).filter(function(k){return REQ_TH[k];}).map(function(k){return '<span class="um-tag req">'+REQ_TH[k]+'</span>';}).join('');}
   function autoDesc(u){return u.short+' ตั้งอยู่ที่'+cityTH(u.city)+(u.prov&&u.prov!==u.city?' มณฑล '+u.prov:'')+' เปิดรับนักศึกษาต่างชาติ '+u.n+' หลักสูตรในระบบ'+(u.feeMin?' ค่าเรียนเริ่มต้นประมาณ '+yuan(u.feeMin)+'/ปี':'');}
   function credit(u,plain){var c=esc(u.credit||'');if(!c||!safeImg(u.photo))return '';var src=plain?'':safeImg(u.src);return '<span class="um-credit">'+(src?'<a href="'+esc(src)+'" target="_blank" rel="noopener">'+c+'</a>':c)+'</span>';}
-  function logo(u,cls){var l=safeImg(u.logo);return l?'<span class="'+cls+'"><img src="'+esc(l)+'" alt="" loading="lazy"></span>':'';}
+  // "South China University of Technology (SCUT)" -> "south-china-university-of-technology"
+  // (a trailing all-capitals code is dropped; "(East China)" is kept), matching the WordPress file names.
+  function slug(name){
+    return String(name||'').replace(/\s*\(([A-Z0-9&\- ]{2,12})\)\s*$/,'').toLowerCase().replace(/['’]/g,'').replace(/&/g,' and ').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+  }
+  function logo(u,cls){
+    var l=safeImg(u.logo),guess=!l&&/^https:\/\//.test(LOGO_BASE)&&slug(u.name);
+    if(guess)l=LOGO_BASE.replace(/\/?$/,'/')+guess+'-logo.png';
+    return l?'<span class="'+cls+'"><img class="um-logo-img" src="'+esc(l)+'" alt="" loading="lazy"'+(guess?' data-guess="1"':'')+'></span>':'';
+  }
+  // A guessed logo tries .png, then .jpg, then .gif; if none exists the white box is removed.
+  document.addEventListener('error',function(e){
+    var img=e.target;
+    if(!img||!img.classList||!img.classList.contains('um-logo-img'))return;
+    var next={png:'jpg',jpg:'gif'}[(img.src.match(/\.(png|jpg|gif)$/)||[])[1]];
+    if(img.getAttribute('data-guess')&&next)img.src=img.src.replace(/\.(png|jpg|gif)$/,'.'+next);
+    else if(img.parentNode&&img.parentNode.parentNode)img.parentNode.parentNode.removeChild(img.parentNode);
+  },true);
   function bannerText(photo,cn,short){return safeImg(photo)?'':'<span class="um-banzh">'+esc(cn||short)+'</span>';}
 
   /* ---------- API (the only way this page gets data) ---------- */
