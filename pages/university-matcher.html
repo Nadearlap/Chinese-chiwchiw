@@ -210,6 +210,7 @@
 #uni-matcher .um-fc i{font-style:normal;opacity:.7;font-size:.75rem;margin-left:3px}
 #uni-matcher .um-city-q{width:100%;border:1px solid #EDE5DC;border-radius:50px;padding:7px 14px;font-size:.88rem;background:#fff;color:#1A0A00;outline:0;height:auto;box-shadow:none}
 .um-cityscroll{max-height:150px;overflow-y:auto;padding:2px}
+@media (max-width:900px){.um-cityscroll{max-height:none;overflow:visible}}
 .um-field-g{border:1px solid #F1E6DA;border-radius:12px;background:#fff}
 .um-field-g summary{cursor:pointer;list-style:none;padding:9px 12px;font-family:'Kanit',sans-serif;font-weight:700;font-size:.9rem;color:#1A0A00;display:flex;justify-content:space-between;gap:8px}
 .um-field-g summary::-webkit-details-marker{display:none}
@@ -229,6 +230,18 @@
 .um-ugrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
 #uni-matcher .um-ucard{display:flex;flex-direction:column;text-align:left;width:100%;background:#fff;border:1px solid #EDE5DC;border-radius:18px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.05);cursor:pointer;padding:0;transition:transform .2s,box-shadow .2s;color:#5C4A3E;font-family:'Noto Sans Thai',sans-serif;font-size:1rem;line-height:1.7}
 #uni-matcher .um-ucard:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,.09)}
+.um-others{margin-top:18px;padding:20px 22px;border-radius:18px;background:#fff;border:1px solid #F0E4D8}
+.um-others h4{margin:0;font-family:'Kanit',sans-serif;font-size:1.05rem;font-weight:700;color:#1A0A00}
+.um-others p{margin:2px 0 12px;font-size:.85rem;color:#9A7A60}
+.um-olist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#uni-matcher .um-ochip{display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;border-radius:14px;border:1px solid #F0E4D8;background:#FFFBF7;cursor:pointer;text-align:left;font-family:'Noto Sans Thai',sans-serif;transition:border-color .2s,transform .2s,box-shadow .2s}
+#uni-matcher .um-ochip:hover{border-color:#FFB347;transform:translateY(-2px);box-shadow:0 8px 20px rgba(255,107,0,.12)}
+.um-ologo{flex:none;width:44px;height:44px;border-radius:12px;background:#fff;border:1px solid #F0E4D8;padding:4px;display:flex;align-items:center;justify-content:center;font-size:1.3rem}
+#uni-matcher .um-ologo img{width:100%!important;height:100%!important;max-width:none!important;object-fit:contain;margin:0!important}
+.um-otxt{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.4}
+.um-otxt b{font-family:'Kanit',sans-serif;font-weight:700;color:#1A0A00;font-size:.98rem}
+.um-otxt small{color:#9A7A60;font-size:.8rem}
+.um-oarr{flex:none;color:#FF6B00;font-weight:700}
 .um-powered{margin:22px auto 0;max-width:640px;text-align:center;font-size:.72rem;line-height:1.7;color:#A8968A;letter-spacing:.2px}
 .um-powered b{font-family:'Kanit',sans-serif;font-weight:600;letter-spacing:1.5px;color:#C9A98E}
 .um-uban{position:relative;height:150px;background:#2A1305 center/cover no-repeat;flex:none}
@@ -307,6 +320,9 @@
   .um-trust-sub{order:7;font-size:.74rem}
   .um-ai-tick{order:8}
   .um-spark{font-size:1rem}
+  .um-trust.um-stats{min-height:3.3em;align-content:flex-start}
+  .um-olist{grid-template-columns:1fr}
+  .um-others{padding:18px 16px}
   .um-orbit{width:124px;height:124px}.um-core{inset:36px;font-size:1.6rem}
   #uni-matcher .um-loading h3{font-size:1.2rem}
   .um-think{font-size:.86rem}.um-think li{padding:6px 10px}
@@ -697,6 +713,7 @@
     if(!img||!img.classList||!img.classList.contains('um-logo-img'))return;
     var next={png:'jpg',jpg:'gif'}[(img.src.match(/\.(png|jpg|gif)$/)||[])[1]];
     if(img.getAttribute('data-guess')&&next)img.src=img.src.replace(/\.(png|jpg|gif)$/,'.'+next);
+    else if(img.parentNode&&img.parentNode.classList.contains('um-ologo')){img.parentNode.classList.add('um-ologo-x');img.parentNode.textContent='🎓';}
     else if(img.parentNode&&img.parentNode.parentNode)img.parentNode.parentNode.removeChild(img.parentNode);
   },true);
   function bannerText(photo,cn,short){return safeImg(photo)?'':'<span class="um-banzh">'+esc(cn||short)+'</span>';}
@@ -943,15 +960,24 @@
       ((p.req||[]).length?'<div class="um-tags" style="margin-top:10px">'+reqTags(p)+'</div>':'')+
       (p.csca?'<a class="um-csca" href="'+SITE+'/csca/">📝 ต้องสอบ CSCA'+(p.cscaSub?': '+esc(p.cscaSub):'')+' →</a>':'')+
       (!exact?'<p class="um-gap">ยังไม่มีหลักสูตรที่ตรงทุกข้อ นี่คือตัวเลือกที่ใกล้เคียงที่สุด'+(missing.length?' สิ่งที่ยังไม่ตรง: '+esc(missing.join(' · ')):'')+'</p>':'')+
-      '</div></article>'+planHTML(res.plan)+
+      '</div></article>'+planHTML(res.plan)+othersHTML(res.others)+
       '<div class="um-readmore-wrap"><a class="um-btn um-btn-ghost um-readmore" href="#um-finder">📖 อ่านข้อมูลเพิ่มเติม ↓</a></div>'+
       leadHTML();
     bindLead();
+    $$('.um-ochip',resultsEl).forEach(function(b){b.addEventListener('click',function(){openUni(b.getAttribute('data-uni'),b);});});
     $('.um-readmore',resultsEl).addEventListener('click',function(e){
       e.preventDefault();
       $('#um-fq').value=u.short;F.q='';F.uni=u.name;setView('uni');runSearch(false);
       $('#um-finder').scrollIntoView({behavior:REDUCED?'auto':'smooth',block:'start'});
     });
+  }
+
+  function othersHTML(list){
+    if(!list||!list.length)return '';
+    return '<div class="um-others"><h4>🏫 มหาวิทยาลัยที่น่าสนใจเพิ่มเติม</h4><p>CHIWCHIW AI คัดมาให้อีก '+list.length+' แห่งที่ใกล้เคียงกับคำตอบของนักเรียน</p><div class="um-olist">'+
+      list.map(function(u){return '<button type="button" class="um-ochip" data-uni="'+esc(u.name)+'">'+(logo(u,'um-ologo')||'<span class="um-ologo um-ologo-x">🎓</span>')+
+        '<span class="um-otxt"><b>'+esc(u.short)+'</b><small>📍 '+esc(cityTH(u.city))+'</small></span><span class="um-oarr">→</span></button>';}).join('')+
+      '</div></div>';
   }
 
   function planHTML(pl){

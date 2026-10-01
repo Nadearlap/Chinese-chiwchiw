@@ -735,8 +735,18 @@ function bestMatch_(rows, profiles, a, deps) {
 
   var all = rows.filter(function (x) { return x.u === chosen.r.u; });
   var us = uniSummary_(chosen.r.u, all, profiles);
+  // Two more universities worth a look: the next best-scoring ones, names only (no course details).
+  var others = [], seen = {};
+  seen[chosen.r.u] = 1;
+  for (var o = 0; o < scored.length && others.length < 2; o++) {
+    var ou = scored[o].r.u;
+    if (seen[ou]) continue;
+    seen[ou] = 1;
+    var op = profileOf_(profiles, ou);
+    others.push({name: ou, short: shortName_(ou), cn: scored[o].r.cn, city: scored[o].r.city, logo: op.logo || ''});
+  }
   return {item: pub_(chosen.r), uni: {name: us.name, short: us.short, cn: us.cn, city: us.city, photo: us.photo, logo: us.logo, credit: us.credit, src: us.src, desc: us.desc, tiers: us.tiers},
-    gaps: chosen.g, exact: chosen.g.exact, ai: usedAI,
+    gaps: chosen.g, exact: chosen.g.exact, ai: usedAI, others: others,
     plan: {headline: plan.headline, why_fit: plan.why_fit, watch_out: plan.watch_out, prepare: plan.prepare, timeline: plan.timeline}};
 }
 
