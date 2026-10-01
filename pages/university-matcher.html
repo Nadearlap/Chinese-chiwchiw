@@ -133,6 +133,21 @@
 #uni-matcher a.um-csca{display:inline-block;margin-top:12px;font-family:'Kanit',sans-serif;font-weight:700;font-size:.9rem;color:#6B46C1!important}
 .um-gap{margin:14px 0 0;background:#FFFBF7;border-left:3px solid #6B46C1;border-radius:0 12px 12px 0;padding:10px 14px;font-size:.9rem;line-height:1.7}
 .um-readmore-wrap{text-align:center;margin-top:20px}
+.um-aib{display:inline-block;margin-left:8px;vertical-align:top;font-family:'Kanit',sans-serif;font-weight:800;font-size:.8rem;letter-spacing:.5px;padding:6px 14px;border-radius:50px;background:linear-gradient(135deg,#6B46C1,#9F7AEA);color:#fff}
+.um-plan{margin-top:22px;display:grid;gap:16px}
+.um-headline{margin:0;font-family:'Kanit',sans-serif;font-weight:700;font-size:clamp(1.05rem,2.2vw,1.25rem);line-height:1.6;color:#1A0A00;background:#FFFBF7;border-left:4px solid #FF6B00;border-radius:0 14px 14px 0;padding:14px 18px}
+.um-pgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.um-pbox{background:#fff;border:1px solid #EDE5DC;border-radius:16px;padding:18px 20px;min-width:0}
+#uni-matcher .um-pbox h4{font-size:1.05rem;font-weight:800;color:#1A0A00!important;margin-bottom:8px}
+.um-pbox ul{margin:0;padding-left:1.2em;font-size:.95rem;line-height:1.75}
+.um-pbox li+li{margin-top:4px}
+.um-pbox.um-warnbox{background:#FFFBF0;border-color:#F6DFC4}
+.um-steps{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:0;counter-reset:st}
+.um-steps li{counter-increment:st;position:relative;display:grid;grid-template-columns:minmax(0,150px) minmax(0,1fr);gap:4px 14px;padding:10px 0 10px 46px;border-left:2px solid #F1E6DA;margin-left:15px}
+.um-steps li:last-child{border-left-color:transparent}
+.um-steps li::before{content:counter(st,decimal-leading-zero);position:absolute;left:-16px;top:8px;width:30px;height:30px;border-radius:50%;background:#FF6B00;color:#fff;font-family:'Kanit',sans-serif;font-weight:800;font-size:.78rem;display:flex;align-items:center;justify-content:center}
+.um-steps b{font-family:'Kanit',sans-serif;font-weight:700;color:#C24E00;font-size:.95rem;line-height:1.6}
+.um-steps span{font-size:.95rem;line-height:1.7}
 
 /* lead form */
 .um-leadbox{margin-top:28px;background:#FFF8EF;border:1px solid #F6DFC4;border-radius:20px;padding:28px 30px}
@@ -248,7 +263,8 @@
   .um-hero .um-wrap{padding-top:40px;padding-bottom:96px}
   .um-logo{margin-bottom:32px}
   .um-app{padding:24px 18px;border-radius:18px}
-  .um-opts,.um-ugrid,.um-fgrid,.um-mfacts{grid-template-columns:1fr}
+  .um-opts,.um-ugrid,.um-fgrid,.um-mfacts,.um-pgrid{grid-template-columns:1fr}
+  .um-steps li{grid-template-columns:1fr;padding-left:34px}
   .um-mbody,.um-leadbox{padding:22px 18px}
   .um-prow{grid-template-columns:1fr}
   .um-pprice{text-align:left}
@@ -313,9 +329,9 @@
   <div class="um-hero-zh" aria-hidden="true">大学</div>
   <div class="um-wrap">
     <div class="um-logo"><a href="https://chinesechiwchiw.com/" class="um-logo-link"><span class="um-logo-txt">Chinese <span>Chiwchiw</span></span></a></div>
-    <span class="um-eyebrow">✦ University Matcher 2027 ✦</span>
+    <span class="um-eyebrow">✦ AI University Matcher 2027 ✦</span>
     <h1 class="um-h1">หามหาวิทยาลัยจีน<br><span>ที่ใช่สำหรับคุณ</span></h1>
-    <p class="um-lead">ตอบ 7 คำถามสั้น ๆ แล้วระบบจะเลือกมหาวิทยาลัยและสาขาที่เหมาะกับน้องที่สุดให้ 1 แห่ง พร้อมค่าใช้จ่าย เกณฑ์ HSK และวันปิดรับสมัคร</p>
+    <p class="um-lead">ตอบ 7 คำถามสั้น ๆ แล้ว AI จะเลือกมหาวิทยาลัยและสาขาที่เหมาะกับน้องที่สุดให้ 1 แห่ง บอกเหตุผล สิ่งที่ต้องเตรียม และ Timeline ว่าควรทำอะไรเมื่อไหร่</p>
     <div class="um-btns">
       <a class="um-btn um-btn-pri" href="#um-app">🧭 เริ่มจับคู่มหาวิทยาลัย</a>
       <a class="um-btn um-btn-glass" href="#um-finder">ดูรายชื่อมหาวิทยาลัยทั้งหมด ↓</a>
@@ -440,12 +456,12 @@
       <!-- 2b. Matching… -->
       <div class="um-loading" aria-live="polite">
         <div class="um-spin" aria-hidden="true"></div>
-        <h3>พี่ ๆ กำลังจับคู่ให้…</h3>
+        <h3>AI กำลังวิเคราะห์ให้น้อง…</h3>
         <ul class="um-think">
           <li>📚 คัดสาขาตามระดับ สาขา และภาษาที่เลือก</li>
           <li>📝 เทียบเกณฑ์ HSK / IELTS กับระดับของน้อง</li>
           <li>💰 เทียบค่าใช้จ่ายต่อปีกับงบ</li>
-          <li>🧭 เลือกมหาวิทยาลัยที่เหมาะที่สุด 1 แห่ง</li>
+          <li>✨ AI เลือกมหาวิทยาลัยที่เหมาะที่สุดและวาง Timeline ให้</li>
         </ul>
       </div>
 
@@ -726,7 +742,7 @@
 
     lastMatch={a:a,res:res};
     resultsEl.innerHTML=
-      '<div class="um-mhead"><span class="um-eyebrow">'+(exact?'✦ มหาวิทยาลัยที่เหมาะกับน้องที่สุด ✦':'✦ ตัวเลือกที่ใกล้เคียงที่สุด ✦')+'</span></div>'+
+      '<div class="um-mhead"><span class="um-eyebrow">'+(exact?'✦ มหาวิทยาลัยที่เหมาะกับน้องที่สุด ✦':'✦ ตัวเลือกที่ใกล้เคียงที่สุด ✦')+'</span>'+(res.ai?'<span class="um-aib">✨ วิเคราะห์โดย AI</span>':'')+'</div>'+
       '<article class="um-mcard"><div class="um-mban" '+banner(u.photo,u.cn,u.name)+'>'+bannerText(u.photo,u.cn,u.short)+'</div>'+
       '<div class="um-mbody"><span class="um-badge '+(exact?'um-b-exact':'um-b-close')+'">'+(exact?'🎯 ตรงเกณฑ์ที่น้องเลือก':'🧭 ใกล้เคียงที่สุด')+'</span>'+
       '<h3>'+esc(u.short)+'</h3><p class="um-zh">'+(u.cn?esc(u.cn)+' · ':'')+'📍 '+esc(cityTH(u.city))+'</p>'+
@@ -736,7 +752,7 @@
       (p.csca?'<a class="um-csca" href="'+SITE+'/csca/">📝 ต้องสอบ CSCA'+(p.cscaSub?': '+esc(p.cscaSub):'')+' →</a>':'')+
       (!exact?'<p class="um-gap">ยังไม่มีหลักสูตรที่ตรงทุกข้อ นี่คือตัวเลือกที่ใกล้เคียงที่สุด'+(missing.length?' สิ่งที่ยังไม่ตรง: '+esc(missing.join(' · ')):'')+'</p>':'')+
       (p.review?'<p class="um-gap" style="border-left-color:#FFB300">⚠ ข้อมูลบางส่วนของหลักสูตรนี้ทีมกำลังตรวจสอบ</p>':'')+
-      '</div></article>'+
+      '</div></article>'+planHTML(res.plan)+
       '<div class="um-readmore-wrap"><a class="um-btn um-btn-ghost um-readmore" href="#um-finder">📖 อ่านข้อมูลเพิ่มเติม ↓</a></div>'+
       leadHTML();
     bindLead();
@@ -745,6 +761,18 @@
       $('#um-fq').value=u.short;F.q='';F.uni=u.name;setView('uni');runSearch(false);
       $('#um-finder').scrollIntoView({behavior:REDUCED?'auto':'smooth',block:'start'});
     });
+  }
+
+  function planHTML(pl){
+    if(!pl)return '';
+    var li=function(arr){return (arr||[]).map(function(t){return '<li>'+esc(t)+'</li>';}).join('');};
+    return '<div class="um-plan">'+
+      (pl.headline?'<p class="um-headline">'+esc(pl.headline)+'</p>':'')+
+      '<div class="um-pgrid"><div class="um-pbox"><h4>💡 ทำไมที่นี่เหมาะกับน้อง</h4><ul>'+li(pl.why_fit)+'</ul></div>'+
+      '<div class="um-pbox"><h4>📝 สิ่งที่ควรเตรียม</h4><ul>'+li(pl.prepare)+'</ul></div></div>'+
+      (pl.watch_out&&pl.watch_out.length?'<div class="um-pbox um-warnbox"><h4>⚠ ข้อควรรู้</h4><ul>'+li(pl.watch_out)+'</ul></div>':'')+
+      (pl.timeline&&pl.timeline.length?'<div class="um-pbox"><h4>🗓️ Timeline ของน้อง</h4><ol class="um-steps">'+pl.timeline.map(function(t){return '<li><b>'+esc(t.when)+'</b><span>'+esc(t.task)+'</span></li>';}).join('')+'</ol></div>':'')+
+      '</div>';
   }
 
   function leadHTML(){

@@ -25,6 +25,16 @@
  *
  * Leads from the email form are appended to the "Matcher Leads" tab (created
  * automatically). Sending the report email is not set up yet.
+ *
+ * AI MATCHING (Claude by Anthropic)
+ * The rules below shortlist ~15 programmes; Claude picks the best one from that
+ * shortlist and writes the reasons, preparation steps and timeline in Thai.
+ * It only sees the shortlisted, student-facing fields — never the whole sheet.
+ * 1. Get an API key at https://console.anthropic.com → API Keys.
+ * 2. Apps Script → Project Settings → Script properties → Add:
+ *      ANTHROPIC_API_KEY = sk-ant-…
+ * Without a key (or if the AI fails, refuses, or the daily limit is reached)
+ * the page still shows the rule-based best match with a standard plan.
  */
 
 var CONFIG = {
@@ -35,7 +45,12 @@ var CONFIG = {
   thbPerRmb: 4.6,          // keep in sync with data-rate on the page
   pageSize: 12,
   maxPageSize: 24,
-  cacheSeconds: 600        // sheet edits show on the site within ~10 minutes
+  cacheSeconds: 600,       // sheet edits show on the site within ~10 minutes
+  aiModel: 'claude-opus-5-5',
+  aiEffort: 'low',         // low keeps answers fast; medium/high think longer and cost more
+  aiShortlist: 15,
+  aiDailyLimit: 300,       // AI calls per day; after that the rule-based plan is used
+  aiCacheSeconds: 21600    // same answers within 6 hours reuse the saved AI result
 };
 
 /* ───────────── reference tables ───────────── */
@@ -88,7 +103,7 @@ function doGet(e) {
   var p = (e && e.parameter) || {};
   var out;
   try {
-    out = handle_(p.action || '', p, getData_());
+    out = handle_(p.action || '', p, getData_(), {ai: aiPlan_, today: Utilities.formatDate(new Date(), 'Asia/Bangkok', 'yyyy-MM-dd')});
   } catch (err) {
     out = {error: 'unavailable'};
   }
@@ -169,12 +184,12 @@ function safe_(v) { return /^[=+\-@]/.test(v) ? "'" + v : v; }
 
 /* ───────────── pure logic (also runs in the preview) ───────────── */
 
-function handle_(action, p, data) {
+function handle_(action, p, data, deps) {
   var f = parseJSON_(p.f), rows = data.rows;
   if (action === 'meta') return meta_(rows);
   if (action === 'search') return search_(rows, data.profiles, f);
   if (action === 'uni') return uniDetail_(rows, data.profiles, String(p.name || ''), f);
-  if (action === 'match') return bestMatch_(rows, data.profiles, parseJSON_(p.a));
+  if (action === 'match') return bestMatch_(rows, data.profiles, parseJSON_(p.a), deps || {});
   return {error: 'unknown action'};
 }
 
@@ -356,14 +371,15 @@ function uniDetail_(rows, profiles, name, f) {
     items: list.slice((pg.page - 1) * pg.size, pg.page * pg.size).map(pub_)};
 }
 
-// Scores every programme at the chosen level; the lowest penalty wins.
-// Returns exactly one programme. exact=false means nothing met every condition.
-function bestMatch_(rows, profiles, a) {
+// Scores every programme at the chosen level (lower penalty = better fit), keeps a
+// shortlist, then lets the AI pick one. Returns exactly one programme.
+// exact=false means nothing met every condition, so the closest option is shown.
+function bestMatch_(rows, profiles, a, deps) {
   var lvMap = {ug: 'UG', ma: 'PG', phd: 'PHD'}, want = lvMap[a.deg] || 'UG';
   var groups = arr_(a.groups), text = String(a.text || '').toLowerCase().trim().slice(0, 80);
   var anyMajor = !!a.anyMajor || (!groups.length && !text);
   var myHsk = +a.hsk || 0, myIelts = +a.ielts || 0, budget = +a.budget || 0, cities = arr_(a.cities);
-  var best = null;
+  var scored = [];
   rows.forEach(function (r) {
     if (r.lv !== want) return;
     var g = {}, pen = 0;
@@ -389,12 +405,173 @@ function bestMatch_(rows, profiles, a) {
     if (r.open) pen -= 2;
     if (r.review) pen += 1;
     if (useZh && r.hsk && myHsk > r.hsk) pen -= 2;
-    g.exact = g.major && g.lang && !g.hskGap && !g.ieltsGap && !g.over && g.city;
-    if (!best || pen < best.pen || (pen === best.pen && (cost || 1e9) < (best.cost || 1e9))) best = {pen: pen, cost: cost, r: r, g: g};
+    g.exact = g.major && g.lang && !g.hskGap && !g.ieltsGap && !g.over && g.city && !g.testUnknown;
+    scored.push({pen: pen, cost: cost || 1e9, r: r, g: g});
   });
-  if (!best) return {item: null};
-  var all = rows.filter(function (x) { return x.u === best.r.u; });
-  var u = uniSummary_(best.r.u, all, profiles);
-  return {item: pub_(best.r), uni: {name: u.name, short: u.short, cn: u.cn, city: u.city, photo: u.photo, desc: u.desc, tiers: u.tiers},
-    gaps: best.g, exact: best.g.exact};
+  if (!scored.length) return {item: null};
+  scored.sort(function (x, y) { return x.pen - y.pen || x.cost - y.cost; });
+
+  var shortlist = [], perUni = {};
+  for (var i = 0; i < scored.length && shortlist.length < CONFIG.aiShortlist; i++) {
+    var u = scored[i].r.u;
+    if ((perUni[u] || 0) >= 3) continue;
+    perUni[u] = (perUni[u] || 0) + 1;
+    shortlist.push(scored[i]);
+  }
+
+  var chosen = shortlist[0], plan = null, usedAI = false;
+  if (deps.ai) {
+    try {
+      var res = deps.ai(a, shortlist, deps.today || '');
+      if (res && res.plan) {
+        for (var k = 0; k < shortlist.length; k++) if (shortlist[k].r.id === res.plan.pick_id) { chosen = shortlist[k]; break; }
+        if (chosen.r.id === res.plan.pick_id) { plan = res.plan; usedAI = true; }
+      }
+    } catch (err) {}
+  }
+  if (!plan) plan = fallbackPlan_(chosen.r, chosen.g, a, deps.today || '');
+
+  var all = rows.filter(function (x) { return x.u === chosen.r.u; });
+  var us = uniSummary_(chosen.r.u, all, profiles);
+  return {item: pub_(chosen.r), uni: {name: us.name, short: us.short, cn: us.cn, city: us.city, photo: us.photo, desc: us.desc, tiers: us.tiers},
+    gaps: chosen.g, exact: chosen.g.exact, ai: usedAI,
+    plan: {headline: plan.headline, why_fit: plan.why_fit, watch_out: plan.watch_out, prepare: plan.prepare, timeline: plan.timeline}};
+}
+
+var MONTH_TH = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+var MONTH_EN = {jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5, jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11};
+
+function deadlineMonth_(dl) {
+  var m = String(dl || '').toLowerCase().match(/(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/);
+  return m ? MONTH_EN[m[1]] : -1;
+}
+
+// Rule-based plan in the same shape the AI returns; used when the AI is unavailable.
+function fallbackPlan_(r, g, a, today) {
+  var short = shortName_(r.u), why = [], watch = [], prep = [], tl = [];
+  if (g.major) why.push('สาขา ' + r.prog + ' ตรงกับสายที่น้องสนใจ');
+  if (g.lang) why.push(r.lang === 'en' ? 'เรียนเป็นภาษาอังกฤษ ตรงกับที่น้องเลือก' : 'เรียนเป็นภาษาจีน ได้ทั้งปริญญาและภาษาไปพร้อมกัน');
+  if (g.thb && !g.over && a.budget) why.push('ค่าใช้จ่ายต่อปีอยู่ในงบที่น้องตั้งไว้');
+  if (r.sch) why.push('มีทุนการศึกษาให้ยื่นสมัคร');
+  if (!why.length) why.push('เป็นตัวเลือกที่ใกล้เคียงกับคำตอบของน้องที่สุดในระบบตอนนี้');
+  if (!g.major) watch.push('สาขานี้ไม่ตรงกลุ่มที่น้องเลือกทั้งหมด ลองดูสาขาอื่นของมหาวิทยาลัยนี้ด้วย');
+  if (g.hskGap) watch.push('ต้องอัป HSK อีก ' + g.hskGap + ' ระดับก่อนยื่นสมัคร');
+  if (g.ieltsGap) watch.push('ต้องได้ IELTS เพิ่มอีก ' + g.ieltsGap + ' ก่อนยื่นสมัคร');
+  if (g.testUnknown) watch.push(g.useZh ? 'หลักสูตรนี้สอนเป็นภาษาจีน ต้องใช้ผล HSK' : 'หลักสูตรนี้สอนเป็นภาษาอังกฤษ ต้องใช้ผล IELTS หรือ TOEFL');
+  if (g.over) watch.push('ค่าใช้จ่ายเกินงบที่ตั้งไว้ประมาณ ' + Math.round(g.over / 1000) * 1000 + ' บาทต่อปี');
+  if (!g.city) watch.push('มหาวิทยาลัยนี้อยู่นอกเมืองที่น้องเลือก');
+  if (r.review) watch.push('ข้อมูลบางส่วนของหลักสูตรนี้ทีมกำลังตรวจสอบ');
+  var kk = r.hskk ? ' และ HSKK ' + (r.hskkLv || '') : '';
+  if (r.lang !== 'en' && r.hsk) prep.push(g.hskGap || g.testUnknown ? 'เตรียมสอบ HSK ' + r.hsk + kk + ' ให้ได้คะแนนตามเกณฑ์' : 'ถ้ายังไม่มีใบผล HSK ' + r.hsk + kk + ' ให้สอบก่อนยื่นสมัคร (ผลสอบใช้ได้ 2 ปี)');
+  if (r.lang !== 'zh' && r.ielts) prep.push(g.ieltsGap || g.testUnknown ? 'เตรียมสอบ IELTS ให้ได้ ' + r.ielts + ' ขึ้นไป' + (r.toefl ? ' (หรือ TOEFL ' + r.toefl + ')' : '') : 'ถ้ายังไม่มีใบผล IELTS ' + r.ielts + ' ขึ้นไป ให้สอบก่อนยื่นสมัคร (ผลสอบใช้ได้ 2 ปี)');
+  if (r.csca) prep.push('เตรียมสอบ CSCA' + (r.cscaSub ? ' วิชา ' + r.cscaSub : ''));
+  prep.push('เตรียมเอกสารหลัก: หนังสือเดินทาง ใบแสดงผลการเรียน และเอกสารที่มหาวิทยาลัยกำหนด');
+  if (r.sch) prep.push('เตรียมเอกสารยื่นทุนไปพร้อมกับใบสมัคร');
+  var dm = deadlineMonth_(r.dl);
+  var dLabel = dm > -1 ? MONTH_TH[dm] : 'วันปิดรับสมัคร';
+  tl.push({when: 'ตอนนี้', task: 'คุยกับทีมเพื่อยืนยันหลักสูตรและวางแผนการสอบ'});
+  if (r.lang !== 'en' && r.hsk) tl.push({when: g.hskGap ? 'ภายใน 3–6 เดือน' : 'ภายใน 1–3 เดือน', task: (g.hskGap ? 'เรียนเพิ่มและสอบ HSK ' : 'สอบหรือเตรียมใบผล HSK ') + r.hsk + (r.hskk ? ' และ HSKK' : '')});
+  if (r.lang !== 'zh' && r.ielts) tl.push({when: g.ieltsGap ? 'ภายใน 3–6 เดือน' : 'ภายใน 1–3 เดือน', task: 'สอบหรือเตรียมใบผล IELTS ' + r.ielts + ' ขึ้นไป'});
+  if (r.csca) tl.push({when: 'ก่อนยื่นสมัคร', task: 'สอบ CSCA และเก็บผลสอบไว้ยื่น'});
+  tl.push({when: '1–2 เดือนก่อน' + (dm > -1 ? ' ' + dLabel : 'ปิดรับ'), task: 'รวบรวมเอกสารและยื่นใบสมัคร' + (r.sch ? ' พร้อมใบสมัครทุน' : '')});
+  tl.push({when: dLabel + (r.past ? ' (อ้างอิงรอบก่อน)' : ''), task: 'ปิดรับสมัคร' + (r.past ? ' รอบใหม่มักประกาศช่วงเวลาใกล้เคียงเดิม ทีมจะยืนยันให้' : '')});
+  tl.push({when: 'หลังได้รับผล', task: 'ขอวีซ่านักเรียน เตรียมที่พัก และเข้าร่วม Pre-Departure กับทีม'});
+  return {
+    headline: (g.exact ? short + ' สาขา ' + r.prog + ' ตรงกับเป้าหมายของน้องมากที่สุดจากคำตอบทั้งหมด' : short + ' สาขา ' + r.prog + ' เป็นตัวเลือกที่ใกล้เคียงที่สุด แม้ยังมีบางข้อที่ต้องเตรียมเพิ่ม'),
+    why_fit: why.slice(0, 4), watch_out: watch.slice(0, 3), prepare: prep.slice(0, 5), timeline: tl.slice(0, 7)
+  };
+}
+
+/* ───────────── AI (Apps Script only) ───────────── */
+
+var AI_SYSTEM = [
+  'You are the University Matcher for Chinese Chiwchiw, a Thai consultancy that helps Thai students and their parents study in China.',
+  'You receive one student\'s quiz answers and a shortlist of real programmes from the company database. Pick the ONE programme that fits this student best and write a short personal plan in Thai.',
+  '',
+  'How to choose: first the student\'s chosen fields of study, then whether they meet the language requirement or can realistically close the gap before the deadline, then budget, preferred cities and how much they want a scholarship. "gaps" is the rule-based check for each programme; use it, but you may pick a programme with a small gap if it is clearly the better fit, and say so in watch_out.',
+  '',
+  'Facts: use only the data given for each programme. Never invent fees, requirements, rankings, deadlines, scholarships or anything about campus life. If something is missing, say the team will confirm it (ทีมจะยืนยันให้). Never promise admission, a visa or a scholarship; "scholarship available" means the student can apply, not that they will receive it. If cycle_past is true, say the dates are from the previous round and the new round is usually announced around the same time.',
+  '',
+  'Timeline: 5 to 7 steps from today (given) until departure, based on the deadline. Write months as Thai abbreviations with Christian-era years, for example ก.ย. 2027. Cover the language test, CSCA if required, documents, the application, the scholarship application if available, and visa and pre-departure. Keep the steps in order.',
+  '',
+  'Writing: Thai, warm and encouraging, like an older sibling (พี่ ๆ ชิวชิว) talking to the student (น้อง). Short sentences, one idea per bullet, at most two sentences each, no emoji, no markdown. watch_out lists honest gaps (language, budget, city, data still being verified) and is an empty array when there are none.'
+].join('\n');
+
+var AI_SCHEMA_BASE = {
+  type: 'object', additionalProperties: false,
+  required: ['pick_id', 'headline', 'why_fit', 'watch_out', 'prepare', 'timeline'],
+  properties: {
+    pick_id: {type: 'string', description: 'id of the chosen programme, copied exactly from the shortlist'},
+    headline: {type: 'string', description: 'one Thai sentence saying why this is the best fit'},
+    why_fit: {type: 'array', items: {type: 'string'}, description: '3 or 4 reasons this programme fits this student'},
+    watch_out: {type: 'array', items: {type: 'string'}, description: '0 to 3 honest gaps or caveats'},
+    prepare: {type: 'array', items: {type: 'string'}, description: '3 to 5 concrete preparation steps'},
+    timeline: {type: 'array', items: {type: 'object', additionalProperties: false, required: ['when', 'task'],
+      properties: {when: {type: 'string'}, task: {type: 'string'}}}, description: '5 to 7 steps in order'}
+  }
+};
+
+function aiPlan_(a, shortlist, today) {
+  var key = PropertiesService.getScriptProperties().getProperty('ANTHROPIC_API_KEY');
+  if (!key) return null;
+  var cache = CacheService.getScriptCache();
+  var ck = 'ai:' + Utilities.base64EncodeWebSafe(Utilities.computeDigest(Utilities.DigestAlgorithm.MD5, JSON.stringify(a) + '|' + shortlist.map(function (c) { return c.r.id; }).join(',')));
+  var hit = cache.get(ck);
+  if (hit) return {plan: JSON.parse(hit)};
+  if (!takeAiQuota_(today)) return null;
+
+  var candidates = shortlist.map(function (c) {
+    var r = c.r;
+    return {id: r.id, university: r.u, city: r.city, level: r.lv, programme: r.prog + (r.track ? ' (' + r.track + ')' : ''), school: r.school,
+      teaching_language: r.lang, duration_years: r.dur, tuition_rmb_per_year: r.tu || null, total_rmb_per_year: r.tot || null,
+      estimated_thb_per_year: c.g.thb || null, hsk_requirement: r.hskTxt || (r.hsk ? 'HSK ' + r.hsk : null), hskk_level: r.hskk ? (r.hskkLv || 'required') : null,
+      ielts_min: r.ielts || null, toefl_min: r.toefl || null, csca_required: r.csca, csca_subjects: r.cscaSub || null,
+      scholarship_available: r.sch, deadline: r.dl || null, cycle: r.cyc || null, cycle_past: r.past, data_being_verified: r.review,
+      gaps: {major_match: c.g.major, language_match: c.g.lang, hsk_levels_short: c.g.hskGap || 0, ielts_short: c.g.ieltsGap || 0,
+        language_test_not_asked: !!c.g.testUnknown, over_budget_thb: c.g.over || 0, city_match: c.g.city}};
+  });
+  var student = {degree: {ug: 'bachelor', ma: 'master', phd: 'phd'}[a.deg], fields: arr_(a.groups), unsure_of_field: !!a.anyMajor,
+    typed_field: String(a.text || '').slice(0, 80), teaching_language_wanted: a.lang, hsk_level: a.lang !== 'en' ? (+a.hsk || 0) : null,
+    ielts: a.lang !== 'zh' ? (+a.ielts || 0) : null, budget_thb_per_year: +a.budget || 'no limit', cities: arr_(a.cities),
+    scholarship: {must: 'very important', nice: 'nice to have', no: 'not needed'}[a.schol] || ''};
+
+  var schema = JSON.parse(JSON.stringify(AI_SCHEMA_BASE));
+  schema.properties.pick_id['enum'] = shortlist.map(function (c) { return c.r.id; });
+  var body = {
+    model: CONFIG.aiModel,
+    max_tokens: 8000,
+    fallbacks: 'default',
+    output_config: {effort: CONFIG.aiEffort, format: {type: 'json_schema', schema: schema}},
+    system: AI_SYSTEM,
+    messages: [{role: 'user', content: 'Today: ' + today + '\n\nStudent:\n' + JSON.stringify(student) + '\n\nShortlist:\n' + JSON.stringify(candidates)}]
+  };
+  var resp = UrlFetchApp.fetch('https://api.anthropic.com/v1/messages', {
+    method: 'post', contentType: 'application/json', muteHttpExceptions: true,
+    headers: {'x-api-key': key, 'anthropic-version': '2023-06-01', 'anthropic-beta': 'server-side-fallback-2026-07-01'},
+    payload: JSON.stringify(body)
+  });
+  if (resp.getResponseCode() !== 200) { console.warn('AI HTTP ' + resp.getResponseCode() + ': ' + resp.getContentText().slice(0, 300)); return null; }
+  var msg = JSON.parse(resp.getContentText());
+  if (msg.stop_reason === 'refusal' || msg.stop_reason === 'max_tokens') return null;
+  var txt = (msg.content || []).filter(function (b) { return b.type === 'text'; }).map(function (b) { return b.text; }).join('');
+  var plan = JSON.parse(txt);
+  plan.why_fit = arr_(plan.why_fit).slice(0, 4);
+  plan.watch_out = arr_(plan.watch_out).slice(0, 3);
+  plan.prepare = arr_(plan.prepare).slice(0, 5);
+  plan.timeline = (Array.isArray(plan.timeline) ? plan.timeline : []).slice(0, 7).map(function (t) { return {when: String(t.when || ''), task: String(t.task || '')}; });
+  try { cache.put(ck, JSON.stringify(plan), CONFIG.aiCacheSeconds); } catch (err) {}
+  return {plan: plan};
+}
+
+function takeAiQuota_(today) {
+  var lock = LockService.getScriptLock();
+  try { lock.waitLock(3000); } catch (err) { return false; }
+  try {
+    var props = PropertiesService.getScriptProperties(), k = 'aiCount:' + today, n = +(props.getProperty(k) || 0);
+    if (n >= CONFIG.aiDailyLimit) return false;
+    props.setProperty(k, String(n + 1));
+    return true;
+  } finally {
+    lock.releaseLock();
+  }
 }
