@@ -190,7 +190,13 @@ function buildData_(ss) {
     if (n === CONFIG.dataSheet || n === CONFIG.leadsSheet || SKIP_TABS_[n] || t.getLastRow() < 2) return;
     var head = t.getRange(1, 1, 1, Math.max(1, t.getLastColumn())).getDisplayValues()[0].join('|').toLowerCase();
     if (!/(^|\|)university( name)?( \((en|english)\))?(\||$)/.test(head) || !/description|logo|photo/.test(head)) return;
-    mergeProfiles_(data.profiles, buildProfiles_(t.getDataRange().getDisplayValues()));
+    // Cells that show a picture via =IMAGE("https://…") display as empty, so use the link inside the formula.
+    var range = t.getDataRange(), vals = range.getDisplayValues(), forms = range.getFormulas();
+    for (var i = 0; i < vals.length; i++) for (var j = 0; j < vals[i].length; j++) {
+      var m = !vals[i][j] && forms[i][j] && forms[i][j].match(/IMAGE\(\s*"([^"]+)"/i);
+      if (m) vals[i][j] = m[1];
+    }
+    mergeProfiles_(data.profiles, buildProfiles_(vals));
   });
   return data;
 }
