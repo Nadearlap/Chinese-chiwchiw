@@ -150,7 +150,7 @@ function getData_() {
   // counts as profile data, whatever the tab is called.
   ss.getSheets().forEach(function (t) {
     var n = t.getName();
-    if (n === CONFIG.dataSheet || n === CONFIG.leadsSheet || n === 'Profile Check' || t.getLastRow() < 2) return;
+    if (n === CONFIG.dataSheet || n === CONFIG.leadsSheet || n === 'Profile Check' || n === 'Data Check' || t.getLastRow() < 2) return;
     var head = t.getRange(1, 1, 1, Math.max(1, t.getLastColumn())).getDisplayValues()[0].join('|').toLowerCase();
     if (!/(^|\|)university( name)?( \((en|english)\))?(\||$)/.test(head) || !/description|logo|photo/.test(head)) return;
     mergeProfiles_(data.profiles, buildProfiles_(t.getDataRange().getDisplayValues()));
@@ -160,6 +160,37 @@ function getData_() {
   parts['um:n'] = String(count);
   try { cache.putAll(parts, CONFIG.cacheSeconds); } catch (err) {}
   return data;
+}
+
+// Run from the Apps Script editor (select checkData → Run). Writes a "Data Check" tab
+// explaining how many Master Data rows the website uses and why the others are skipped.
+function checkData() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet(), values = ss.getSheetByName(CONFIG.dataSheet).getDataRange().getDisplayValues();
+  var st = {blank: 0, missingName: 0, duplicate: 0, cannotApply: {}, skippedUnis: {}};
+  var rows = buildRows_(values, st), used = {};
+  rows.forEach(function (r) { used[r.u] = (used[r.u] || 0) + 1; });
+  var out = [['Check', 'Count', 'Notes'],
+    ['Rows in Master Data (below the header)', values.length - 1, ''],
+    ['Rows shown on the website', rows.length, Object.keys(used).length + ' universities'],
+    ['Skipped: completely empty rows', st.blank, 'Normal — the sheet has spare empty rows'],
+    ['Skipped: University or Programme / Major is empty', st.missingName, 'Fill both columns to include these rows'],
+    ['Skipped: marked as duplicate', st.duplicate, 'From the "Duplicate Check" column']];
+  Object.keys(st.cannotApply).forEach(function (v) {
+    out.push(['Skipped: "Chinese Chiwchiw Can Apply?" = ' + v, st.cannotApply[v], 'Only "Yes" rows are shown (CONFIG.onlyCanApply)']);
+  });
+  out.push(['', '', ''], ['Universities on the website', 'Programmes', '']);
+  Object.keys(used).sort().forEach(function (u) { out.push([u, used[u], '']); });
+  var skippedNames = Object.keys(st.skippedUnis).filter(function (u) { return !used[u]; }).sort();
+  if (skippedNames.length) {
+    out.push(['', '', ''], ['Universities hidden by "Can Apply?"', 'Rows', '']);
+    skippedNames.forEach(function (u) { out.push([u, st.skippedUnis[u], '']); });
+  }
+  var sh = ss.getSheetByName('Data Check') || ss.insertSheet('Data Check');
+  sh.clear();
+  sh.getRange(1, 1, out.length, 3).setValues(out);
+  sh.setFrozenRows(1);
+  sh.autoResizeColumn(1);
+  ss.toast(rows.length + ' of ' + (values.length - 1) + ' rows are shown on the website. See the Data Check tab.', 'Data Check', 10);
 }
 
 // Run from the Apps Script editor (select checkProfiles → Run). Writes a "Profile Check"
@@ -234,7 +265,7 @@ function codeOf_(u) {
 }
 function shortName_(u) { return u.replace(/\s*\([^)]*\)\s*$/, ''); }
 
-function buildRows_(values) {
+function buildRows_(values, stats) {
   var H = {};
   values[0].forEach(function (h, i) { H[String(h).trim().toLowerCase()] = i; });
   var out = [];
@@ -242,9 +273,16 @@ function buildRows_(values) {
     var r = values[k];
     var g = function (n) { var i = H[n.toLowerCase()]; return i == null ? '' : String(r[i] == null ? '' : r[i]).trim(); };
     var uni = g('University'), prog = g('Programme / Major');
-    if (!uni || !prog) continue;
-    if (CONFIG.onlyCanApply && g('Chinese Chiwchiw Can Apply?') && !yes_(g('Chinese Chiwchiw Can Apply?'))) continue;
-    if (/dup/i.test(g('Duplicate Check'))) continue;
+    if (!uni || !prog) {
+      if (stats) { if (r.join('').trim()) stats.missingName++; else stats.blank++; }
+      continue;
+    }
+    var can = g('Chinese Chiwchiw Can Apply?');
+    if (CONFIG.onlyCanApply && can && !yes_(can)) {
+      if (stats) { stats.cannotApply[can] = (stats.cannotApply[can] || 0) + 1; stats.skippedUnis[uni] = (stats.skippedUnis[uni] || 0) + 1; }
+      continue;
+    }
+    if (/dup/i.test(g('Duplicate Check'))) { if (stats) stats.duplicate++; continue; }
 
     var dl = g('Degree Level').toLowerCase(), pid = g('Programme ID').toUpperCase();
     var lv = /language/.test(dl) ? 'LANG' : /doctor|phd/.test(dl) ? 'PHD' : /master|postgrad/.test(dl) ? 'PG' : /under|bachelor/.test(dl) ? 'UG' :
