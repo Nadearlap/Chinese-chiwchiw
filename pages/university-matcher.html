@@ -33,11 +33,11 @@
 /* ═══ 1. HERO ═══ */
 .um-hero{position:relative;color:#5C4A3E;overflow:hidden;background:radial-gradient(ellipse at 0% 0%,#FFFCF7 0%,rgba(255,252,247,0) 55%),radial-gradient(ellipse at 0% 100%,#FFE6D2 0%,rgba(255,230,210,0) 60%),radial-gradient(ellipse at 78% 50%,#FFF3CC 0%,rgba(255,243,204,0) 58%),#FFF6EC}
 .um-hero .um-wrap{position:relative;padding-top:48px;padding-bottom:104px}
-.um-hero-grid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);align-items:center;gap:24px}
+.um-hero-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);align-items:center;gap:32px}
 .um-hero-txt{min-width:0;position:relative;z-index:1}
 .um-hero-art{min-width:0;position:relative;display:flex;justify-content:center;align-items:center}
-.um-hero-art::before{content:"";position:absolute;left:50%;top:50%;width:115%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(255,179,71,.34) 0%,rgba(255,200,120,.16) 40%,rgba(255,220,160,0) 68%);pointer-events:none}
-.um-hero-art img{position:relative;z-index:1;display:block;width:112%;max-width:760px;height:auto;margin:-10px -6% -20px 0}
+.um-hero-art::before{content:"";position:absolute;left:50%;top:50%;width:100%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(255,179,71,.34) 0%,rgba(255,200,120,.16) 40%,rgba(255,220,160,0) 68%);pointer-events:none}
+.um-hero-art img{position:relative;z-index:1;display:block;width:88%;max-width:500px;height:auto}
 .um-flight{position:absolute;left:-8%;top:2%;width:70%;height:auto;opacity:.75;pointer-events:none}
 .um-spark{position:absolute;color:#FFB347;font-size:1.4rem;line-height:1;pointer-events:none;opacity:.85}
 .um-s1{left:4%;top:58%}.um-s2{right:6%;top:4%;font-size:1rem;color:#FF6B00;opacity:.6}
@@ -46,8 +46,8 @@
 #uni-matcher .um-btn-lg{font-size:1.08rem;padding:17px 38px}
 #uni-matcher .um-textlink{font-family:'Kanit',sans-serif;font-weight:700;font-size:1rem;color:#1A0A00!important;border-bottom:2px solid rgba(26,10,0,.15);padding-bottom:2px;transition:border-color .2s}
 #uni-matcher .um-textlink:hover{border-color:#FF6B00}
-.um-trust{margin:30px 0 0;font-family:'Kanit',sans-serif;font-weight:600;font-size:.98rem;color:#5C4A3E;min-height:1.6em}
-.um-trust b{font-weight:800;color:#1A0A00}
+.um-trust{margin:30px 0 0;font-family:'Kanit',sans-serif;font-weight:600;font-size:.95rem;color:#7A6050;min-height:1.6em;display:flex;flex-wrap:wrap;align-items:baseline}
+.um-trust b{font-weight:800;color:#1A0A00;font-size:1.65rem;margin-right:4px;font-variant-numeric:tabular-nums}
 .um-trust i{font-style:normal;color:#C9AE97;margin:0 10px}
 .um-trust-sub{margin:4px 0 0;font-size:.8rem;color:#9A7A60}
 #uni-matcher .um-h1{font-size:clamp(1.9rem,3.5vw,3.1rem);font-weight:900;line-height:1.28;color:#1A0A00!important;margin:12px 0 0}
@@ -265,14 +265,15 @@
   .um-wrap{padding:0 16px}
   .um-sec{padding:64px 0}
   .um-hero .um-wrap{padding-top:26px;padding-bottom:84px}
-  .um-hero-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6px}
+  .um-hero-grid{grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:6px}
   .um-kicker{font-size:.58rem;letter-spacing:1px}
   #uni-matcher .um-h1{font-size:1.12rem;line-height:1.35;margin-top:6px}
   .um-hero .um-lead{font-size:.72rem;line-height:1.6;margin:8px 0 12px}
   .um-cta-row{gap:8px}
   #uni-matcher .um-hero .um-btn-lg{width:100%;font-size:.78rem;padding:9px 10px}
   #uni-matcher .um-textlink{font-size:.72rem}
-  .um-trust{font-size:.62rem;margin-top:12px;line-height:1.7}
+  .um-trust{font-size:.6rem;margin-top:12px;line-height:1.5}
+  .um-trust b{font-size:.95rem;margin-right:2px}
   .um-trust i{margin:0 4px}
   .um-trust-sub{font-size:.55rem}
   .um-spark{font-size:.9rem}
@@ -647,11 +648,15 @@
 
   /* ---------- API (the only way this page gets data) ---------- */
   var apiOK=API&&!/PASTE/i.test(API);
+  var MEMO={};
   function api(action,params){
     if(!apiOK)return Promise.reject(new Error('API not set'));
     var u=API+(API.indexOf('?')>-1?'&':'?')+'action='+encodeURIComponent(action);
     for(var k in params)u+='&'+k+'='+encodeURIComponent(typeof params[k]==='string'?params[k]:JSON.stringify(params[k]));
-    return fetch(u).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}).then(function(j){if(!j||j.error)throw new Error(j&&j.error||'error');return j;});
+    if(action!=='match'&&MEMO[u])return MEMO[u];   // same list request again (e.g. back to a filter) answers instantly
+    var pr=fetch(u).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}).then(function(j){if(!j||j.error)throw new Error(j&&j.error||'error');return j;});
+    if(action!=='match'){MEMO[u]=pr;pr.catch(function(){delete MEMO[u];});}
+    return pr;
   }
   function apiPost(body){
     if(!apiOK)return Promise.reject(new Error('API not set'));
@@ -921,6 +926,7 @@
 
   /* ═════════════ FINDER ═════════════ */
   var F={view:'uni',q:'',uni:'',lv:[],city:[],sub:[],lang:[],tier:[],max:0,myHsk:'',open:false,nohsk:false,nocsca:false,sch:false,sort:'rel',page:1};
+  // filterParams() + view + page must serialise exactly like defaultSearch_() in Code.gs so the first list loads from the warm cache.
   var seq=0,listEl=$('.um-list'),moreWrap=$('.um-more-wrap'),countEl=$('.um-count',$('.um-finder'));
 
   function chips(key,items){
@@ -1033,10 +1039,7 @@
   });
   ['open','nohsk','nocsca','sch'].forEach(function(k){$('#um-f-'+k).addEventListener('change',function(e){F[k]=e.target.checked;runSearch(false);});});
 
-  if('IntersectionObserver' in window){
-    var io=new IntersectionObserver(function(es){if(es[0].isIntersecting){runSearch(false);io.disconnect();}},{rootMargin:'600px'});
-    io.observe(finder);
-  }else runSearch(false);
+  runSearch(false);
 
   /* ═════════════ COURSE POP-UP ═════════════ */
   var modal=document.getElementById('um-modal');

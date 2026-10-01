@@ -106,13 +106,25 @@ var TAXO = [
 
 function doGet(e) {
   var p = (e && e.parameter) || {};
+  var action = p.action || '';
+  // Answers for the list (meta / search / uni) are the same for everyone with the same
+  // filters, so they are kept ready for 10 minutes. Popular searches skip loading the data.
+  var rkey = null, cache = CacheService.getScriptCache();
+  if (action === 'meta' || action === 'search' || action === 'uni') {
+    rkey = 'r:' + Utilities.base64EncodeWebSafe(Utilities.computeDigest(Utilities.DigestAlgorithm.MD5,
+      action + '|' + (p.f || '') + '|' + (p.name || ''), Utilities.Charset.UTF_8));
+    var hit = cache.get(rkey);
+    if (hit) return ContentService.createTextOutput(hit).setMimeType(ContentService.MimeType.JSON);
+  }
   var out;
   try {
-    out = handle_(p.action || '', p, getData_(), {ai: aiPlan_, today: Utilities.formatDate(new Date(), 'Asia/Bangkok', 'yyyy-MM-dd')});
+    out = handle_(action, p, getData_(), {ai: aiPlan_, today: Utilities.formatDate(new Date(), 'Asia/Bangkok', 'yyyy-MM-dd')});
   } catch (err) {
     out = {error: 'unavailable'};
   }
-  return json_(out);
+  var text = JSON.stringify(out);
+  if (rkey && !out.error && text.length < 95000) { try { cache.put(rkey, text, CONFIG.cacheSeconds); } catch (err) {} }
+  return ContentService.createTextOutput(text).setMimeType(ContentService.MimeType.JSON);
 }
 
 function doPost(e) {
@@ -225,7 +237,19 @@ function writeSaved_(ss, b64) {
 
 // Time-trigger target. Rebuilds the saved copy from the sheet.
 function refreshMatcherData() {
-  rebuild_(SpreadsheetApp.getActiveSpreadsheet());
+  var data = rebuild_(SpreadsheetApp.getActiveSpreadsheet()), cache = CacheService.getScriptCache();
+  // Pre-compute the answers every visitor asks for first, so the page opens instantly.
+  var warm = [['meta', '', ''], ['search', JSON.stringify(defaultSearch_('uni')), ''], ['search', JSON.stringify(defaultSearch_('prog')), '']];
+  warm.forEach(function (w) {
+    var key = 'r:' + Utilities.base64EncodeWebSafe(Utilities.computeDigest(Utilities.DigestAlgorithm.MD5, w[0] + '|' + w[1] + '|' + w[2], Utilities.Charset.UTF_8));
+    var text = JSON.stringify(handle_(w[0], {f: w[1]}, data, {}));
+    if (text.length < 95000) { try { cache.put(key, text, CONFIG.cacheSeconds); } catch (err) {} }
+  });
+}
+
+// Must match the first request the page sends (F in the page script, plus view and page).
+function defaultSearch_(view) {
+  return {q: '', uni: '', lv: [], city: [], sub: [], lang: [], tier: [], max: 0, myHsk: '', open: false, nohsk: false, nocsca: false, sch: false, sort: 'rel', view: view, page: 1};
 }
 
 // Run ONCE from the Apps Script editor (select setupAutoRefresh → Run).
@@ -237,7 +261,8 @@ function setupAutoRefresh() {
   });
   ScriptApp.newTrigger('refreshMatcherData').timeBased().everyMinutes(10).create();
   PropertiesService.getScriptProperties().setProperty('autoRefresh', 'on');
-  var data = rebuild_(SpreadsheetApp.getActiveSpreadsheet());
+  refreshMatcherData();
+  var data = getData_();
   SpreadsheetApp.getActiveSpreadsheet().toast('Auto refresh is on. ' + data.rows.length + ' programmes saved for the website.', 'University Matcher', 8);
 }
 
