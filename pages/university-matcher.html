@@ -33,21 +33,16 @@
 /* ═══ 1. HERO ═══ */
 .um-hero{position:relative;background:#FFF4E8;color:#5C4A3E;overflow:hidden}
 .um-hero::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 88% 12%,rgba(255,179,0,.28),transparent 42%),radial-gradient(circle at 6% 92%,rgba(255,107,0,.16),transparent 40%),linear-gradient(180deg,#FFF8F0 0%,#FFEFDD 100%);pointer-events:none}
-.um-hero-zh{position:absolute;right:-10px;bottom:-50px;font-family:'Kanit',sans-serif;font-weight:900;font-size:clamp(8rem,20vw,15rem);line-height:1;color:rgba(255,107,0,.06);pointer-events:none;user-select:none}
-.um-hero .um-wrap{position:relative;padding-top:56px;padding-bottom:110px}
-.um-logo{display:flex;align-items:center;gap:10px;margin-bottom:44px;min-height:44px}
-.um-logo img{height:44px;width:auto;display:block}
-.um-logo-txt{font-family:'Kanit',sans-serif;font-weight:800;font-size:1.15rem;color:#1A0A00;letter-spacing:.5px}
-.um-logo-txt span{color:#FF6B00}
-#uni-matcher .um-h1{font-size:clamp(2.1rem,5vw,3.6rem);font-weight:900;line-height:1.2;color:#1A0A00!important;max-width:760px;margin:0}
+.um-hero .um-wrap{position:relative;padding-top:48px;padding-bottom:104px}
+.um-hero-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;gap:28px}
+.um-hero-txt{min-width:0}
+.um-hero-art{min-width:0;display:flex;justify-content:center}
+.um-hero-art img{display:block;width:100%;max-width:640px;height:auto}
+#uni-matcher .um-h1{font-size:clamp(1.9rem,4.2vw,3.2rem);font-weight:900;line-height:1.3;color:#1A0A00!important;margin:14px 0 0}
 #uni-matcher .um-h1 span{color:#FF6B00!important}
-.um-h1-img{display:block;width:100%;max-width:720px;height:auto}
-.um-h1-img+.um-h1-txt{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-.um-hero .um-lead{color:#5C4A3E;margin:12px 0 0}
-#uni-matcher .um-hero-h{font-size:clamp(1.6rem,3.6vw,2.4rem);font-weight:900;line-height:1.3;color:#1A0A00!important;margin-top:22px}
-#uni-matcher .um-hero-h span{color:#FF6B00!important}
-.um-ai-line{display:inline-block;margin:16px 0 28px;font-family:'Kanit',sans-serif;font-weight:700;font-size:.98rem;color:#6B46C1;background:rgba(107,70,193,.08);border:1px solid rgba(107,70,193,.2);padding:6px 16px;border-radius:50px}
-.um-stats{display:flex;flex-wrap:wrap;gap:12px 32px;margin-top:30px;font-family:'Kanit',sans-serif}
+.um-hero .um-lead{color:#5C4A3E;margin:14px 0 26px}
+.um-ai-line{display:inline-block;margin:0;font-family:'Kanit',sans-serif;font-weight:700;font-size:.98rem;color:#6B46C1;background:rgba(107,70,193,.08);border:1px solid rgba(107,70,193,.2);padding:6px 16px;border-radius:50px}
+.um-stats{display:flex;flex-wrap:wrap;gap:12px 28px;margin-top:28px;font-family:'Kanit',sans-serif}
 .um-stats b{display:block;font-size:1.7rem;font-weight:800;color:#1A0A00;line-height:1.1}
 .um-stats span{font-size:.88rem;color:#7A6050}
 
@@ -217,6 +212,7 @@
 .um-tag.open{background:#E9F8EF;color:#17733F}
 .um-tag.sch{background:#FFF4D6;color:#8A5A00}
 .um-tag.req{background:rgba(107,70,193,.1);color:#5B3BA8;font-weight:600}
+.um-tag.ca{background:#FF6B00;color:#fff;font-weight:700}
 .um-logo-b{position:absolute;left:12px;bottom:12px;width:48px;height:48px;border-radius:12px;background:#fff;padding:5px;box-shadow:0 4px 12px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center}
 .um-logo-b img{max-width:100%;max-height:100%;object-fit:contain;display:block}
 .um-credit{position:absolute;right:8px;bottom:6px;max-width:70%;font-size:.62rem;line-height:1.4;color:rgba(255,255,255,.85);background:rgba(0,0,0,.45);padding:2px 7px;border-radius:6px;text-align:right}
@@ -256,9 +252,16 @@
 @media (max-width:600px){
   .um-wrap{padding:0 16px}
   .um-sec{padding:64px 0}
-  .um-hero .um-wrap{padding-top:40px;padding-bottom:96px}
-  .um-logo{margin-bottom:32px}
-  .um-ai-line{font-size:.86rem;border-radius:14px;padding:6px 12px}
+  .um-hero .um-wrap{padding-top:26px;padding-bottom:84px}
+  .um-hero-grid{grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:10px}
+  #uni-matcher .um-h1{font-size:1.15rem;line-height:1.35;margin-top:8px}
+  .um-hero .um-lead{font-size:.74rem;line-height:1.6;margin:8px 0 12px}
+  .um-hero .um-btns{gap:6px}
+  #uni-matcher .um-hero .um-btn{width:100%;font-size:.74rem;padding:8px 10px}
+  .um-stats{display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;margin-top:14px}
+  .um-stats b{font-size:1.05rem}
+  .um-stats span{font-size:.62rem;line-height:1.3;display:block}
+  .um-ai-line{font-size:.62rem;border-radius:12px;padding:4px 9px;line-height:1.5}
   .um-app{padding:24px 18px;border-radius:18px}
   .um-opts,.um-ugrid,.um-fgrid,.um-mfacts,.um-pgrid{grid-template-columns:1fr}
   .um-steps li{grid-template-columns:1fr;padding-left:34px}
@@ -308,6 +311,8 @@
 #um-modal .um-tag.open{background:#E9F8EF;color:#17733F}
 #um-modal .um-tag.sch{background:#FFF4D6;color:#8A5A00}
 #um-modal .um-tag.req{background:rgba(107,70,193,.1);color:#5B3BA8;font-weight:600}
+#um-modal .um-tag.ca{background:#FF6B00;color:#fff;font-weight:700}
+.um-tag.ca{background:#FF6B00;color:#fff;font-weight:700}
 #um-modal .um-logo-b{position:absolute;left:16px;bottom:-24px;width:64px;height:64px;border-radius:16px;background:#fff;padding:7px;box-shadow:0 6px 18px rgba(0,0,0,.2);display:flex;align-items:center;justify-content:center}
 #um-modal .um-logo-b img{max-width:100%;max-height:100%;object-fit:contain;display:block}
 #um-modal .um-credit{position:absolute;right:10px;bottom:8px;max-width:60%;font-size:.65rem;line-height:1.4;color:rgba(255,255,255,.88);background:rgba(0,0,0,.45);padding:2px 8px;border-radius:6px;text-align:right}
@@ -330,18 +335,18 @@
 
 <!-- ═══ 1. HERO ═══ -->
 <section class="um-hero">
-  <div class="um-hero-zh" aria-hidden="true">大学</div>
-  <div class="um-wrap">
-    <div class="um-logo"><a href="https://chinesechiwchiw.com/" class="um-logo-link"><span class="um-logo-txt">Chinese <span>Chiwchiw</span></span></a></div>
-    <h1 class="um-h1"><img class="um-h1-img" src="https://chinesechiwchiw.com/wp-content/uploads/2026/10/University-matcher-heading.png" alt="" onerror="this.parentNode.removeChild(this)"><span class="um-h1-txt">หามหาวิทยาลัยจีน<br><span>ที่ใช่สำหรับคุณ</span></span></h1>
-    <h2 class="um-hero-h">ไม่รู้จะเลือกมหาลัยไหน?<br><span>เดี๋ยว Chiwchiw ช่วยหาให้ 🧡</span></h2>
-    <p class="um-lead">ตอบ <span class="um-sc">8</span> คำถามง่าย ๆ แล้วเราจะช่วยคัดมหาวิทยาลัยและหลักสูตรที่เหมาะกับคุณ</p>
-    <p class="um-ai-line">✨ ให้ Chiwchiw AI ช่วยหา Best Match ของคุณ</p>
-    <div class="um-btns">
-      <a class="um-btn um-btn-pri" href="#um-app">🧭 เริ่มจับคู่มหาวิทยาลัย</a>
-      <a class="um-btn um-btn-ghost" href="#um-finder">ดูรายชื่อมหาวิทยาลัยทั้งหมด ↓</a>
+  <div class="um-wrap um-hero-grid">
+    <div class="um-hero-txt">
+      <p class="um-ai-line">✨ ให้ Chiwchiw AI ช่วยหา Best Match ของคุณ</p>
+      <h1 class="um-h1">ไม่รู้จะเลือกมหาลัยไหน?<br><span>เดี๋ยว Chiwchiw ช่วยหาให้ 🧡</span></h1>
+      <p class="um-lead">ตอบ <span class="um-sc">8</span> คำถามง่าย ๆ แล้วเราจะช่วยคัดมหาวิทยาลัยและหลักสูตรที่เหมาะกับคุณ</p>
+      <div class="um-btns">
+        <a class="um-btn um-btn-pri" href="#um-app">🧭 เริ่มจับคู่มหาวิทยาลัย</a>
+        <a class="um-btn um-btn-ghost" href="#um-finder">ดูรายชื่อมหาวิทยาลัยทั้งหมด ↓</a>
+      </div>
+      <div class="um-stats" aria-live="polite"></div>
     </div>
-    <div class="um-stats" aria-live="polite"></div>
+    <div class="um-hero-art"><img src="https://chinesechiwchiw.com/wp-content/uploads/2026/10/University-matcher-heading.png" alt="นักเรียนไทยพร้อมไปเรียนต่อที่จีน" loading="eager" onerror="this.parentNode.removeChild(this)"></div>
   </div>
 </section>
 
@@ -636,7 +641,7 @@
   if(!apiOK&&window.console)console.warn('University Matcher: set data-api on #uni-matcher to the Apps Script Web app URL.');
 
   /* ---------- logo ---------- */
-  if(safeImg(LOGO)){$('.um-logo-link').innerHTML='<img src="'+esc(LOGO)+'" alt="Chinese Chiwchiw">';}
+  if(safeImg(LOGO)&&$('.um-logo-link')){$('.um-logo-link').innerHTML='<img src="'+esc(LOGO)+'" alt="Chinese Chiwchiw">';}
   $$('.um-rate').forEach(function(el){el.textContent=RATE;});
 
   // Numbers run from 0 up to their value (ease-out, about 1.6s).
@@ -810,6 +815,7 @@
     if(a.budget)R.push(g.over?['warn','เกินงบประมาณ ≈ '+baht(g.over)+'/ปี']:(g.thb?['ok','อยู่ในงบ']:['warn','ยังไม่มีข้อมูลค่าใช้จ่าย']));
     if(a.cities.length&&!g.city)R.push(['warn','อยู่นอกเมืองที่เลือก']);
     if(p.sch)R.push(['ok','มีทุนให้สมัคร']);
+    if(p.ca)R.push(['ok','สมัครผ่าน Chiwchiw ได้']);
 
     var cost=p.tot||p.tu;
     var costF=cost?'<b>≈ '+baht(cost*RATE)+'/ปี</b><small>'+yuan(cost)+(p.tot?' รวมค่าเรียน ที่พัก และค่าครองชีพ (ค่าครองชีพเป็นค่าประมาณ)':' (เฉพาะค่าเรียน)')+'</small>':'<b>รอยืนยัน</b><small>ทีมจะแจ้งในรายงาน</small>';
@@ -935,7 +941,7 @@
       '<span class="um-udesc">'+esc(desc)+'</span>'+
       '<span class="um-facts"><span><span>หลักสูตร</span><b>'+u.n+'</b></span><span><span>ค่าเรียน/ปี</span><b>'+fee+'</b></span>'+
       '<span><span>ระดับที่เปิด</span><b>'+u.levels.map(function(l){return LV_TH[l];}).join(' · ')+'</b></span><span><span>สาขาเด่น</span><b>'+(u.top.map(function(k){return FIELD_NAME[k]||'';}).filter(Boolean).join(' · ')||'—')+'</b></span></span>'+
-      '<span class="um-tags">'+(u.open?'<span class="um-tag open">● เปิดรับ 2027</span>':'')+(u.sch?'<span class="um-tag sch">🎁 มีทุน</span>':'')+(u.en?'<span class="um-tag">'+u.en+' หลักสูตรภาษาอังกฤษ</span>':'')+'</span>'+
+      '<span class="um-tags">'+(u.ca?'<span class="um-tag ca">✓ สมัครผ่าน Chiwchiw ได้</span>':'')+(u.open?'<span class="um-tag open">● เปิดรับ 2027</span>':'')+(u.sch?'<span class="um-tag sch">🎁 มีทุน</span>':'')+(u.en?'<span class="um-tag">'+u.en+' หลักสูตรภาษาอังกฤษ</span>':'')+'</span>'+
       '<span class="um-ugo">ดูหลักสูตรทั้งหมด →</span></div></button>';
   }
   function progRow(p,withUni){
@@ -951,7 +957,7 @@
       (p.csca?'<span><b>CSCA</b> <a href="'+SITE+'/csca/">'+(p.cscaSub?esc(p.cscaSub):'ต้องสอบ')+'</a></span>':'<span><b>CSCA</b> ไม่ต้องสอบ</span>')+
       (p.dl?'<span><b>ปิดรับ</b> '+esc(fmtDl(p))+(p.past?' (อ้างอิงรอบที่ผ่านมา)':'')+'</span>':'')+
       (p.campus?'<span><b>วิทยาเขต</b> '+esc(p.campus)+'</span>':'')+
-      (p.open?'<span class="um-tag open">● เปิดรับ 2027</span>':'')+(p.sch?'<span class="um-tag sch">🎁 มีทุน</span>':'')+reqTags(p)+
+      (p.ca?'<span class="um-tag ca">✓ สมัครผ่าน Chiwchiw ได้</span>':'')+(p.open?'<span class="um-tag open">● เปิดรับ 2027</span>':'')+(p.sch?'<span class="um-tag sch">🎁 มีทุน</span>':'')+reqTags(p)+
       (p.review?'<span class="um-tag">⚠ รอยืนยันข้อมูล</span>':'')+'</div></div>';
   }
 

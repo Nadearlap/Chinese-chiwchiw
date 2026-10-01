@@ -46,7 +46,7 @@
 var CONFIG = {
   dataSheet: 'Master Data',
   leadsSheet: 'Matcher Leads',
-  onlyCanApply: true,      // only programmes where "Chinese Chiwchiw Can Apply?" starts with Yes
+  onlyCanApply: false,     // true = hide programmes where "Chinese Chiwchiw Can Apply?" isn't Yes
   thbPerRmb: 4.6,          // keep in sync with data-rate on the page
   pageSize: 12,
   maxPageSize: 24,
@@ -344,7 +344,7 @@ function buildRows_(values, stats) {
       csca: yes_(g('CSCA Required?')), cscaSub: g('CSCA Subjects'), sch: yes_(g('Scholarship Available?')),
       dl: g('Final Deadline') || g('Application Deadline'), cyc: g('Admission Cycle'),
       open: /^(open|current)/i.test(cs), past: /past/i.test(cs), review: /review|unverified|low/i.test(g('Data Confidence')),
-      campus: g('Campus')
+      campus: g('Campus'), ca: yes_(can)
     };
     var low = (prog + ' ' + row.school + ' ' + row.track + ' ' + g('Search Keywords / Tags')).toLowerCase();
     row.f = 'oth'; row.s = '';
@@ -400,21 +400,21 @@ function pub_(r) {
   return {id: r.id, u: r.u, cn: r.cn, city: r.city, lv: r.lv, prog: r.prog, track: r.track, school: r.school, lang: r.lang,
     dur: r.dur, tu: r.tu, tot: r.tot, hsk: r.hsk, hskTxt: r.hskTxt, hskk: r.hskk, hskkLv: r.hskkLv, ielts: r.ielts, toefl: r.toefl,
     eng: r.eng, csca: r.csca, cscaSub: r.cscaSub, sch: r.sch, dl: r.dl, cyc: r.cyc, open: r.open, past: r.past, review: r.review,
-    campus: r.campus, f: r.f, s: r.s, req: r.req || []};
+    campus: r.campus, f: r.f, s: r.s, req: r.req || [], ca: !!r.ca};
 }
 
 function uniSummary_(name, list, profiles) {
-  var r0 = list[0], prof = profileOf_(profiles, name), fees = [], lv = {}, fc = {}, open = false, sch = false, en = 0;
+  var r0 = list[0], prof = profileOf_(profiles, name), fees = [], lv = {}, fc = {}, open = false, sch = false, en = 0, ca = false;
   list.forEach(function (r) {
     if (r.tu) fees.push(r.tu);
     lv[r.lv] = 1; if (r.f !== 'oth') fc[r.f] = (fc[r.f] || 0) + 1;
-    if (r.open) open = true; if (r.sch) sch = true; if (r.lang !== 'zh') en++;
+    if (r.open) open = true; if (r.sch) sch = true; if (r.lang !== 'zh') en++; if (r.ca) ca = true;
   });
   return {name: name, short: shortName_(name), cn: r0.cn, city: r0.city, prov: r0.prov, code: r0.code, tiers: TIERS[r0.code] || [],
     desc: prof.desc || '', photo: prof.photo || '', logo: prof.logo || '', credit: prof.credit || '', src: prof.src || '', n: list.length,
     feeMin: fees.length ? Math.min.apply(null, fees) : 0, feeMax: fees.length ? Math.max.apply(null, fees) : 0,
     levels: ['UG', 'PG', 'PHD', 'LANG'].filter(function (k) { return lv[k]; }),
-    top: Object.keys(fc).sort(function (a, b) { return fc[b] - fc[a]; }).slice(0, 2), open: open, sch: sch, en: en};
+    top: Object.keys(fc).sort(function (a, b) { return fc[b] - fc[a]; }).slice(0, 2), open: open, sch: sch, en: en, ca: ca};
 }
 
 function meta_(rows) {
@@ -536,6 +536,7 @@ function bestMatch_(rows, profiles, a, deps) {
     if (!g.city) pen += 15;
     if (a.schol === 'must') pen += r.sch ? -6 : 6; else if (a.schol === 'nice' && r.sch) pen -= 3;
     if (r.open) pen -= 2;
+    if (r.ca) pen -= 2;      // small preference for programmes Chinese Chiwchiw can apply to
     if (r.review) pen += 1;
     if (useZh && r.hsk && myHsk > r.hsk) pen -= 2;
     g.exact = g.major && g.lang && !g.hskGap && !g.ieltsGap && !g.over && g.city && !g.testUnknown;
@@ -714,7 +715,7 @@ function aiPlan_(a, shortlist, today) {
       teaching_language: r.lang, duration_years: r.dur, tuition_rmb_per_year: r.tu || null, total_rmb_per_year: r.tot || null,
       total_includes_estimated_living_costs: !!r.tot, estimated_thb_per_year: c.g.thb || null, extra_requirements: r.req || [], hsk_requirement: r.hskTxt || (r.hsk ? 'HSK ' + r.hsk : null), hskk_level: r.hskk ? (r.hskkLv || 'required') : null,
       ielts_min: r.ielts || null, toefl_min: r.toefl || null, csca_required: r.csca, csca_subjects: r.cscaSub || null,
-      scholarship_available: r.sch, deadline: r.dl || null, cycle: r.cyc || null, cycle_past: r.past, data_being_verified: r.review,
+      scholarship_available: r.sch, chinese_chiwchiw_can_apply: !!r.ca, deadline: r.dl || null, cycle: r.cyc || null, cycle_past: r.past, data_being_verified: r.review,
       gaps: {major_match: c.g.major, language_match: c.g.lang, hsk_levels_short: c.g.hskGap || 0, ielts_short: c.g.ieltsGap || 0,
         language_test_not_asked: !!c.g.testUnknown, over_budget_thb: c.g.over || 0, city_match: c.g.city}};
   });
