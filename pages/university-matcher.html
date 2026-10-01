@@ -296,7 +296,7 @@
   .um-kicker{order:1;font-size:.74rem;letter-spacing:1.5px;justify-self:center}
   #uni-matcher .um-h1{order:2;font-size:clamp(1.65rem,7.6vw,2.1rem);line-height:1.3;margin-top:8px}
   .um-hero .um-lead{order:3;font-size:.95rem;line-height:1.7;margin:10px auto 0;max-width:340px}
-  .um-hero-art{order:4;margin:6px auto 2px;width:100%;max-width:420px}
+  .um-hero-art{order:4;margin:8px auto 26px;width:100%;max-width:420px}
   .um-hero-art img{width:100%;max-width:none}
   .um-cta-row{order:5;flex-direction:column;align-items:stretch;gap:12px}
   #uni-matcher .um-hero .um-btn-lg{width:100%;font-size:1.05rem;padding:15px 18px}
@@ -730,7 +730,7 @@
     function step(t){
       if(t0===null)t0=t;
       var k=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-k,3);
-      els.forEach(function(el){el.textContent=fmt(Math.round(+el.getAttribute('data-to')*e));});
+      els.forEach(function(el){el.textContent=fmt(Math.round(+el.getAttribute('data-to')*e))+(k<1?'':el.getAttribute('data-suf')||'');});
       if(k<1)requestAnimationFrame(step);
     }
     requestAnimationFrame(step);
@@ -772,7 +772,8 @@
   var META=null,metaP=api('meta',{}).then(function(m){
     META=m;
     var cities=Object.keys(m.cities||{});
-    $('.um-stats').innerHTML=[[m.unis,'มหาวิทยาลัย'],[m.progs,'หลักสูตร'],[cities.length,'เมืองทั่วจีน']].map(function(x){return '<span><b data-to="'+x[0]+'">'+(REDUCED?fmt(x[0]):'0')+'</b> '+x[1]+'</span>';}).join('<i>·</i>');
+    var uRound=m.unis>=20?Math.floor(m.unis/10)*10:m.unis,uSuf=m.unis>=20?'+':'';
+    $('.um-stats').innerHTML=[[uRound,'มหาวิทยาลัย',uSuf],[m.progs,'หลักสูตร',''],[cities.length,'เมืองทั่วจีน','']].map(function(x){return '<span><b data-to="'+x[0]+'" data-suf="'+x[2]+'">'+(REDUCED?fmt(x[0])+x[2]:'0')+'</b> '+x[1]+'</span>';}).join('<i>·</i>');
     countUp($$('.um-stats b[data-to]'));
     buildCityFilter();
     return m;
@@ -873,7 +874,7 @@
   // Animated "thinking" screen while the match runs: personalised steps, progress bar, rotating facts.
   function startLoading(a){
     var LVN={ug:'ปริญญาตรี',ma:'ปริญญาโท',phd:'ปริญญาเอก'}[a.deg]||'';
-    var nums=$('.um-stats').textContent.match(/[\d,]+/g)||[];
+    var nums=$('.um-stats').textContent.match(/[\d,]+\+?/g)||[];
     var steps=['📚 คัดหลักสูตร'+LVN+(a.text?' ที่เกี่ยวกับ “'+a.text+'”':' ตามสาขาที่เลือก'),
       '🔎 ค้นจาก '+(nums[1]?nums[1]+' หลักสูตรใน '+(nums[0]||'')+' มหาวิทยาลัย':'ฐานข้อมูลมหาวิทยาลัยจีน'),
       '📝 เทียบเกณฑ์ภาษา'+(a.lang==='en'?' (IELTS) ':a.lang==='zh'?' (HSK) ':' HSK / IELTS ')+'กับระดับของนักเรียน',
