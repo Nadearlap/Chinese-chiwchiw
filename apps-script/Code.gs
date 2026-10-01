@@ -64,7 +64,7 @@ var TIERS = {THU:['C9','985','211','DFC'],PKU:['C9','985','211','DFC'],FUDAN:['C
   BUAA:['985','211','DFC'],BIT:['985','211','DFC'],DUT:['985','211','DFC'],WHU:['985','211','DFC'],CQU:['985','211','DFC'],ECNU:['985','211','DFC'],HNU:['985','211','DFC'],OUC:['985','211','DFC'],RUC:['985','211','DFC'],SYSU:['985','211','DFC'],SCUT:['985','211','DFC'],SCU:['985','211','DFC'],
   SWUFE:['211','DFC'],GXU:['211','DFC'],JNU:['211','DFC'],JINAN:['211','DFC'],SISU:['211','DFC'],SCNU:['211','DFC'],SILC:['211','SF'],SWPU:['DFC'],NUIST:['DFC'],NBU:['DFC'],SUSTECH:['DFC'],XJTLU:['SF'],BLCU:['DFC']};
 
-var CITY_TH = {Shanghai:'เซี่ยงไฮ้',Beijing:'ปักกิ่ง',Chengdu:'เฉิงตู',Guangzhou:'กวางโจว',Qingdao:'ชิงเต่า',Hangzhou:'หางโจว',Nanjing:'หนานจิง',Wuhan:'อู่ฮั่น',"Xi'an":'ซีอาน',Shenzhen:'เซินเจิ้น',Tianjin:'เทียนจิน',Kunming:'คุนหมิง',Xiamen:'เซี่ยเหมิน',Chongqing:'ฉงชิ่ง',Harbin:'ฮาร์บิน',Dalian:'ต้าเหลียน',Changsha:'ฉางซา',Jinan:'จี่หนาน',Suzhou:'ซูโจว',Nanning:'หนานหนิง',Hefei:'เหอเฝย',Shenyang:'เสิ่นหยาง',Zhengzhou:'เจิ้งโจว',Fuzhou:'ฝูโจว',Wuxi:'อู๋ซี',Ningbo:'หนิงปัว',Zhuhai:'จูไห่'};
+var CITY_TH = {Shanghai:'เซี่ยงไฮ้',Beijing:'ปักกิ่ง',Chengdu:'เฉิงตู',Guangzhou:'กวางโจว',Qingdao:'ชิงเต่า',Hangzhou:'หางโจว',Nanjing:'หนานจิง',Wuhan:'อู่ฮั่น',"Xi'an":'ซีอาน',Shenzhen:'เซินเจิ้น',Tianjin:'เทียนจิน',Kunming:'คุนหมิง',Xiamen:'เซี่ยเหมิน',Chongqing:'ฉงชิ่ง',Harbin:'ฮาร์บิน',Dalian:'ต้าเหลียน',Changsha:'ฉางซา',Jinan:'จี่หนาน',Suzhou:'ซูโจว',Nanning:'หนานหนิง',Hefei:'เหอเฝย',Shenyang:'เสิ่นหยาง',Zhengzhou:'เจิ้งโจว',Fuzhou:'ฝูโจว',Wuxi:'อู๋ซี',Ningbo:'หนิงปัว',Zhuhai:'จูไห่',Quanzhou:'เฉวียนโจว',Kunshan:'คุนซาน',Zhenjiang:'เจิ้นเจียง',Weihai:'เวยไห่',Yantai:'เยียนไถ',Changchun:'ฉางชุน',Lanzhou:'หลานโจว',Guiyang:'กุ้ยหยาง',Taiyuan:'ไท่หยวน',Nanchang:'หนานชาง',Haikou:'ไหโข่ว',Guilin:'กุ้ยหลิน',Shijiazhuang:'สือเจียจวง',Urumqi:'อุรุมชี',Hohhot:'ฮูฮอต',Xining:'ซีหนิง',Yinchuan:'อิ๋นชวน',Lhasa:'ลาซา',Wenzhou:'เวินโจว',Shaoxing:'เซ่าซิง',Jinhua:'จินหัว',Yangzhou:'หยางโจว',Changzhou:'ฉางโจว',Nantong:'หนานทง',Xuzhou:'สวีโจว',Luoyang:'ลั่วหยาง',Mianyang:'เหมียนหยาง',"Ya'an":'หย่าอาน'};
 
 // Order matters: first match wins. [field, sub, pattern]
 var TAXO = [
@@ -130,42 +130,122 @@ function json_(obj) {
   return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
 }
 
+// Data is built from the sheet, gzipped, and kept in two places:
+//  • CacheService (fastest, but small and short-lived)
+//  • a hidden tab "_matcher_cache" in this spreadsheet (private, survives restarts)
+// setupAutoRefresh() rebuilds it every 10 minutes so visitors never wait for a rebuild.
+var CACHE_TAB_ = '_matcher_cache';
+
 function getData_() {
-  var cache = CacheService.getScriptCache();
-  var head = cache.get('um:n');
-  if (head) {
-    var n = +head, keys = [];
+  var cache = CacheService.getScriptCache(), n = +(cache.get('um:n') || 0);
+  if (n) {
+    var keys = [];
     for (var i = 0; i < n; i++) keys.push('um:' + i);
     var got = cache.getAll(keys);
     if (Object.keys(got).length === n) {
-      var s = '';
-      for (var j = 0; j < n; j++) s += got['um:' + j];
-      return JSON.parse(s);
+      var b64 = '';
+      for (var j = 0; j < n; j++) b64 += got['um:' + j];
+      try { return JSON.parse(unpack_(b64)); } catch (err) {}
     }
   }
   var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var saved = readSaved_(ss), age = saved ? Date.now() - saved.t : Infinity;
+  var auto = PropertiesService.getScriptProperties().getProperty('autoRefresh') === 'on';
+  if (saved && age < (auto ? 6 * 3600e3 : CONFIG.cacheSeconds * 1000)) {
+    putCache_(saved.b64);
+    return JSON.parse(unpack_(saved.b64));
+  }
+  var lock = LockService.getScriptLock();
+  if (!lock.tryLock(500)) {
+    if (saved) return JSON.parse(unpack_(saved.b64));   // someone else is rebuilding; use the older copy
+    lock.waitLock(120000);
+    var fresh = readSaved_(ss);
+    if (fresh) { lock.releaseLock(); return JSON.parse(unpack_(fresh.b64)); }
+  }
+  try {
+    return rebuild_(ss);
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+function buildData_(ss) {
   var data = {rows: readProgrammes_(ss).rows, profiles: {}};
   // Any tab whose first row has "University" plus a description, logo or photo column
   // counts as profile data, whatever the tab is called.
   ss.getSheets().forEach(function (t) {
     var n = t.getName();
-    if (n === CONFIG.dataSheet || n === CONFIG.leadsSheet || n === 'Profile Check' || n === 'Data Check' || t.getLastRow() < 2) return;
+    if (n === CONFIG.dataSheet || n === CONFIG.leadsSheet || SKIP_TABS_[n] || t.getLastRow() < 2) return;
     var head = t.getRange(1, 1, 1, Math.max(1, t.getLastColumn())).getDisplayValues()[0].join('|').toLowerCase();
     if (!/(^|\|)university( name)?( \((en|english)\))?(\||$)/.test(head) || !/description|logo|photo/.test(head)) return;
     mergeProfiles_(data.profiles, buildProfiles_(t.getDataRange().getDisplayValues()));
   });
-  var str = JSON.stringify(data), size = 90000, parts = {}, count = Math.ceil(str.length / size);
-  for (var k = 0; k < count; k++) parts['um:' + k] = str.substr(k * size, size);
-  parts['um:n'] = String(count);
-  try { cache.putAll(parts, CONFIG.cacheSeconds); } catch (err) {}
   return data;
+}
+
+function rebuild_(ss) {
+  var data = buildData_(ss), b64 = pack_(JSON.stringify(data));
+  writeSaved_(ss, b64);
+  putCache_(b64);
+  return data;
+}
+
+function pack_(str) {
+  return Utilities.base64Encode(Utilities.gzip(Utilities.newBlob(str, 'application/json')).getBytes());
+}
+function unpack_(b64) {
+  return Utilities.ungzip(Utilities.newBlob(Utilities.base64Decode(b64), 'application/x-gzip')).getDataAsString('UTF-8');
+}
+
+function putCache_(b64) {
+  var size = 95000, parts = {}, count = Math.ceil(b64.length / size);
+  for (var k = 0; k < count; k++) parts['um:' + k] = b64.substr(k * size, size);
+  parts['um:n'] = String(count);
+  try { CacheService.getScriptCache().putAll(parts, CONFIG.cacheSeconds); } catch (err) {}
+}
+
+function readSaved_(ss) {
+  var sh = ss.getSheetByName(CACHE_TAB_);
+  if (!sh || sh.getLastRow() < 2) return null;
+  var v = sh.getRange(1, 1, sh.getLastRow(), 1).getValues(), t = +v[0][0];
+  if (!t) return null;
+  var b64 = '';
+  for (var i = 1; i < v.length; i++) b64 += String(v[i][0]).slice(1);   // each chunk starts with "x" so Sheets keeps it as text
+  return b64 ? {t: t, b64: b64} : null;
+}
+
+function writeSaved_(ss, b64) {
+  var sh = ss.getSheetByName(CACHE_TAB_);
+  if (!sh) { sh = ss.insertSheet(CACHE_TAB_); sh.hideSheet(); }
+  var size = 45000, rows = [[String(Date.now())]];
+  for (var k = 0; k < b64.length; k += size) rows.push(['x' + b64.substr(k, size)]);
+  sh.clear();
+  sh.getRange(1, 1, rows.length, 1).setNumberFormat('@').setValues(rows);
+}
+
+// Time-trigger target. Rebuilds the saved copy from the sheet.
+function refreshMatcherData() {
+  rebuild_(SpreadsheetApp.getActiveSpreadsheet());
+}
+
+// Run ONCE from the Apps Script editor (select setupAutoRefresh → Run).
+// Rebuilds the data now and then every 10 minutes, so sheet edits reach the
+// website within ~10 minutes and visitors never wait for a rebuild.
+function setupAutoRefresh() {
+  ScriptApp.getProjectTriggers().forEach(function (tr) {
+    if (tr.getHandlerFunction() === 'refreshMatcherData') ScriptApp.deleteTrigger(tr);
+  });
+  ScriptApp.newTrigger('refreshMatcherData').timeBased().everyMinutes(10).create();
+  PropertiesService.getScriptProperties().setProperty('autoRefresh', 'on');
+  var data = rebuild_(SpreadsheetApp.getActiveSpreadsheet());
+  SpreadsheetApp.getActiveSpreadsheet().toast('Auto refresh is on. ' + data.rows.length + ' programmes saved for the website.', 'University Matcher', 8);
 }
 
 // Programme rows come from Master Data plus every other tab laid out the same way
 // (e.g. one tab per university). A tab counts if one of its first 5 rows has both
 // "University" and "Programme / Major". Rows already read (same Programme ID, or same
 // university + level + programme + teaching language) are skipped, Master Data first.
-var SKIP_TABS_ = {'Profile Check': 1, 'Data Check': 1};
+var SKIP_TABS_ = {'Profile Check': 1, 'Data Check': 1, '_matcher_cache': 1};
 
 function headerRow_(values) {
   for (var i = 0; i < Math.min(5, values.length); i++) {
@@ -233,8 +313,7 @@ function checkData() {
 // Run from the Apps Script editor (select checkProfiles → Run). Writes a "Profile Check"
 // tab showing which universities still need a description, campus photo or logo.
 function checkProfiles() {
-  CacheService.getScriptCache().remove('um:n');
-  var data = getData_(), count = {};
+  var data = rebuild_(SpreadsheetApp.getActiveSpreadsheet()), count = {};
   data.rows.forEach(function (r) { count[r.u] = (count[r.u] || 0) + 1; });
   var out = [['University', 'Programmes', 'Description', 'Campus photo', 'Logo']], missing = 0;
   Object.keys(count).sort().forEach(function (u) {
@@ -358,8 +437,10 @@ function buildRows_(values, stats) {
     if (flag('Interview Required?', /interview|面试/)) req.push('interview');
     if (flag('Study Plan Required?', /study plan|research proposal|research plan|研究计划|学习计划/)) req.push('studyplan');
     row.req = req;
+    row.cl = row.city.split(/\s*[\/,;&]\s*|\s+and\s+/).map(function (c) { return c.trim(); }).filter(String);
+    if (!row.cl.length) row.cl = [row.city];
     row.code = codeOf_(uni);
-    row.hay = (uni + ' ' + row.cn + ' ' + row.city + ' ' + (CITY_TH[row.city] || '') + ' ' + low).toLowerCase();
+    row.hay = (uni + ' ' + row.cn + ' ' + row.city + ' ' + row.cl.map(function (c) { return CITY_TH[c] || ''; }).join(' ') + ' ' + low).toLowerCase();
     out.push(row);
   }
   return out;
@@ -421,8 +502,10 @@ function meta_(rows) {
   var unis = {}, cities = {}, en = 0;
   rows.forEach(function (r) {
     unis[r.u] = 1;
-    var c = cities[r.city] || (cities[r.city] = {UG: 0, PG: 0, PHD: 0, LANG: 0, all: 0});
-    c[r.lv]++; c.all++;
+    (r.cl || [r.city]).forEach(function (name) {
+      var c = cities[name] || (cities[name] = {UG: 0, PG: 0, PHD: 0, LANG: 0, all: 0});
+      c[r.lv]++; c.all++;
+    });
     if (r.lang !== 'zh') en++;
   });
   return {unis: Object.keys(unis).length, progs: rows.length, en: en, cities: cities, rate: CONFIG.thbPerRmb};
@@ -438,7 +521,7 @@ function filterRow_(r, f, skipQ) {
   }
   var lv = arr_(f.lv), city = arr_(f.city), sub = arr_(f.sub), lang = arr_(f.lang), tier = arr_(f.tier);
   if (lv.length && lv.indexOf(r.lv) < 0) return false;
-  if (city.length && city.indexOf(r.city) < 0) return false;
+  if (city.length && !(r.cl || [r.city]).some(function (c) { return city.indexOf(c) > -1; })) return false;
   if (sub.length && sub.indexOf(r.f) < 0 && sub.indexOf(r.f + '.' + r.s) < 0) return false;
   if (lang.length && !(lang.indexOf(r.lang) > -1 || (r.lang === 'both' && lang.length))) return false;
   if (tier.length) {
@@ -532,7 +615,7 @@ function bestMatch_(rows, profiles, a, deps) {
     g.over = budget && g.thb > budget ? g.thb - budget : 0;
     if (g.over) pen += Math.min(40, g.over / budget * 60);
     if (!cost) pen += 3;
-    g.city = !cities.length || cities.indexOf(r.city) > -1;
+    g.city = !cities.length || (r.cl || [r.city]).some(function (c) { return cities.indexOf(c) > -1; });
     if (!g.city) pen += 15;
     if (a.schol === 'must') pen += r.sch ? -6 : 6; else if (a.schol === 'nice' && r.sch) pen -= 3;
     if (r.open) pen -= 2;

@@ -191,7 +191,7 @@
 #uni-matcher .um-check input{width:17px;height:17px;accent-color:#FF6B00;flex:none}
 .um-rbar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}
 .um-count{font-family:'Kanit',sans-serif;font-weight:700;color:#1A0A00}
-#uni-matcher .um-rbar select{border:1px solid #EDE5DC;border-radius:10px;padding:8px 10px;background:#fff;font-size:.92rem;color:#1A0A00;height:auto}
+#uni-matcher .um-rbar select{width:auto!important;max-width:100%;border:1px solid #EDE5DC;border-radius:10px;padding:8px 10px;background:#fff;font-size:.92rem;color:#1A0A00;height:auto}
 #uni-matcher .um-ftoggle{display:none;border:1px solid #EDE5DC;background:#fff;border-radius:50px;padding:8px 16px;cursor:pointer;font-weight:700;font-size:.92rem;color:#1A0A00}
 .um-ugrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
 #uni-matcher .um-ucard{display:flex;flex-direction:column;text-align:left;width:100%;background:#fff;border:1px solid #EDE5DC;border-radius:18px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.05);cursor:pointer;padding:0;transition:transform .2s,box-shadow .2s;color:#5C4A3E;font-family:'Noto Sans Thai',sans-serif;font-size:1rem;line-height:1.7}
@@ -581,7 +581,7 @@
   var $=function(s,c){return (c||root).querySelector(s);};
   var $$=function(s,c){return Array.prototype.slice.call((c||root).querySelectorAll(s));};
 
-  var CITY_TH={Shanghai:'เซี่ยงไฮ้',Beijing:'ปักกิ่ง',Chengdu:'เฉิงตู',Guangzhou:'กวางโจว',Qingdao:'ชิงเต่า',Hangzhou:'หางโจว',Nanjing:'หนานจิง',Wuhan:'อู่ฮั่น',"Xi'an":'ซีอาน',Shenzhen:'เซินเจิ้น',Tianjin:'เทียนจิน',Kunming:'คุนหมิง',Xiamen:'เซี่ยเหมิน',Chongqing:'ฉงชิ่ง',Harbin:'ฮาร์บิน',Dalian:'ต้าเหลียน',Changsha:'ฉางซา',Jinan:'จี่หนาน',Suzhou:'ซูโจว',Nanning:'หนานหนิง',Hefei:'เหอเฝย',Shenyang:'เสิ่นหยาง',Zhengzhou:'เจิ้งโจว',Fuzhou:'ฝูโจว',Wuxi:'อู๋ซี',Ningbo:'หนิงปัว',Zhuhai:'จูไห่'};
+  var CITY_TH={Shanghai:'เซี่ยงไฮ้',Beijing:'ปักกิ่ง',Chengdu:'เฉิงตู',Guangzhou:'กวางโจว',Qingdao:'ชิงเต่า',Hangzhou:'หางโจว',Nanjing:'หนานจิง',Wuhan:'อู่ฮั่น',"Xi'an":'ซีอาน',Shenzhen:'เซินเจิ้น',Tianjin:'เทียนจิน',Kunming:'คุนหมิง',Xiamen:'เซี่ยเหมิน',Chongqing:'ฉงชิ่ง',Harbin:'ฮาร์บิน',Dalian:'ต้าเหลียน',Changsha:'ฉางซา',Jinan:'จี่หนาน',Suzhou:'ซูโจว',Nanning:'หนานหนิง',Hefei:'เหอเฝย',Shenyang:'เสิ่นหยาง',Zhengzhou:'เจิ้งโจว',Fuzhou:'ฝูโจว',Wuxi:'อู๋ซี',Ningbo:'หนิงปัว',Zhuhai:'จูไห่',Quanzhou:'เฉวียนโจว',Kunshan:'คุนซาน',Zhenjiang:'เจิ้นเจียง',Weihai:'เวยไห่',Yantai:'เยียนไถ',Changchun:'ฉางชุน',Lanzhou:'หลานโจว',Guiyang:'กุ้ยหยาง',Taiyuan:'ไท่หยวน',Nanchang:'หนานชาง',Haikou:'ไหโข่ว',Guilin:'กุ้ยหลิน',Shijiazhuang:'สือเจียจวง',Urumqi:'อุรุมชี',Hohhot:'ฮูฮอต',Xining:'ซีหนิง',Yinchuan:'อิ๋นชวน',Lhasa:'ลาซา',Wenzhou:'เวินโจว',Shaoxing:'เซ่าซิง',Jinhua:'จินหัว',Yangzhou:'หยางโจว',Changzhou:'ฉางโจว',Nantong:'หนานทง',Xuzhou:'สวีโจว',Luoyang:'ลั่วหยาง',Mianyang:'เหมียนหยาง',"Ya'an":'หย่าอาน'};
   var LV_TH={UG:'ปริญญาตรี',PG:'ปริญญาโท',PHD:'ปริญญาเอก',LANG:'คอร์สภาษาจีน'};
   var LANG_TH={zh:'สอนเป็นภาษาจีน',en:'สอนเป็นภาษาอังกฤษ',both:'สอนจีน/อังกฤษ'};
   var TIER_TH={C9:'C9 League','985':'985','211':'211',DFC:'Double First-Class',SF:'Sino-Foreign',OT:'อื่น ๆ'};
@@ -601,7 +601,7 @@
   function fmt(n){return Math.round(n).toLocaleString('en-US');}
   function baht(n){return '฿'+fmt(Math.round(n/1000)*1000);}
   function yuan(n){return '¥'+fmt(n);}
-  function cityTH(c){return CITY_TH[c]||c;}
+  function cityTH(c){return String(c||'').split(/\s*\/\s*/).map(function(x){return CITY_TH[x]||x;}).join(' / ');}
   var MON_TH=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'],MON_EN={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
   // A round that hasn't opened yet (p.past) shows day + month only, from last round.
   function fmtDl(p){
