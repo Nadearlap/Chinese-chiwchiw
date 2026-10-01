@@ -116,12 +116,16 @@ function doGet(e) {
   if (action === 'meta' || action === 'search' || action === 'uni') {
     rkey = 'r:' + Utilities.base64EncodeWebSafe(Utilities.computeDigest(Utilities.DigestAlgorithm.MD5,
       action + '|' + (p.f || '') + '|' + (p.name || ''), Utilities.Charset.UTF_8));
-    var hit = cache.get(rkey);
+    var hit = cache.get(rkey) || readWarm_(rkey);
     if (hit) return ContentService.createTextOutput(hit).setMimeType(ContentService.MimeType.JSON);
   }
-  var out;
+  var out, t0 = Date.now(), data;
+  LOAD_PATH_ = '';
   try {
-    out = handle_(action, p, getData_(), {ai: aiPlan_, today: Utilities.formatDate(new Date(), 'Asia/Bangkok', 'yyyy-MM-dd')});
+    data = getData_();
+    var t1 = Date.now();
+    out = handle_(action, p, data, {ai: aiPlan_, today: Utilities.formatDate(new Date(), 'Asia/Bangkok', 'yyyy-MM-dd')});
+    if (Date.now() - t0 > 4000) logSlow_({a: action, path: LOAD_PATH_, load: t1 - t0, work: Date.now() - t1});
   } catch (err) {
     out = {error: 'unavailable'};
   }
@@ -130,12 +134,48 @@ function doGet(e) {
   return ContentService.createTextOutput(text).setMimeType(ContentService.MimeType.JSON);
 }
 
+// Ready-made answers (header numbers + default lists) are also kept in Script Properties, which
+// Google never clears early, so the first screen stays fast even when the cache drops them.
+function readWarm_(rkey) {
+  try {
+    var props = PropertiesService.getScriptProperties(), n = +(props.getProperty('w:' + rkey + ':n') || 0);
+    if (!n) return null;
+    var b64 = '';
+    for (var i = 0; i < n; i++) b64 += props.getProperty('w:' + rkey + ':' + i) || '';
+    var text = unpack_(b64);
+    try { CacheService.getScriptCache().put(rkey, text, CONFIG.answerSeconds); } catch (err) {}
+    return text;
+  } catch (err) { return null; }
+}
+function writeWarm_(parts) {
+  var props = PropertiesService.getScriptProperties(), all = props.getProperties(), out = {}, keep = {};
+  Object.keys(parts).forEach(function (rkey) {
+    var b64 = pack_(parts[rkey]), size = 8000, n = Math.ceil(b64.length / size);
+    if (n > 4) return;   // only small answers belong here (properties hold 500 KB in total)
+    for (var i = 0; i < n; i++) out['w:' + rkey + ':' + i] = b64.substr(i * size, size);
+    out['w:' + rkey + ':n'] = String(n);
+  });
+  Object.keys(all).forEach(function (k) { if (k.indexOf('w:') === 0 && !(k in out)) props.deleteProperty(k); });
+  props.setProperties(out);
+}
+
+// Keeps the last few slow requests (timings only, no data) for the ping health check.
+var LOAD_PATH_ = '';
+function logSlow_(o) {
+  try {
+    var cache = CacheService.getScriptCache(), list = JSON.parse(cache.get('slowlog') || '[]');
+    o.at = Utilities.formatDate(new Date(), 'Asia/Bangkok', 'HH:mm:ss');
+    list.unshift(o);
+    cache.put('slowlog', JSON.stringify(list.slice(0, 8)), 21600);
+  } catch (err) {}
+}
+
 // Health check only (no sheet data): is the fast copy ready, and when was it last refreshed?
 function ping_() {
   var cache = CacheService.getScriptCache(), n = +(cache.get('um:n') || 0), props = PropertiesService.getScriptProperties();
   var have = n ? Object.keys(cache.getAll(Array.apply(null, Array(n)).map(function (_, i) { return 'um:' + i; }))).length : 0;
   var last = +(props.getProperty('lastRefresh') || 0);
-  return {fastCopy: !!n && have === n, autoRefresh: props.getProperty('autoRefresh') === 'on',
+  return {slow: JSON.parse(cache.get('slowlog') || '[]'), fastCopy: !!n && have === n, chunks: n, autoRefresh: props.getProperty('autoRefresh') === 'on',
     minutesSinceRefresh: last ? Math.round((Date.now() - last) / 60000) : null, refreshSeconds: +(props.getProperty('refreshSeconds') || 0)};
 }
 
@@ -169,9 +209,10 @@ function getData_() {
     if (Object.keys(got).length === n) {
       var b64 = '';
       for (var j = 0; j < n; j++) b64 += got['um:' + j];
-      try { return hydrate_(JSON.parse(unpack_(b64))); } catch (err) {}
+      try { LOAD_PATH_ = 'cache'; return hydrate_(JSON.parse(unpack_(b64))); } catch (err) {}
     }
   }
+  LOAD_PATH_ = 'sheet';
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var saved = readSaved_(ss), age = saved ? Date.now() - saved.t : Infinity;
   var auto = PropertiesService.getScriptProperties().getProperty('autoRefresh') === 'on';
@@ -187,6 +228,7 @@ function getData_() {
     if (fresh) { lock.releaseLock(); return hydrate_(JSON.parse(unpack_(fresh.b64))); }
   }
   try {
+    LOAD_PATH_ = 'rebuild';
     return rebuild_(ss);
   } finally {
     lock.releaseLock();
@@ -273,6 +315,7 @@ function refreshMatcherData() {
   for (var pg = 2; first.total && pg <= Math.ceil(first.total / first.size); pg++) add('search', defaultSearch_('uni', pg));
   for (var pp = 1; pp <= 3; pp++) add('search', defaultSearch_('prog', pp));
   try { cache.putAll(parts, CONFIG.answerSeconds + 600); } catch (err) {}
+  try { writeWarm_(parts); } catch (err) {}
   props.setProperties({autoRefresh: 'on', lastRefresh: String(Date.now()), refreshSeconds: String(Math.round((Date.now() - started) / 1000))});
 }
 
