@@ -347,7 +347,7 @@
     <div class="um-logo"><a href="https://chinesechiwchiw.com/" class="um-logo-link"><span class="um-logo-txt">Chinese <span>Chiwchiw</span></span></a></div>
     <h1 class="um-h1"><img class="um-h1-img" src="https://chinesechiwchiw.com/wp-content/uploads/2026/10/University-matcher-heading.png" alt="" onerror="this.parentNode.removeChild(this)"><span class="um-h1-txt">หามหาวิทยาลัยจีน<br><span>ที่ใช่สำหรับคุณ</span></span></h1>
     <h2 class="um-hero-h">ไม่รู้จะเลือกมหาลัยไหน?<br><span>เดี๋ยว Chiwchiw ช่วยหาให้ 🧡</span></h2>
-    <p class="um-lead">ตอบ 8 คำถามง่าย ๆ แล้วเราจะช่วยคัดมหาวิทยาลัยและหลักสูตรที่เหมาะกับคุณ</p>
+    <p class="um-lead">ตอบ <span class="um-sc">8</span> คำถามง่าย ๆ แล้วเราจะช่วยคัดมหาวิทยาลัยและหลักสูตรที่เหมาะกับคุณ</p>
     <p class="um-ai-line">✨ ให้ Chiwchiw AI ช่วยหา Best Match ของคุณ</p>
     <div class="um-btns">
       <a class="um-btn um-btn-pri" href="#um-app">🧭 เริ่มจับคู่มหาวิทยาลัย</a>
@@ -729,7 +729,7 @@
     if(cur<steps.length-1)show(cur+1);else runMatch();
   });
   backBtn.addEventListener('click',function(){if(cur>0)show(cur-1);});
-  (function(){var d=new Date(),ny=d.getFullYear()+(d.getMonth()>=6?1:0);$$('.um-y1').forEach(function(e){e.textContent=ny;});$$('.um-y2').forEach(function(e){e.textContent=ny+1;});$('.um-sc').textContent=steps.length;})();
+  (function(){var d=new Date(),ny=d.getFullYear()+(d.getMonth()>=6?1:0);$$('.um-y1').forEach(function(e){e.textContent=ny;});$$('.um-y2').forEach(function(e){e.textContent=ny+1;});$$('.um-sc').forEach(function(e){e.textContent=steps.length;});})();
   show(0);
 
   function profileText(a){

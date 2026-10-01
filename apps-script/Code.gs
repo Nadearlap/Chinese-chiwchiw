@@ -152,7 +152,7 @@ function getData_() {
     var n = t.getName();
     if (n === CONFIG.dataSheet || n === CONFIG.leadsSheet || n === 'Profile Check' || t.getLastRow() < 2) return;
     var head = t.getRange(1, 1, 1, Math.max(1, t.getLastColumn())).getDisplayValues()[0].join('|').toLowerCase();
-    if (!/(^|\|)university(\||$)/.test(head) || !/description|logo|photo/.test(head)) return;
+    if (!/(^|\|)university( name)?( \((en|english)\))?(\||$)/.test(head) || !/description|logo|photo/.test(head)) return;
     mergeProfiles_(data.profiles, buildProfiles_(t.getDataRange().getDisplayValues()));
   });
   var str = JSON.stringify(data), size = 90000, parts = {}, count = Math.ceil(str.length / size);
@@ -296,7 +296,7 @@ function nameKey_(s) { return String(s || '').toLowerCase().replace(/[^a-z0-9]/g
 function buildProfiles_(values) {
   var heads = values[0].map(function (h) { return String(h).trim().toLowerCase(); }), out = {};
   var col = function (test) { for (var i = 0; i < heads.length; i++) if (test(heads[i])) return i; return -1; };
-  var C = {u: col(function (h) { return h === 'university'; }), desc: col(function (h) { return h.indexOf('description') === 0; }),
+  var C = {u: col(function (h) { return /^university( name)?( \((en|english)\))?$/.test(h); }), desc: col(function (h) { return h.indexOf('description') > -1; }),
     logo: col(function (h) { return h.indexOf('logo') > -1; }), photo: col(function (h) { return h.indexOf('photo') > -1 && h.indexOf('url') > -1; }),
     credit: col(function (h) { return h.indexOf('credit') > -1; }), src: col(function (h) { return h.indexOf('source') > -1; })};
   if (C.u < 0) return out;
