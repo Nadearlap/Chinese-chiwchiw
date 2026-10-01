@@ -144,8 +144,7 @@ function getData_() {
     }
   }
   var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var sh = ss.getSheetByName(CONFIG.dataSheet);
-  var data = {rows: buildRows_(sh.getDataRange().getDisplayValues()), profiles: {}};
+  var data = {rows: readProgrammes_(ss).rows, profiles: {}};
   // Any tab whose first row has "University" plus a description, logo or photo column
   // counts as profile data, whatever the tab is called.
   ss.getSheets().forEach(function (t) {
@@ -162,15 +161,51 @@ function getData_() {
   return data;
 }
 
+// Programme rows come from Master Data plus every other tab laid out the same way
+// (e.g. one tab per university). A tab counts if one of its first 5 rows has both
+// "University" and "Programme / Major". Rows already read (same Programme ID, or same
+// university + level + programme + teaching language) are skipped, Master Data first.
+var SKIP_TABS_ = {'Profile Check': 1, 'Data Check': 1};
+
+function headerRow_(values) {
+  for (var i = 0; i < Math.min(5, values.length); i++) {
+    var h = values[i].map(function (x) { return String(x).trim().toLowerCase(); });
+    if (h.indexOf('university') > -1 && h.indexOf('programme / major') > -1) return i;
+  }
+  return -1;
+}
+
+function readProgrammes_(ss, stats) {
+  var sheets = ss.getSheets().filter(function (t) {
+    var n = t.getName();
+    return !SKIP_TABS_[n] && n !== CONFIG.leadsSheet && t.getLastRow() > 1;
+  });
+  sheets.sort(function (a, b) { return (b.getName() === CONFIG.dataSheet) - (a.getName() === CONFIG.dataSheet); });
+  var rows = [], seen = {}, tabs = [];
+  sheets.forEach(function (t) {
+    var values = t.getDataRange().getDisplayValues(), hi = headerRow_(values);
+    if (hi < 0) return;
+    var got = buildRows_(values.slice(hi), stats), added = 0, dup = 0;
+    got.forEach(function (r) {
+      var k = r.id ? 'id:' + r.id.toLowerCase() : 'k:' + [r.u, r.lv, r.prog, r.lang].join('|').toLowerCase();
+      if (seen[k]) { dup++; return; }
+      seen[k] = 1; rows.push(r); added++;
+    });
+    tabs.push({name: t.getName(), rows: values.length - 1 - hi, added: added, dup: dup});
+  });
+  return {rows: rows, tabs: tabs};
+}
+
 // Run from the Apps Script editor (select checkData → Run). Writes a "Data Check" tab
 // explaining how many Master Data rows the website uses and why the others are skipped.
 function checkData() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet(), values = ss.getSheetByName(CONFIG.dataSheet).getDataRange().getDisplayValues();
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
   var st = {blank: 0, missingName: 0, duplicate: 0, cannotApply: {}, skippedUnis: {}};
-  var rows = buildRows_(values, st), used = {};
+  var read = readProgrammes_(ss, st), rows = read.rows, used = {}, total = 0;
+  read.tabs.forEach(function (t) { total += t.rows; });
   rows.forEach(function (r) { used[r.u] = (used[r.u] || 0) + 1; });
   var out = [['Check', 'Count', 'Notes'],
-    ['Rows in Master Data (below the header)', values.length - 1, ''],
+    ['Rows in programme tabs (below the header)', total, read.tabs.length + ' tabs read'],
     ['Rows shown on the website', rows.length, Object.keys(used).length + ' universities'],
     ['Skipped: completely empty rows', st.blank, 'Normal — the sheet has spare empty rows'],
     ['Skipped: University or Programme / Major is empty', st.missingName, 'Fill both columns to include these rows'],
@@ -178,6 +213,8 @@ function checkData() {
   Object.keys(st.cannotApply).forEach(function (v) {
     out.push(['Skipped: "Chinese Chiwchiw Can Apply?" = ' + v, st.cannotApply[v], 'Only "Yes" rows are shown (CONFIG.onlyCanApply)']);
   });
+  out.push(['', '', ''], ['Tab', 'Programmes used', 'Already read in an earlier tab']);
+  read.tabs.forEach(function (t) { out.push([t.name, t.added, t.dup]); });
   out.push(['', '', ''], ['Universities on the website', 'Programmes', '']);
   Object.keys(used).sort().forEach(function (u) { out.push([u, used[u], '']); });
   var skippedNames = Object.keys(st.skippedUnis).filter(function (u) { return !used[u]; }).sort();
@@ -190,7 +227,7 @@ function checkData() {
   sh.getRange(1, 1, out.length, 3).setValues(out);
   sh.setFrozenRows(1);
   sh.autoResizeColumn(1);
-  ss.toast(rows.length + ' of ' + (values.length - 1) + ' rows are shown on the website. See the Data Check tab.', 'Data Check', 10);
+  ss.toast(rows.length + ' programmes from ' + Object.keys(used).length + ' universities are shown on the website. See the Data Check tab.', 'Data Check', 10);
 }
 
 // Run from the Apps Script editor (select checkProfiles → Run). Writes a "Profile Check"
