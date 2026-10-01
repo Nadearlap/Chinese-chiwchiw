@@ -157,7 +157,7 @@ function getData_() {
     if (Object.keys(got).length === n) {
       var b64 = '';
       for (var j = 0; j < n; j++) b64 += got['um:' + j];
-      try { return JSON.parse(unpack_(b64)); } catch (err) {}
+      try { return hydrate_(JSON.parse(unpack_(b64))); } catch (err) {}
     }
   }
   var ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -165,14 +165,14 @@ function getData_() {
   var auto = PropertiesService.getScriptProperties().getProperty('autoRefresh') === 'on';
   if (saved && age < (auto ? 6 * 3600e3 : CONFIG.cacheSeconds * 1000)) {
     putCache_(saved.b64);
-    return JSON.parse(unpack_(saved.b64));
+    return hydrate_(JSON.parse(unpack_(saved.b64)));
   }
   var lock = LockService.getScriptLock();
   if (!lock.tryLock(500)) {
-    if (saved) return JSON.parse(unpack_(saved.b64));   // someone else is rebuilding; use the older copy
+    if (saved) return hydrate_(JSON.parse(unpack_(saved.b64)));   // someone else is rebuilding; use the older copy
     lock.waitLock(120000);
     var fresh = readSaved_(ss);
-    if (fresh) { lock.releaseLock(); return JSON.parse(unpack_(fresh.b64)); }
+    if (fresh) { lock.releaseLock(); return hydrate_(JSON.parse(unpack_(fresh.b64))); }
   }
   try {
     return rebuild_(ss);
@@ -202,7 +202,7 @@ function buildData_(ss) {
 }
 
 function rebuild_(ss) {
-  var data = buildData_(ss), b64 = pack_(JSON.stringify(data));
+  var data = buildData_(ss), b64 = pack_(JSON.stringify(slim_(data)));
   writeSaved_(ss, b64);
   putCache_(b64);
   return data;
@@ -243,19 +243,39 @@ function writeSaved_(ss, b64) {
 
 // Time-trigger target. Rebuilds the saved copy from the sheet.
 function refreshMatcherData() {
-  var data = rebuild_(SpreadsheetApp.getActiveSpreadsheet()), cache = CacheService.getScriptCache();
-  // Pre-compute the answers every visitor asks for first, so the page opens instantly.
-  var warm = [['meta', '', ''], ['search', JSON.stringify(defaultSearch_('uni')), ''], ['search', JSON.stringify(defaultSearch_('prog')), '']];
-  warm.forEach(function (w) {
-    var key = 'r:' + Utilities.base64EncodeWebSafe(Utilities.computeDigest(Utilities.DigestAlgorithm.MD5, w[0] + '|' + w[1] + '|' + w[2], Utilities.Charset.UTF_8));
-    var text = JSON.stringify(handle_(w[0], {f: w[1]}, data, {}));
-    if (text.length < 95000) { try { cache.put(key, text, CONFIG.cacheSeconds); } catch (err) {} }
-  });
+  var data = rebuild_(SpreadsheetApp.getActiveSpreadsheet()), cache = CacheService.getScriptCache(), parts = {};
+  var keyOf = function (a, f, name) {
+    return 'r:' + Utilities.base64EncodeWebSafe(Utilities.computeDigest(Utilities.DigestAlgorithm.MD5, a + '|' + f + '|' + name, Utilities.Charset.UTF_8));
+  };
+  var add = function (a, fObj, name) {
+    var f = fObj ? JSON.stringify(fObj) : '', text = JSON.stringify(handle_(a, {f: f, name: name || ''}, data, {}));
+    if (text.length < 95000) parts[keyOf(a, f, name || '')] = text;
+    return JSON.parse(text);
+  };
+  // Pre-compute what most visitors ask for: header numbers, every page of the default
+  // university list, the first pages of the course list, and each university's pop-up.
+  add('meta', null);
+  var first = add('search', defaultSearch_('uni'));
+  for (var pg = 2; first.total && pg <= Math.ceil(first.total / first.size); pg++) add('search', defaultSearch_('uni', pg));
+  for (var pp = 1; pp <= 5; pp++) add('search', defaultSearch_('prog', pp));
+  var unis = {};
+  data.rows.forEach(function (r) { unis[r.u] = 1; });
+  Object.keys(unis).forEach(function (u) { add('uni', defaultUni_(), u); });
+  var keys = Object.keys(parts);
+  for (var i = 0; i < keys.length; i += 50) {
+    var batch = {};
+    keys.slice(i, i + 50).forEach(function (k) { batch[k] = parts[k]; });
+    try { cache.putAll(batch, CONFIG.cacheSeconds + 120); } catch (err) {}
+  }
 }
 
 // Must match the first request the page sends (F in the page script, plus view and page).
-function defaultSearch_(view) {
-  return {q: '', uni: '', lv: [], city: [], sub: [], lang: [], tier: [], max: 0, myHsk: '', open: false, nohsk: false, nocsca: false, sch: false, sort: 'rel', view: view, page: 1};
+function defaultSearch_(view, page) {
+  return {q: '', uni: '', lv: [], city: [], sub: [], lang: [], tier: [], max: 0, myHsk: '', open: false, nohsk: false, nocsca: false, sch: false, sort: 'rel', view: view, page: page || 1};
+}
+// Must match the pop-up's first request (filters without q/uni, plus dq and page).
+function defaultUni_() {
+  return {lv: [], city: [], sub: [], lang: [], tier: [], max: 0, myHsk: '', open: false, nohsk: false, nocsca: false, sch: false, sort: 'rel', dq: '', page: 1};
 }
 
 // Run ONCE from the Apps Script editor (select setupAutoRefresh → Run).
@@ -453,8 +473,8 @@ function buildRows_(values, stats) {
       ielts: ielts, toefl: toefl, eng: yes_(g('English Test Required')) || ielts > 0 || toefl > 0,
       csca: yes_(g('CSCA Required?')), cscaSub: g('CSCA Subjects'), sch: yes_(g('Scholarship Available?')),
       dl: g('Final Deadline') || g('Application Deadline'), cyc: g('Admission Cycle'),
-      open: /^(open|current)/i.test(cs), past: /past/i.test(cs), review: /review|unverified|low/i.test(g('Data Confidence')),
-      campus: g('Campus'), ca: yes_(can)
+      open: /^(open|current)/i.test(cs), past: /past/i.test(cs),
+      campus: g('Campus')
     };
     var low = (prog + ' ' + row.school + ' ' + row.track + ' ' + g('Search Keywords / Tags')).toLowerCase();
     row.f = 'oth'; row.s = '';
@@ -471,7 +491,8 @@ function buildRows_(values, stats) {
     row.cl = row.city.split(/\s*[\/,;&]\s*|\s+and\s+/).map(function (c) { return c.trim(); }).filter(String);
     if (!row.cl.length) row.cl = [row.city];
     row.code = codeOf_(uni);
-    row.hay = (uni + ' ' + row.cn + ' ' + row.city + ' ' + row.cl.map(function (c) { return CITY_TH[c] || ''; }).join(' ') + ' ' + low).toLowerCase();
+    row.kw = g('Search Keywords / Tags').toLowerCase();
+    hay_(row);
     out.push(row);
   }
   return out;
@@ -480,6 +501,31 @@ function buildRows_(values, stats) {
 function nameKey_(s) { return String(s || '').toLowerCase().replace(/[^a-z0-9]/g, ''); }
 
 // Accepts header variants, e.g. "Logo URL (WordPress)" or "Campus photo URL (WordPress)".
+function hay_(r) {
+  r.hay = (r.u + ' ' + r.cn + ' ' + r.city + ' ' + r.cl.map(function (c) { return CITY_TH[c] || ''; }).join(' ') + ' ' +
+    r.prog + ' ' + r.school + ' ' + r.track + ' ' + (r.kw || '')).toLowerCase();
+}
+
+// Saved copy leaves out the search string (rebuilt on load) to keep it small and quick to read.
+function slim_(data) {
+  return {profiles: data.profiles, rows: data.rows.map(function (r) {
+    var o = {};
+    for (var k in r) if (k !== 'hay' && r[k] !== '' && r[k] !== false && r[k] !== 0) o[k] = r[k];
+    return o;
+  })};
+}
+function hydrate_(data) {
+  var defaults = {cn: '', city: '—', prov: '', track: '', school: '', dur: '', tu: 0, tot: 0, hsk: 0, hskTxt: '', hskk: false, hskkLv: '',
+    ielts: 0, toefl: 0, eng: false, csca: false, cscaSub: '', sch: false, dl: '', cyc: '', open: false, past: false, campus: '', kw: '', id: '', s: '', code: ''};
+  data.rows.forEach(function (r) {
+    for (var k in defaults) if (!(k in r)) r[k] = defaults[k];
+    if (!r.req) r.req = [];
+    if (!r.cl) r.cl = [r.city];
+    hay_(r);
+  });
+  return data;
+}
+
 function buildProfiles_(values) {
   var heads = values[0].map(function (h) { return String(h).trim().toLowerCase(); }), out = {};
   var col = function (test) { for (var i = 0; i < heads.length; i++) if (test(heads[i])) return i; return -1; };
@@ -511,22 +557,22 @@ function profileOf_(profiles, name) {
 function pub_(r) {
   return {id: r.id, u: r.u, cn: r.cn, city: r.city, lv: r.lv, prog: r.prog, track: r.track, school: r.school, lang: r.lang,
     dur: r.dur, tu: r.tu, tot: r.tot, hsk: r.hsk, hskTxt: r.hskTxt, hskk: r.hskk, hskkLv: r.hskkLv, ielts: r.ielts, toefl: r.toefl,
-    eng: r.eng, csca: r.csca, cscaSub: r.cscaSub, sch: r.sch, dl: r.dl, cyc: r.cyc, open: r.open, past: r.past, review: r.review,
-    campus: r.campus, f: r.f, s: r.s, req: r.req || [], ca: !!r.ca};
+    eng: r.eng, csca: r.csca, cscaSub: r.cscaSub, sch: r.sch, dl: r.dl, cyc: r.cyc, open: r.open, past: r.past,
+    campus: r.campus, f: r.f, s: r.s, req: r.req || []};
 }
 
 function uniSummary_(name, list, profiles) {
-  var r0 = list[0], prof = profileOf_(profiles, name), fees = [], lv = {}, fc = {}, open = false, sch = false, en = 0, ca = false;
+  var r0 = list[0], prof = profileOf_(profiles, name), fees = [], lv = {}, fc = {}, open = false, sch = false, en = 0;
   list.forEach(function (r) {
     if (r.tu) fees.push(r.tu);
     lv[r.lv] = 1; if (r.f !== 'oth') fc[r.f] = (fc[r.f] || 0) + 1;
-    if (r.open) open = true; if (r.sch) sch = true; if (r.lang !== 'zh') en++; if (r.ca) ca = true;
+    if (r.open) open = true; if (r.sch) sch = true; if (r.lang !== 'zh') en++;
   });
   return {name: name, short: shortName_(name), cn: r0.cn, city: r0.city, prov: r0.prov, code: r0.code, tiers: TIERS[r0.code] || [],
     desc: prof.desc || '', photo: prof.photo || '', logo: prof.logo || '', credit: prof.credit || '', src: prof.src || '', n: list.length,
     feeMin: fees.length ? Math.min.apply(null, fees) : 0, feeMax: fees.length ? Math.max.apply(null, fees) : 0,
     levels: ['UG', 'PG', 'PHD', 'LANG'].filter(function (k) { return lv[k]; }),
-    top: Object.keys(fc).sort(function (a, b) { return fc[b] - fc[a]; }).slice(0, 2), open: open, sch: sch, en: en, ca: ca};
+    top: Object.keys(fc).sort(function (a, b) { return fc[b] - fc[a]; }).slice(0, 2), open: open, sch: sch, en: en};
 }
 
 function meta_(rows) {
@@ -650,8 +696,6 @@ function bestMatch_(rows, profiles, a, deps) {
     if (!g.city) pen += 15;
     if (a.schol === 'must') pen += r.sch ? -6 : 6; else if (a.schol === 'nice' && r.sch) pen -= 3;
     if (r.open) pen -= 2;
-    if (r.ca) pen -= 2;      // small preference for programmes Chinese Chiwchiw can apply to
-    if (r.review) pen += 1;
     if (useZh && r.hsk && myHsk > r.hsk) pen -= 2;
     g.exact = g.major && g.lang && !g.hskGap && !g.ieltsGap && !g.over && g.city && !g.testUnknown;
     scored.push({pen: pen, cost: cost || 1e9, r: r, g: g});
@@ -711,7 +755,6 @@ function fallbackPlan_(r, g, a, today) {
   if (g.testUnknown) watch.push(g.useZh ? 'หลักสูตรนี้สอนเป็นภาษาจีน ต้องใช้ผล HSK' : 'หลักสูตรนี้สอนเป็นภาษาอังกฤษ ต้องใช้ผล IELTS หรือ TOEFL');
   if (g.over) watch.push('ค่าใช้จ่ายเกินงบที่ตั้งไว้ประมาณ ' + Math.round(g.over / 1000) * 1000 + ' บาทต่อปี');
   if (!g.city) watch.push('มหาวิทยาลัยนี้อยู่นอกเมืองที่นักเรียนเลือก');
-  if (r.review) watch.push('ข้อมูลบางส่วนของหลักสูตรนี้ทีมกำลังตรวจสอบ');
   var kk = r.hskk ? ' และ HSKK ' + (r.hskkLv || '') : '';
   if (r.lang !== 'en' && r.hsk) prep.push(g.hskGap || g.testUnknown ? 'เตรียมสอบ HSK ' + r.hsk + kk + ' ให้ได้คะแนนตามเกณฑ์' : 'ถ้ายังไม่มีใบผล HSK ' + r.hsk + kk + ' ให้สอบก่อนยื่นสมัคร (ผลสอบใช้ได้ 2 ปี)');
   if (r.lang !== 'zh' && r.ielts) prep.push(g.ieltsGap || g.testUnknown ? 'เตรียมสอบ IELTS ให้ได้ ' + r.ielts + ' ขึ้นไป' + (r.toefl ? ' (หรือ TOEFL ' + r.toefl + ')' : '') : 'ถ้ายังไม่มีใบผล IELTS ' + r.ielts + ' ขึ้นไป ให้สอบก่อนยื่นสมัคร (ผลสอบใช้ได้ 2 ปี)');
@@ -797,7 +840,7 @@ var AI_SYSTEM = [
   '',
   'Start plan: if the student is applying in the next round, use the dated timeline above. If they are planning ahead for a later year, use phases relative to the application year (for example ประมาณ 1 ปีก่อนยื่นสมัคร, 2–3 เดือนก่อนปิดรับ) with no years, and treat language gaps as time to prepare. If they are just exploring, do not push them to apply: make the plan about comparing 2–3 options from the list on the page, trying Chinese lessons or a short camp, and choosing a start year with the team; use relative phases with no dates.',
   '',
-  'Writing: Thai, warm and encouraging, in the voice of the Chinese Chiwchiw team. Address the reader as นักเรียน and never as น้อง. Short sentences, one idea per bullet, at most two sentences each, no emoji, no markdown. watch_out lists honest gaps (language, budget, city, data still being verified) and is an empty array when there are none.'
+  'Writing: Thai, warm and encouraging, in the voice of the Chinese Chiwchiw team. Address the reader as นักเรียน and never as น้อง. Short sentences, one idea per bullet, at most two sentences each, no emoji, no markdown. watch_out lists honest gaps (language, budget, city) and is an empty array when there are none.'
 ].join('\n');
 
 var AI_SCHEMA_BASE = {
@@ -829,7 +872,7 @@ function aiPlan_(a, shortlist, today) {
       teaching_language: r.lang, duration_years: r.dur, tuition_rmb_per_year: r.tu || null, total_rmb_per_year: r.tot || null,
       total_includes_estimated_living_costs: !!r.tot, estimated_thb_per_year: c.g.thb || null, extra_requirements: r.req || [], hsk_requirement: r.hskTxt || (r.hsk ? 'HSK ' + r.hsk : null), hskk_level: r.hskk ? (r.hskkLv || 'required') : null,
       ielts_min: r.ielts || null, toefl_min: r.toefl || null, csca_required: r.csca, csca_subjects: r.cscaSub || null,
-      scholarship_available: r.sch, chinese_chiwchiw_can_apply: !!r.ca, deadline: r.dl || null, cycle: r.cyc || null, cycle_past: r.past, data_being_verified: r.review,
+      scholarship_available: r.sch, deadline: r.dl || null, cycle: r.cyc || null, cycle_past: r.past,
       gaps: {major_match: c.g.major, language_match: c.g.lang, hsk_levels_short: c.g.hskGap || 0, ielts_short: c.g.ieltsGap || 0,
         language_test_not_asked: !!c.g.testUnknown, over_budget_thb: c.g.over || 0, city_match: c.g.city}};
   });
