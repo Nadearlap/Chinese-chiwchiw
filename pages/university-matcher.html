@@ -651,11 +651,57 @@
   if(safeImg(LOGO)){$('.um-logo-link').innerHTML='<img src="'+esc(LOGO)+'" alt="Chinese Chiwchiw">';}
   $$('.um-rate').forEach(function(el){el.textContent=RATE;});
 
+  // Numbers run from 0 up to their value (ease-out, about 1.6s).
+  function countUp(els){
+    if(REDUCED||!window.requestAnimationFrame)return;
+    var t0=null,dur=1600;
+    function step(t){
+      if(t0===null)t0=t;
+      var k=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-k,3);
+      els.forEach(function(el){el.textContent=fmt(Math.round(+el.getAttribute('data-to')*e));});
+      if(k<1)requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  // Confetti burst in brand colours when the match appears. Removes itself after ~3.5s.
+  function confetti(){
+    if(REDUCED||!window.requestAnimationFrame)return;
+    var c=document.createElement('canvas'),ctx=c.getContext('2d');
+    if(!ctx)return;
+    var W=window.innerWidth,H=window.innerHeight,dpr=Math.min(2,window.devicePixelRatio||1);
+    c.width=W*dpr;c.height=H*dpr;
+    c.setAttribute('aria-hidden','true');
+    c.style.cssText='position:fixed;left:0;top:0;width:100vw;height:100vh;pointer-events:none;z-index:2147483000';
+    document.body.appendChild(c);ctx.scale(dpr,dpr);
+    var cols=['#FF6B00','#FFB300','#FFB347','#6B46C1','#00A38C','#FFFFFF','#1A0A00'],P=[],n=W<600?110:180;
+    for(var i=0;i<n;i++){
+      var fromLeft=i%2===0,ang=(fromLeft?-60:-120)*Math.PI/180+(Math.random()-.5)*0.9,sp=8+Math.random()*9;
+      P.push({x:fromLeft?0:W,y:H*0.75,vx:Math.cos(ang)*sp,vy:Math.sin(ang)*sp,w:6+Math.random()*6,h:9+Math.random()*8,
+        r:Math.random()*6.28,vr:(Math.random()-.5)*0.35,c:cols[i%cols.length],round:Math.random()<0.25});
+    }
+    var t0=null;
+    function frame(t){
+      if(t0===null)t0=t;
+      var el=t-t0;ctx.clearRect(0,0,W,H);
+      ctx.globalAlpha=el>2600?Math.max(0,1-(el-2600)/900):1;
+      P.forEach(function(p){
+        p.vx*=0.985;p.vy=p.vy*0.985+0.32;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;
+        ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.r);ctx.fillStyle=p.c;
+        if(p.round){ctx.beginPath();ctx.arc(0,0,p.w/2,0,6.28);ctx.fill();}else ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h*Math.abs(Math.cos(p.r*1.7)));
+        ctx.restore();
+      });
+      if(el<3500)requestAnimationFrame(frame);else c.parentNode&&c.parentNode.removeChild(c);
+    }
+    requestAnimationFrame(frame);
+  }
+
   /* ---------- meta (counts + city list) ---------- */
   var META=null,metaP=api('meta',{}).then(function(m){
     META=m;
     var cities=Object.keys(m.cities||{});
-    $('.um-stats').innerHTML=[[m.unis,'มหาวิทยาลัย'],[m.progs,'หลักสูตร'],[cities.length,'เมือง'],[m.en,'หลักสูตรสอนภาษาอังกฤษ']].map(function(x){return '<div><b>'+fmt(x[0])+'</b><span>'+x[1]+'</span></div>';}).join('');
+    $('.um-stats').innerHTML=[[m.unis,'มหาวิทยาลัย'],[m.progs,'หลักสูตร'],[cities.length,'เมือง'],[m.en,'หลักสูตรสอนภาษาอังกฤษ']].map(function(x){return '<div><b data-to="'+x[0]+'">'+(REDUCED?fmt(x[0]):'0')+'</b><span>'+x[1]+'</span></div>';}).join('');
+    countUp($$('.um-stats b[data-to]'));
     buildCityFilter();
     return m;
   });
@@ -753,7 +799,7 @@
     $$('.um-think li').forEach(function(li,i){li.classList.remove('um-done');setTimeout(function(){li.classList.add('um-done');},REDUCED?0:250*(i+1));});
     app.scrollIntoView({behavior:REDUCED?'auto':'smooth',block:'start'});
     api('match',{a:a}).then(function(res){
-      setTimeout(function(){root.classList.remove('um-v-loading');root.classList.add('um-v-results');renderMatch(res,a);},REDUCED?0:Math.max(0,1300-(Date.now()-t0)));
+      setTimeout(function(){root.classList.remove('um-v-loading');root.classList.add('um-v-results');renderMatch(res,a);if(res&&res.item)setTimeout(confetti,250);},REDUCED?0:Math.max(0,1300-(Date.now()-t0)));
     },function(){
       root.classList.remove('um-v-loading');root.classList.add('um-v-results');
       resultsEl.innerHTML='<div class="um-err"><div class="um-ico">🐼</div><h3 style="color:#1A0A00">ระบบจับคู่ขัดข้องชั่วคราว</h3><p>ลองรีเฟรชหน้านี้อีกครั้งในอีกสักครู่</p></div>';
