@@ -150,7 +150,7 @@ function getData_() {
   // counts as profile data, whatever the tab is called.
   ss.getSheets().forEach(function (t) {
     var n = t.getName();
-    if (n === CONFIG.dataSheet || n === CONFIG.leadsSheet || t.getLastRow() < 2) return;
+    if (n === CONFIG.dataSheet || n === CONFIG.leadsSheet || n === 'Profile Check' || t.getLastRow() < 2) return;
     var head = t.getRange(1, 1, 1, Math.max(1, t.getLastColumn())).getDisplayValues()[0].join('|').toLowerCase();
     if (!/(^|\|)university(\||$)/.test(head) || !/description|logo|photo/.test(head)) return;
     mergeProfiles_(data.profiles, buildProfiles_(t.getDataRange().getDisplayValues()));
@@ -160,6 +160,25 @@ function getData_() {
   parts['um:n'] = String(count);
   try { cache.putAll(parts, CONFIG.cacheSeconds); } catch (err) {}
   return data;
+}
+
+// Run from the Apps Script editor (select checkProfiles → Run). Writes a "Profile Check"
+// tab showing which universities still need a description, campus photo or logo.
+function checkProfiles() {
+  CacheService.getScriptCache().remove('um:n');
+  var data = getData_(), count = {};
+  data.rows.forEach(function (r) { count[r.u] = (count[r.u] || 0) + 1; });
+  var out = [['University', 'Programmes', 'Description', 'Campus photo', 'Logo']], missing = 0;
+  Object.keys(count).sort().forEach(function (u) {
+    var p = profileOf_(data.profiles, u);
+    if (!p.desc || !p.photo || !p.logo) missing++;
+    out.push([u, count[u], p.desc ? '✓' : 'missing', p.photo ? '✓' : 'missing', p.logo ? '✓' : 'missing']);
+  });
+  var ss = SpreadsheetApp.getActiveSpreadsheet(), sh = ss.getSheetByName('Profile Check') || ss.insertSheet('Profile Check');
+  sh.clear();
+  sh.getRange(1, 1, out.length, out[0].length).setValues(out);
+  sh.setFrozenRows(1);
+  SpreadsheetApp.getActiveSpreadsheet().toast((out.length - 1) + ' universities checked, ' + missing + ' need something.', 'Profile Check', 8);
 }
 
 function saveLead_(b) {
