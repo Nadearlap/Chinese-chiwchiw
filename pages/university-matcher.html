@@ -825,7 +825,7 @@
     backBtn.disabled=cur===0;
     nextBtn.textContent=cur===steps.length-1?'🧭 ดูผลจับคู่':'ถัดไป →';
   }
-  function show(i){
+  function show(i,initial){
     cur=i;
     steps.forEach(function(s,k){s.classList.toggle('um-on',k===i);});
     $('.um-sn').textContent=i+1;
@@ -834,6 +834,12 @@
     if(name==='level'){var l=val('lang');$('.um-lv-zh').hidden=l==='en';$('.um-lv-en').hidden=l==='zh';}
     if(name==='city')renderQuizCities();
     refreshNav();
+    // A shorter question (e.g. scholarship after the long city list) would leave the reader looking
+    // further down the page; bring the top of the quiz card back into view instead.
+    if(!initial){
+      var top=app.getBoundingClientRect().top;
+      if(top<70)window.scrollTo({top:window.pageYOffset+top-90,behavior:REDUCED?'auto':'smooth'});
+    }
   }
   function renderQuizCities(){
     var box=$('.um-cities');
@@ -866,7 +872,7 @@
   });
   backBtn.addEventListener('click',function(){if(cur>0)show(cur-1);});
   (function(){var d=new Date(),ny=d.getFullYear()+(d.getMonth()>=6?1:0);$$('.um-y1').forEach(function(e){e.textContent=ny;});$$('.um-y2').forEach(function(e){e.textContent=ny+1;});$$('.um-sc').forEach(function(e){e.textContent=steps.length;});})();
-  show(0);
+  show(0,true);
 
   function profileText(a){
     var parts=[{next:'ยื่นรอบหน้า',later:'วางแผนล่วงหน้า',explore:'หาข้อมูลก่อน'}[a.when],{ug:'ปริญญาตรี',ma:'ปริญญาโท',phd:'ปริญญาเอก'}[a.deg]];
