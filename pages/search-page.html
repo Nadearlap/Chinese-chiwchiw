@@ -1,0 +1,553 @@
+<!-- ═══════════════════════════════════════════════════════════════
+     Chinese Chiwchiw — Search page  ·  page slug: /ค้นหา/
+     (don't use /search/ — WordPress reserves it for its own results)
+     Paste everything into ONE Elementor "Custom HTML" block.
+     Prefix: sr-   Root: #chiwchiw-search
+     To add a page to the search: copy one <a class="sr-card"> in
+     section 2, change href / title / text / data-cat / data-k.
+     ═══════════════════════════════════════════════════════════════ -->
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700;800;900&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap');
+
+#chiwchiw-search{width:100vw;position:relative;left:50%;right:50%;margin-left:-50vw;margin-right:-50vw;overflow-x:clip;background:#FFFBF7;color:#5C4A3E;font-family:'Noto Sans Thai',sans-serif;font-size:17px;line-height:1.8}
+#chiwchiw-search *,#chiwchiw-search *::before,#chiwchiw-search *::after{box-sizing:border-box}
+#chiwchiw-search [hidden]{display:none!important}
+#chiwchiw-search a{text-decoration:none!important}
+#chiwchiw-search h1,#chiwchiw-search h2,#chiwchiw-search h3{font-family:'Kanit',sans-serif;margin:0;letter-spacing:0}
+.sr-wrap{max-width:1180px;margin:0 auto;padding:0 28px}
+.sr-sec{padding:88px 0}
+
+/* eyebrow / headings */
+.sr-eyebrow{display:inline-block;font-family:'Kanit',sans-serif;font-weight:700;font-size:.82rem;letter-spacing:2px;color:#FF6B00;background:rgba(255,107,0,.08);border:1px solid rgba(255,107,0,.2);padding:6px 16px;border-radius:50px;margin-bottom:16px}
+.sr-dark .sr-eyebrow{color:#FFB347;background:rgba(255,179,71,.1);border-color:rgba(255,179,71,.3)}
+#chiwchiw-search .sr-h2{font-size:clamp(1.9rem,4vw,2.9rem);font-weight:900;line-height:1.25;color:#1A0A00!important}
+#chiwchiw-search .sr-h2 span{color:#FF6B00!important}
+#chiwchiw-search .sr-dark .sr-h2{color:#fff!important}
+#chiwchiw-search .sr-dark .sr-h2 span{color:#FFB347!important}
+.sr-lead{font-size:clamp(1rem,1.8vw,1.1rem);line-height:1.85;color:#5C4A3E;max-width:680px;margin:14px 0 0}
+.sr-head{text-align:center;margin-bottom:44px}
+.sr-head .sr-lead{margin-left:auto;margin-right:auto}
+
+/* ═══ 1. HERO ═══ */
+.sr-hero{position:relative;background:#1A0A00;color:#fff;overflow:hidden}
+.sr-hero::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 85% 15%,rgba(255,107,0,.35),transparent 45%),radial-gradient(circle at 10% 90%,rgba(255,179,0,.18),transparent 40%),linear-gradient(160deg,#2A1305 0%,#1A0A00 60%);pointer-events:none}
+.sr-hero-zh{position:absolute;right:-20px;bottom:-60px;font-family:'Kanit',sans-serif;font-weight:900;font-size:clamp(9rem,22vw,17rem);line-height:1;color:rgba(255,255,255,.035);pointer-events:none;user-select:none}
+.sr-hero .sr-wrap{position:relative;padding-top:96px;padding-bottom:96px;text-align:center}
+#chiwchiw-search .sr-h1{font-size:clamp(2.1rem,5vw,3.6rem);font-weight:900;line-height:1.2;color:#fff!important}
+#chiwchiw-search .sr-h1 span{color:#FFB347!important}
+.sr-hero .sr-lead{color:rgba(255,255,255,.82);margin:16px auto 0}
+
+/* search box */
+#chiwchiw-search .sr-form{display:flex;align-items:center;gap:8px;max-width:720px;margin:36px auto 0;background:#fff;border-radius:50px;padding:8px 8px 8px 22px;box-shadow:0 10px 40px rgba(0,0,0,.35),0 0 0 4px rgba(255,179,0,.18)}
+.sr-ico{font-size:1.2rem;flex:none;line-height:1}
+#chiwchiw-search .sr-input{flex:1;min-width:0;border:0!important;outline:0!important;box-shadow:none!important;background:transparent!important;font-family:'Noto Sans Thai',sans-serif!important;font-size:1.05rem!important;color:#1A0A00!important;padding:12px 4px!important;margin:0!important;height:auto!important;border-radius:0!important;-webkit-appearance:none;appearance:none}
+#chiwchiw-search .sr-input::placeholder{color:#9A7A60;opacity:1}
+#chiwchiw-search .sr-input::-webkit-search-cancel-button{display:none}
+#chiwchiw-search .sr-clear{display:none;flex:none;width:34px;height:34px;border-radius:50%;border:0;background:#F8F4EE;color:#7A6050;font-size:1rem;line-height:1;cursor:pointer;padding:0}
+#chiwchiw-search.sr-js .sr-clear.sr-on{display:block}
+#chiwchiw-search .sr-btn-go{flex:none;border:0;cursor:pointer;font-family:'Kanit',sans-serif;font-weight:800;font-size:1rem;color:#1A0A00;background:linear-gradient(135deg,#FFB300,#FF6B00);padding:13px 30px;border-radius:50px;box-shadow:0 6px 24px rgba(255,140,0,.45);transition:transform .2s}
+#chiwchiw-search .sr-btn-go:hover{transform:translateY(-2px)}
+
+/* popular chips */
+.sr-pop{margin-top:22px;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:8px}
+.sr-pop-l{font-family:'Kanit',sans-serif;font-weight:600;font-size:.9rem;color:rgba(255,255,255,.6);margin-right:4px}
+#chiwchiw-search .sr-chip{font-family:'Kanit',sans-serif;font-weight:600;font-size:.9rem;color:#fff!important;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);padding:6px 16px;border-radius:50px;transition:background .2s,border-color .2s}
+#chiwchiw-search .sr-chip:hover{background:rgba(255,179,71,.2);border-color:#FFB347}
+
+/* ═══ 2. RESULTS ═══ */
+.sr-results{padding-top:56px}
+.sr-bar{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 24px;margin-bottom:22px}
+#chiwchiw-search .sr-bar h2{font-size:clamp(1.5rem,3vw,2rem);font-weight:900;color:#1A0A00!important;line-height:1.3}
+.sr-count{font-family:'Kanit',sans-serif;font-weight:600;color:#9A7A60;font-size:.98rem;margin:0}
+.sr-pills{display:none;gap:8px;overflow-x:auto;padding:4px 2px 12px;margin:0 0 18px;scrollbar-width:thin;-webkit-overflow-scrolling:touch}
+.sr-js .sr-pills{display:flex}
+#chiwchiw-search .sr-pill{flex:none;display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-family:'Kanit',sans-serif;font-weight:700;font-size:.95rem;color:#5C4A3E;background:#fff;border:1px solid #EDE5DC;padding:9px 18px;border-radius:50px;transition:all .2s;line-height:1.3}
+#chiwchiw-search .sr-pill:hover{border-color:var(--ac,#FF6B00);color:#1A0A00}
+#chiwchiw-search .sr-pill i{font-style:normal;font-size:.78rem;font-weight:700;min-width:24px;text-align:center;padding:1px 7px;border-radius:50px;background:#F8F4EE;color:#7A6050}
+#chiwchiw-search .sr-pill[aria-pressed="true"]{background:#1A0A00;border-color:#1A0A00;color:#fff}
+#chiwchiw-search .sr-pill[aria-pressed="true"] i{background:var(--ac,#FF6B00);color:#fff}
+#chiwchiw-search .sr-pill.sr-zero{opacity:.45}
+
+.sr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+#chiwchiw-search .sr-card{--ac:#FF6B00;--tint:rgba(255,107,0,.09);position:relative;display:flex;flex-direction:column;background:#fff;border:1px solid #EDE5DC;border-radius:16px;padding:22px 22px 20px;box-shadow:0 4px 20px rgba(0,0,0,.06);transition:transform .2s,box-shadow .2s,border-color .2s;overflow:hidden;color:#5C4A3E!important}
+#chiwchiw-search .sr-card::before{content:"";position:absolute;left:0;top:0;right:0;height:4px;background:var(--ac)}
+#chiwchiw-search .sr-card:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,.09);border-color:var(--ac)}
+.sr-c-lang{--ac:#FF6B00!important;--tint:rgba(255,107,0,.09)!important}
+.sr-c-camp{--ac:#2B6CB0!important;--tint:rgba(43,108,176,.09)!important}
+.sr-c-schol{--ac:#00A38C!important;--tint:rgba(0,163,140,.1)!important}
+.sr-c-degree{--ac:#6B46C1!important;--tint:rgba(107,70,193,.09)!important}
+.sr-c-course{--ac:#C2410C!important;--tint:rgba(194,65,12,.08)!important}
+.sr-c-about{--ac:#7A6050!important;--tint:rgba(122,96,80,.1)!important}
+.sr-tag{align-self:flex-start;font-family:'Kanit',sans-serif;font-weight:700;font-size:.8rem;color:var(--ac);background:var(--tint);padding:3px 12px;border-radius:50px;margin-bottom:12px;line-height:1.6}
+#chiwchiw-search .sr-card h3{font-size:1.15rem;font-weight:800;line-height:1.4;color:#1A0A00!important;margin-bottom:6px}
+.sr-card p{font-size:.95rem;line-height:1.75;color:#5C4A3E;margin:0 0 14px;flex:1}
+.sr-go{font-family:'Kanit',sans-serif;font-weight:700;font-size:.92rem;color:var(--ac)}
+
+/* empty + more */
+.sr-empty{text-align:center;background:#fff;border:1px dashed #E4D6C8;border-radius:18px;padding:44px 24px}
+.sr-empty-ico{font-size:2.4rem;line-height:1}
+#chiwchiw-search .sr-empty h3{font-size:1.35rem;font-weight:800;color:#1A0A00!important;margin:10px 0 6px}
+.sr-empty p{margin:0 auto 20px;max-width:520px}
+.sr-btns{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+#chiwchiw-search .sr-btn{display:inline-flex;align-items:center;gap:6px;font-family:'Kanit',sans-serif;font-weight:800;font-size:1rem;padding:14px 30px;border-radius:50px;transition:transform .2s;line-height:1.3}
+#chiwchiw-search .sr-btn:hover{transform:translateY(-2px)}
+#chiwchiw-search .sr-btn-pri{color:#1A0A00!important;background:linear-gradient(135deg,#FFB300,#FF6B00);box-shadow:0 6px 24px rgba(255,140,0,.45)}
+#chiwchiw-search .sr-btn-line{color:#fff!important;background:#06C755;box-shadow:0 6px 20px rgba(6,199,85,.3)}
+#chiwchiw-search .sr-btn-ghost{color:#1A0A00!important;background:#fff;border:2px solid #EDE5DC}
+#chiwchiw-search .sr-btn-glass{color:#fff!important;background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.85);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.sr-more{margin:26px 0 0;text-align:center;font-size:.98rem}
+#chiwchiw-search .sr-more a{font-family:'Kanit',sans-serif;font-weight:700;color:#FF6B00!important}
+
+/* ═══ 3. START FROM YOUR GOAL ═══ */
+.sr-goals{background:#fff}
+.sr-ggrid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+#chiwchiw-search .sr-goal{--ac:#FF6B00;display:flex;flex-direction:column;background:#FFFBF7;border:1px solid #EDE5DC;border-radius:18px;padding:26px 22px;transition:transform .2s,box-shadow .2s;color:#5C4A3E!important}
+#chiwchiw-search .sr-goal:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,.08)}
+.sr-goal-ico{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;background:var(--tint);margin-bottom:14px}
+.sr-goal-q{font-family:'Kanit',sans-serif;font-weight:600;font-size:.9rem;color:#9A7A60}
+#chiwchiw-search .sr-goal h3{font-size:1.2rem;font-weight:800;color:#1A0A00!important;line-height:1.4;margin:2px 0 8px}
+.sr-goal p{font-size:.95rem;line-height:1.75;margin:0 0 16px;flex:1}
+.sr-matcher{text-align:center;margin-top:34px}
+
+/* ═══ 4. FINAL CTA ═══ */
+.sr-dark{background:#1A0A00;color:rgba(255,255,255,.82);position:relative;overflow:hidden}
+.sr-dark::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(255,107,0,.25),transparent 55%);pointer-events:none}
+.sr-dark .sr-wrap{position:relative;text-align:center}
+.sr-dark .sr-lead{color:rgba(255,255,255,.78);margin:14px auto 30px}
+.sr-ticks{margin:26px 0 0;font-size:.92rem;color:rgba(255,255,255,.65)}
+
+/* reveal */
+.sr-js .sr-rv{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+.sr-js .sr-rv.sr-in{opacity:1;transform:none}
+
+@media (max-width:900px){
+  .sr-grid{grid-template-columns:repeat(2,1fr)}
+  .sr-ggrid{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:600px){
+  .sr-wrap{padding:0 16px}
+  .sr-sec{padding:64px 0}
+  .sr-hero .sr-wrap{padding-top:72px;padding-bottom:64px}
+  .sr-grid,.sr-ggrid{grid-template-columns:1fr}
+  .sr-results{padding-top:40px}
+  #chiwchiw-search .sr-form{padding:6px 6px 6px 16px;margin-top:28px}
+  #chiwchiw-search .sr-input{font-size:1rem!important;padding:10px 2px!important}
+  #chiwchiw-search .sr-btn-go{padding:11px 18px;font-size:.95rem}
+  .sr-ico{display:none}
+  .sr-pills{margin-left:-16px;margin-right:-16px;padding-left:16px;padding-right:16px}
+  #chiwchiw-search .sr-card{padding:18px 18px 16px}
+  #chiwchiw-search .sr-btn{width:100%;justify-content:center}
+}
+@media (prefers-reduced-motion:reduce){
+  #chiwchiw-search *{transition:none!important;animation:none!important}
+  .sr-js .sr-rv{opacity:1;transform:none}
+}
+</style>
+
+<div id="chiwchiw-search" class="sr">
+
+<!-- ═══ 1. HERO + SEARCH BOX ═══ -->
+<section class="sr-hero">
+  <div class="sr-hero-zh" aria-hidden="true">找</div>
+  <div class="sr-wrap">
+    <span class="sr-eyebrow">✦ ค้นหาในเว็บไซต์ Chinese Chiwchiw ✦</span>
+    <h1 class="sr-h1">อยากรู้เรื่องไหน<br><span>พิมพ์หาได้เลย</span></h1>
+    <p class="sr-lead">โปรแกรมเรียนภาษา ค่ายระยะสั้น ทุน 1+4 ปริญญา หรือเมืองที่อยากไป — พิมพ์เป็นไทย อังกฤษ หรือจีนก็หาเจอ 🧡</p>
+
+    <!-- Without JS this form falls back to the normal WordPress search -->
+    <form class="sr-form" role="search" action="https://chinesechiwchiw.com/" method="get">
+      <span class="sr-ico" aria-hidden="true">🔍</span>
+      <label for="sr-q" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">ค้นหา</label>
+      <input id="sr-q" class="sr-input" type="search" name="s" autocomplete="off" enterkeyhint="search" placeholder="เช่น เฉิงตู, ค่ายปิดเทอม, ทุน, HSK">
+      <button class="sr-clear" type="button" aria-label="ล้างคำค้นหา">✕</button>
+      <button class="sr-btn-go" type="submit">ค้นหา</button>
+    </form>
+
+    <div class="sr-pop">
+      <span class="sr-pop-l">ค้นหายอดนิยม:</span>
+      <a class="sr-chip" href="https://chinesechiwchiw.com/?s=เฉิงตู" data-q="เฉิงตู">🐼 เฉิงตู</a>
+      <a class="sr-chip" href="https://chinesechiwchiw.com/?s=เซี่ยงไฮ้" data-q="เซี่ยงไฮ้">🏙️ เซี่ยงไฮ้</a>
+      <a class="sr-chip" href="https://chinesechiwchiw.com/?s=ค่าย" data-q="ค่าย">❄️ ค่ายปิดเทอม</a>
+      <a class="sr-chip" href="https://chinesechiwchiw.com/?s=ทุน" data-q="ทุน">🎓 ทุน</a>
+      <a class="sr-chip" href="https://chinesechiwchiw.com/?s=CSCA" data-q="CSCA">📝 CSCA</a>
+      <a class="sr-chip" href="https://chinesechiwchiw.com/?s=HSK" data-q="HSK">📚 HSK</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 2. RESULTS (shows every page by default — this is the directory) ═══ -->
+<section class="sr-sec sr-results" id="sr-results">
+  <div class="sr-wrap">
+    <div class="sr-bar">
+      <h2>ทุกหน้าใน Chinese Chiwchiw</h2>
+      <p class="sr-count" aria-live="polite">เลือกหัวข้อที่สนใจได้เลย</p>
+    </div>
+
+    <div class="sr-pills" role="toolbar" aria-label="กรองตามหมวด">
+      <button type="button" class="sr-pill" data-cat="all" aria-pressed="true">ทั้งหมด <i>0</i></button>
+      <button type="button" class="sr-pill" data-cat="lang" style="--ac:#FF6B00" aria-pressed="false">📚 เรียนภาษาที่จีน <i>0</i></button>
+      <button type="button" class="sr-pill" data-cat="camp" style="--ac:#2B6CB0" aria-pressed="false">❄️ ค่ายระยะสั้น <i>0</i></button>
+      <button type="button" class="sr-pill" data-cat="schol" style="--ac:#00A38C" aria-pressed="false">🎓 ทุน 1+4 <i>0</i></button>
+      <button type="button" class="sr-pill" data-cat="degree" style="--ac:#6B46C1" aria-pressed="false">🏛️ ปริญญา &amp; CSCA <i>0</i></button>
+      <button type="button" class="sr-pill" data-cat="course" style="--ac:#C2410C" aria-pressed="false">✏️ คอร์สภาษาจีน <i>0</i></button>
+      <button type="button" class="sr-pill" data-cat="about" style="--ac:#7A6050" aria-pressed="false">💛 เกี่ยวกับเรา &amp; รีวิว <i>0</i></button>
+    </div>
+
+    <div class="sr-grid">
+      <!-- 2a. Language programmes (orange) -->
+      <a class="sr-card sr-c-lang" data-cat="lang" href="https://chinesechiwchiw.com/long-term-language-programmes-in-china/" data-k="language programme long term 1 term 1 year semester ภาษาระยะยาว เทอม ปี เรียนภาษา 语言 汉语 留学 พูดจีน">
+        <span class="sr-tag">📚 เรียนภาษา 1 เทอม / 1 ปี</span>
+        <h3>เรียนภาษาจีนที่จีน 1 เทอม / 1 ปี</h3>
+        <p>รวมโปรแกรมเรียนภาษาระยะยาวกับมหาวิทยาลัยพาร์ทเนอร์ เทียบเมือง ค่าใช้จ่าย และรอบเปิดรับในหน้าเดียว</p>
+        <span class="sr-go">ดูโปรแกรมเบื้องต้น →</span>
+      </a>
+      <a class="sr-card sr-c-lang" data-cat="lang camp schol degree" href="https://chinesechiwchiw.com/เรียนต่อประเทศจีน/" data-k="study in china hub เรียนต่อจีน ไปจีน เริ่มต้น city matcher เลือกเมือง ค่าใช้จ่าย budget ผู้ปกครอง 留学 中国">
+        <span class="sr-tag">🧭 เริ่มต้นที่นี่</span>
+        <h3>เรียนต่อประเทศจีน — เริ่มจากตรงไหนดี?</h3>
+        <p>ยังไม่รู้จะเลือกภาษา ค่าย ทุน หรือปริญญา? หน้านี้เทียบทุกเส้นทาง พร้อม China City Matcher ช่วยเลือกเมือง</p>
+        <span class="sr-go">ดูทุกเส้นทาง →</span>
+      </a>
+      <a class="sr-card sr-c-lang" data-cat="lang" href="https://chinesechiwchiw.com/chinese-language-course-fudan-shanghai/" data-k="shanghai fudan ices เซี่ยงไฮ้ ฟู่ตั้น ฟูตั้น 上海 复旦 เมือง">
+        <span class="sr-tag">📍 เซี่ยงไฮ้ · Fudan ICES</span>
+        <h3>เรียนภาษาจีนที่ Fudan เซี่ยงไฮ้</h3>
+        <p>มหาวิทยาลัยชั้นนำในเมืองใหญ่ที่สุดของจีน — และเป็นที่ที่ผู้ก่อตั้ง Chinese Chiwchiw เคยเรียนเอง</p>
+        <span class="sr-go">ดูรายละเอียด →</span>
+      </a>
+      <a class="sr-card sr-c-lang" data-cat="lang" href="https://chinesechiwchiw.com/chinese-language-in-swufe/" data-k="chengdu swufe เฉิงตู แพนด้า panda เสฉวน sichuan 成都 西南财经 เมือง">
+        <span class="sr-tag">📍 เฉิงตู · SWUFE</span>
+        <h3>เรียนภาษาจีนที่ SWUFE เฉิงตู</h3>
+        <p>เมืองแพนด้า บรรยากาศชิล อาหารอร่อย เหมาะกับน้อง ๆ ที่อยากใช้ชีวิตแบบสบาย ๆ ระหว่างเรียน</p>
+        <span class="sr-go">ดูรายละเอียด →</span>
+      </a>
+      <a class="sr-card sr-c-lang" data-cat="lang" href="https://chinesechiwchiw.com/chinese-language-course-in-guangzhou/" data-k="guangzhou scut wushan กวางโจว กว่างโจว 广州 华南理工 กวางตุ้ง เมือง">
+        <span class="sr-tag">📍 กวางโจว · SCUT</span>
+        <h3>เรียนภาษาจีนที่ SCUT กวางโจว</h3>
+        <p>เรียนที่วิทยาเขต Wushan ในเมืองใหญ่ทางตอนใต้ของจีน บินจากไทยใกล้ สะดวกกลับบ้าน</p>
+        <span class="sr-go">ดูรายละเอียด →</span>
+      </a>
+      <a class="sr-card sr-c-lang" data-cat="lang" href="https://chinesechiwchiw.com/beijing/" data-k="beijing blcu ปักกิ่ง 北京 北京语言大学 เมืองหลวง เมือง">
+        <span class="sr-tag">📍 ปักกิ่ง · BLCU</span>
+        <h3>เรียนภาษาจีนที่ BLCU ปักกิ่ง</h3>
+        <p>มหาวิทยาลัยภาษาและวัฒนธรรมปักกิ่ง ศูนย์กลางการสอนภาษาจีนให้นักศึกษาต่างชาติในเมืองหลวง</p>
+        <span class="sr-go">ดูรายละเอียด →</span>
+      </a>
+      <a class="sr-card sr-c-lang" data-cat="lang" href="https://chinesechiwchiw.com/qingdao/" data-k="qingdao ชิงเต่า 青岛 ทะเล beach เมือง">
+        <span class="sr-tag">📍 ชิงเต่า</span>
+        <h3>เรียนภาษาจีนที่ชิงเต่า</h3>
+        <p>เมืองริมทะเลทางตอนเหนือของจีน อากาศดี เงียบสงบ เหมาะกับคนอยากโฟกัสกับการเรียน</p>
+        <span class="sr-go">ดูรายละเอียด →</span>
+      </a>
+      <a class="sr-card sr-c-schol" data-cat="lang schol" href="https://chinesechiwchiw.com/chinese-programme-in-urban-vocational-college-of-sichuan/" data-k="urban vocational college of sichuan scuvc เสฉวน เฉิงตู 1+4 ทุน 四川城市职业学院 成都 เมือง">
+        <span class="sr-tag">📍 เสฉวน · SCUVC</span>
+        <h3>Urban Vocational College of Sichuan</h3>
+        <p>แคมปัสสำหรับเรียนภาษาปีแรกในเส้นทางทุน 1+4 ก่อนต่อปริญญาตรี</p>
+        <span class="sr-go">ดูรายละเอียด →</span>
+      </a>
+
+      <!-- 2b. Short camps (blue) — remove camps once their dates have passed -->
+      <a class="sr-card sr-c-camp" data-cat="camp" href="https://chinesechiwchiw.com/ค่ายระยะสั้น/" data-k="camp short camp ค่าย ระยะสั้น ปิดเทอม summer winter ฤดูหนาว ลองไปจีน 夏令营 冬令营">
+        <span class="sr-tag">❄️ ค่ายระยะสั้น</span>
+        <h3>รวมค่ายภาษาจีนระยะสั้นทุกรอบ</h3>
+        <p>อยากลองใช้ชีวิตที่จีนก่อนตัดสินใจเรียนยาว? เริ่มจากค่ายช่วงปิดเทอม มีพี่ ๆ ดูแลตลอดทริป</p>
+        <span class="sr-go">ดูรายละเอียดค่าย →</span>
+      </a>
+      <a class="sr-card sr-c-camp" data-cat="camp" href="https://chinesechiwchiw.com/chengdu-camp-april-2027/" data-k="chengdu camp april 2027 เฉิงตู ค่าย เมษายน เมษา ปิดเทอม swufe 2570 成都">
+        <span class="sr-tag">❄️ ค่าย · เฉิงตู</span>
+        <h3>ค่ายเฉิงตู ปิดเทอมเมษายน 2027</h3>
+        <p>ค่ายภาษาจีนช่วงปิดเทอมใหญ่ที่เฉิงตู เรียนภาษา เที่ยว และใช้ชีวิตแบบนักศึกษาจีน</p>
+        <span class="sr-go">ดูราคา &amp; สมัคร →</span>
+      </a>
+      <a class="sr-card sr-c-camp" data-cat="camp lang" href="https://chinesechiwchiw.com/chengdu-chinese-language-2-months-swufe-2027/" data-k="chengdu 2 months สองเดือน 2 เดือน swufe 2027 เฉิงตู ค่าย 成都">
+        <span class="sr-tag">❄️ 2 เดือน · SWUFE</span>
+        <h3>เรียนภาษาจีน 2 เดือนที่ SWUFE เฉิงตู</h3>
+        <p>ยาวกว่าค่าย สั้นกว่า 1 เทอม — เหมาะกับคนที่อยากเห็นพัฒนาการภาษาจริง ๆ ในเวลาไม่นาน</p>
+        <span class="sr-go">ดูราคา &amp; สมัคร →</span>
+      </a>
+      <a class="sr-card sr-c-camp" data-cat="camp" href="https://chinesechiwchiw.com/ค่ายเฉิงตู-ธันวาคม-2569/" data-k="chengdu december winter camp ธันวาคม ธันวา ฤดูหนาว หิมะ เฉิงตู ค่าย 2569 2026 冬令营 成都">
+        <span class="sr-tag">❄️ ค่ายฤดูหนาว · เฉิงตู</span>
+        <h3>ค่ายเฉิงตู ธันวาคม 2569</h3>
+        <p>ค่ายฤดูหนาวช่วงปลายปี เรียนภาษา สัมผัสอากาศหนาว และเที่ยวเฉิงตูกับเพื่อน ๆ</p>
+        <span class="sr-go">ดูราคา &amp; สมัคร →</span>
+      </a>
+      <a class="sr-card sr-c-camp" data-cat="camp" href="https://chinesechiwchiw.com/chengdu-business-camp-october-2026/" data-k="chengdu business camp october ตุลาคม ตุลา ธุรกิจ business lecture เฉิงตู ค่าย 2026 2569 成都">
+        <span class="sr-tag">❄️ ค่าย · เฉิงตู</span>
+        <h3>ค่ายธุรกิจเฉิงตู ตุลาคม 2026</h3>
+        <p>ค่ายช่วงปิดเทอมตุลาคม ผสมการเรียนภาษากับมุมมองธุรกิจจีน</p>
+        <span class="sr-go">ดูรายละเอียดค่าย →</span>
+      </a>
+      <a class="sr-card sr-c-camp" data-cat="camp" href="https://chinesechiwchiw.com/shanghai-october-camp-2026/" data-k="shanghai october camp ตุลาคม ตุลา เซี่ยงไฮ้ ค่าย 2026 2569 上海">
+        <span class="sr-tag">❄️ ค่าย · เซี่ยงไฮ้</span>
+        <h3>ค่ายเซี่ยงไฮ้ ตุลาคม 2026</h3>
+        <p>ค่ายช่วงปิดเทอมตุลาคมในเมืองใหญ่ที่สุดของจีน</p>
+        <span class="sr-go">ดูรายละเอียดค่าย →</span>
+      </a>
+
+      <!-- 2c. Scholarship (teal) -->
+      <a class="sr-card sr-c-schol" data-cat="schol degree" href="https://chinesechiwchiw.com/ทุน-1-4/" data-k="ทุน 1+4 1 4 scholarship ทุนการศึกษา ปริญญาตรี bachelor เรียนฟรี 奖学金">
+        <span class="sr-tag">🎓 ทุน 1+4</span>
+        <h3>ทุน 1+4 — เรียนภาษา 1 ปี ต่อปริญญาตรี 4 ปี</h3>
+        <p>ไม่ใช่แค่ปีเรียนภาษา แต่เป็นเส้นทางสู่ปริญญาตรีที่จีน พร้อมเช็กคุณสมบัติและรอบเปิดรับ</p>
+        <span class="sr-go">ดูรายละเอียดทุน →</span>
+      </a>
+
+      <!-- 2d. Degrees & CSCA (purple) -->
+      <a class="sr-card sr-c-degree" data-cat="degree" href="https://chinesechiwchiw.com/เรียนปริญญา/" data-k="degree bachelor master phd ปริญญา ตรี โท เอก มหาวิทยาลัย university ทุน csc scholarship 2027 本科 硕士 博士">
+        <span class="sr-tag">🏛️ ปริญญา</span>
+        <h3>คู่มือเรียนปริญญาตรี โท เอก ที่จีน 2027</h3>
+        <p>เทียบหลักสูตรสอนภาษาจีน vs อังกฤษ เอกสาร Timeline ทุนการศึกษา และวิธีเลือกมหาวิทยาลัย</p>
+        <span class="sr-go">อ่านคู่มือ →</span>
+      </a>
+      <a class="sr-card sr-c-degree" data-cat="degree" href="https://chinesechiwchiw.com/csca/" data-k="csca ข้อสอบ สอบเข้า exam admission ปริญญาตรี">
+        <span class="sr-tag">📝 CSCA</span>
+        <h3>CSCA คืออะไร? สรุปครบในหน้าเดียว</h3>
+        <p>ใครต้องสอบ สอบวิชาอะไร และเตรียมตัวอย่างไรก่อนยื่นเข้ามหาวิทยาลัยจีน</p>
+        <span class="sr-go">ดูรายละเอียด CSCA ทั้งหมด →</span>
+      </a>
+
+      <!-- 2e. Chinese courses -->
+      <a class="sr-card sr-c-course" data-cat="course" href="https://chinesechiwchiw.com/หลักสูตรภาษาจีน/" data-k="course คอร์ส หลักสูตร เรียนจีน hsk สอบ ติว พื้นฐาน beginner online ออนไลน์ 汉语课">
+        <span class="sr-tag">✏️ คอร์สภาษาจีน</span>
+        <h3>หลักสูตรภาษาจีน Chinese Chiwchiw</h3>
+        <p>คอร์สเรียนภาษาจีนตั้งแต่ปูพื้นฐานไปจนถึงเตรียมสอบ HSK กับทีมคุณครูของเรา</p>
+        <span class="sr-go">ดูหลักสูตร →</span>
+      </a>
+      <a class="sr-card sr-c-course" data-cat="course" href="https://chinesechiwchiw.com/ระดับภาษาจีน/" data-k="level test ระดับภาษา วัดระดับ แบบทดสอบ hsk เช็กระดับ quiz">
+        <span class="sr-tag">✏️ วัดระดับ</span>
+        <h3>เช็กระดับภาษาจีนของตัวเอง</h3>
+        <p>รู้ระดับตัวเองก่อน แล้วเลือกคอร์สหรือโปรแกรมที่ใช่ได้ง่ายขึ้น</p>
+        <span class="sr-go">เริ่มเช็กระดับ →</span>
+      </a>
+      <a class="sr-card sr-c-course" data-cat="course about" href="https://chinesechiwchiw.com/ทีมคุณครูสอนของ-chinese-chiwchiw/" data-k="teacher ครู คุณครู ทีมสอน laoshi 老师">
+        <span class="sr-tag">✏️ ทีมคุณครู</span>
+        <h3>ทีมคุณครูของ Chinese Chiwchiw</h3>
+        <p>รู้จักคุณครูผู้สอนที่จะดูแลน้อง ๆ ตลอดการเรียน</p>
+        <span class="sr-go">รู้จักทีมครู →</span>
+      </a>
+
+      <!-- 2f. About, reviews, blog -->
+      <a class="sr-card sr-c-about" data-cat="about" href="https://chinesechiwchiw.com/about/" data-k="about เกี่ยวกับ บริษัท ทีม team ติดต่อ contact ผู้ปกครอง ความปลอดภัย">
+        <span class="sr-tag">💛 เกี่ยวกับเรา</span>
+        <h3>เกี่ยวกับ Chinese Chiwchiw</h3>
+        <p>ทีมที่อยากทำให้การไปเรียนจีนง่ายขึ้น และเด็กไทยทุกคนเข้าถึงได้</p>
+        <span class="sr-go">รู้จักเรา →</span>
+      </a>
+      <a class="sr-card sr-c-about" data-cat="about" href="https://chinesechiwchiw.com/เกี่ยวกับนาเดียร์/" data-k="founder ผู้ก่อตั้ง นาเดียร์ เดียร์ dear fudan queen mary lse hsk ประวัติ">
+        <span class="sr-tag">💛 ผู้ก่อตั้ง</span>
+        <h3>เกี่ยวกับนาเดียร์ ผู้ก่อตั้ง</h3>
+        <p>ไปจีนคนเดียวตอนอายุ 15 สอบผ่าน HSK 4 และ 5 ใน 3 เดือน เรียนที่ Fudan ต่อ Queen Mary และ LSE</p>
+        <span class="sr-go">อ่านเรื่องราว →</span>
+      </a>
+      <a class="sr-card sr-c-about" data-cat="about" href="https://chinesechiwchiw.com/reviews/" data-k="review รีวิว ประสบการณ์ นักเรียน feedback ผู้ปกครอง vlog">
+        <span class="sr-tag">💛 รีวิว</span>
+        <h3>รีวิวจากน้อง ๆ ครอบครัวชิวชิว</h3>
+        <p>ประสบการณ์จริงจากน้อง ๆ และผู้ปกครองที่ไปจีนกับเรามาแล้ว</p>
+        <span class="sr-go">อ่านรีวิว →</span>
+      </a>
+      <a class="sr-card sr-c-about" data-cat="about lang camp schol" href="https://chinesechiwchiw.com/pre-departure-event/" data-k="pre-departure ก่อนบิน เตรียมตัว ปฐมนิเทศ orientation ผู้ปกครอง วีซ่า visa">
+        <span class="sr-tag">💛 Pre-Departure</span>
+        <h3>Pre-Departure Event — เตรียมตัวก่อนบิน</h3>
+        <p>เจอทีม เจอเพื่อนร่วมรุ่น และรู้ทุกเรื่องที่ต้องเตรียมก่อนไปจีน ผู้ปกครองมาร่วมได้</p>
+        <span class="sr-go">ดูรายละเอียด →</span>
+      </a>
+      <a class="sr-card sr-c-about" data-cat="about" href="https://chinesechiwchiw.com/chinese-chiwchiw-blogs/" data-k="blog บทความ อ่าน ข่าว tips เคล็ดลับ ความรู้ article">
+        <span class="sr-tag">💛 บทความ</span>
+        <h3>บทความทั้งหมด</h3>
+        <p>เคล็ดลับเรียนจีน ชีวิตนักศึกษาที่จีน และเรื่องที่ควรรู้ก่อนไป</p>
+        <span class="sr-go">อ่านบทความ →</span>
+      </a>
+    </div>
+
+    <div class="sr-empty" hidden>
+      <div class="sr-empty-ico">🐼</div>
+      <h3>ยังไม่เจอหน้าที่ตรงกับ “<span class="sr-empty-q"></span>”</h3>
+      <p>ไม่เป็นไร — ลองค้นหาในบทความทั้งหมด หรือทักมาถามพี่ ๆ ได้เลย ตอบให้ทุกคำถาม</p>
+      <div class="sr-btns">
+        <a class="sr-btn sr-btn-ghost sr-wp-link" href="https://chinesechiwchiw.com/?s=">🔍 ค้นหาในบทความทั้งหมด</a>
+        <a class="sr-btn sr-btn-line" href="https://line.me/ti/p/~@chiwchiw" target="_blank" rel="noopener">💬 ถามทีมทาง LINE @chiwchiw</a>
+      </div>
+    </div>
+
+    <p class="sr-more" hidden>อยากดูมากกว่านี้? <a class="sr-wp-link" href="https://chinesechiwchiw.com/?s=">ค้นหา “<span class="sr-more-q"></span>” ในบทความทั้งหมด →</a></p>
+  </div>
+</section>
+
+<!-- ═══ 3. NOT SURE WHAT TO SEARCH? START FROM A GOAL ═══ -->
+<section class="sr-sec sr-goals">
+  <div class="sr-wrap">
+    <div class="sr-head sr-rv">
+      <span class="sr-eyebrow">✦ ไม่รู้จะค้นหาอะไร? ✦</span>
+      <h2 class="sr-h2">เริ่มจาก <span>เป้าหมาย</span> ของน้อง ๆ</h2>
+      <p class="sr-lead">ไม่ต้องรู้ชื่อโปรแกรมก็ได้ เลือกสิ่งที่อยากได้ แล้วพี่ ๆ พาไปหน้าที่ใช่</p>
+    </div>
+    <div class="sr-ggrid">
+      <a class="sr-goal sr-c-camp sr-rv" href="https://chinesechiwchiw.com/ค่ายระยะสั้น/">
+        <span class="sr-goal-ico">⏱️</span>
+        <span class="sr-goal-q">“อยากลองไปจีนสั้น ๆ ก่อน”</span>
+        <h3>ค่ายระยะสั้น</h3>
+        <p>ไปช่วงปิดเทอม ได้ทั้งภาษาและประสบการณ์ ไม่ต้องดรอปเรียน</p>
+        <span class="sr-go">ดูรายละเอียดค่าย →</span>
+      </a>
+      <a class="sr-goal sr-c-lang sr-rv" href="https://chinesechiwchiw.com/long-term-language-programmes-in-china/">
+        <span class="sr-goal-ico">🗣️</span>
+        <span class="sr-goal-q">“อยากพูดจีนได้จริง”</span>
+        <h3>เรียนภาษา 1 เทอม / 1 ปี</h3>
+        <p>ใช้ชีวิตที่จีนเต็มตัว เรียนทุกวัน แม้ยังพูดจีนไม่ได้ก็เริ่มได้</p>
+        <span class="sr-go">ดูโปรแกรมเบื้องต้น →</span>
+      </a>
+      <a class="sr-goal sr-c-schol sr-rv" href="https://chinesechiwchiw.com/ทุน-1-4/">
+        <span class="sr-goal-ico">🎓</span>
+        <span class="sr-goal-q">“อยากได้ทุนเรียนต่อ”</span>
+        <h3>ทุน 1+4</h3>
+        <p>เรียนภาษาปีแรก แล้วต่อปริญญาตรีอีก 4 ปีในเส้นทางเดียว</p>
+        <span class="sr-go">ดูรายละเอียดทุน →</span>
+      </a>
+      <a class="sr-goal sr-c-degree sr-rv" href="https://chinesechiwchiw.com/เรียนปริญญา/">
+        <span class="sr-goal-ico">🏛️</span>
+        <span class="sr-goal-q">“อยากได้ปริญญาจากจีน”</span>
+        <h3>ปริญญาตรี โท เอก</h3>
+        <p>คู่มือครบ ตั้งแต่เลือกมหาวิทยาลัย เอกสาร CSCA ไปจนถึงทุน</p>
+        <span class="sr-go">อ่านคู่มือ →</span>
+      </a>
+    </div>
+    <div class="sr-matcher sr-rv">
+      <a class="sr-btn sr-btn-pri" href="https://chinesechiwchiw.com/เรียนต่อประเทศจีน/">🧭 ค้นหาโปรแกรมที่เหมาะกับฉัน</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 4. FINAL CTA ═══ -->
+<section class="sr-sec sr-dark">
+  <div class="sr-wrap sr-rv">
+    <span class="sr-eyebrow">✦ หาไม่เจอก็ไม่เป็นไร ✦</span>
+    <h2 class="sr-h2">ถาม <span>พี่ ๆ ชิวชิว</span> ได้โดยตรง</h2>
+    <p class="sr-lead">บอกเป้าหมาย งบประมาณ และช่วงเวลาที่อยากไป แล้วทีมจะช่วยแนะนำเส้นทางที่เหมาะกับน้อง ๆ ทีละขั้น 🧡</p>
+    <div class="sr-btns">
+      <a class="sr-btn sr-btn-line" href="https://line.me/ti/p/~@chiwchiw" target="_blank" rel="noopener">💬 ปรึกษาฟรี LINE @chiwchiw</a>
+      <a class="sr-btn sr-btn-glass" href="https://chinesechiwchiw.com/เรียนต่อประเทศจีน/">🧭 ดูทุกเส้นทางไปจีน</a>
+    </div>
+    <p class="sr-ticks">✓ ปรึกษาฟรี ไม่มีข้อผูกมัด · ✓ ผู้ปกครองคุยกับทีมได้โดยตรง · ✓ ดูแลตั้งแต่สมัครจนถึงจีน</p>
+  </div>
+</section>
+
+</div>
+
+<script>
+(function(){
+  var root=document.getElementById('chiwchiw-search');
+  if(!root||root.dataset.ready)return;
+  root.dataset.ready='1';
+  root.classList.add('sr-js');
+
+  var $=function(s){return root.querySelector(s);};
+  var $$=function(s){return Array.prototype.slice.call(root.querySelectorAll(s));};
+  var form=$('.sr-form'),input=$('.sr-input'),clearBtn=$('.sr-clear'),grid=$('.sr-grid');
+  var countEl=$('.sr-count'),titleEl=$('.sr-bar h2'),empty=$('.sr-empty'),more=$('.sr-more');
+  var pills=$$('.sr-pill'),cards=$$('.sr-card');
+  var defaultTitle=titleEl.textContent;
+
+  // lower-case, drop Thai tone marks so "เซียงไฮ้" still finds "เซี่ยงไฮ้"
+  function norm(s){return (s||'').toLowerCase().replace(/[็-์​]/g,'').replace(/\s+/g,' ').trim();}
+
+  cards.forEach(function(c,i){
+    var t=c.querySelector('h3').textContent;
+    c._i=i;
+    c._t=norm(t);
+    c._h=norm(t+' '+c.querySelector('.sr-tag').textContent+' '+c.querySelector('p').textContent+' '+(c.getAttribute('data-k')||''));
+    c._c=' '+c.getAttribute('data-cat')+' ';
+  });
+
+  var cat='all';
+
+  function matchScore(c,toks){
+    var s=0;
+    for(var j=0;j<toks.length;j++){
+      if(c._h.indexOf(toks[j])<0)return -1;
+      s+=c._t.indexOf(toks[j])>-1?3:1;
+    }
+    return s;
+  }
+
+  function run(){
+    var raw=input.value.trim(),q=norm(raw),toks=q?q.split(' '):[];
+    var counts={all:0},list=[],shown=0;
+    cards.forEach(function(c){
+      var s=matchScore(c,toks);
+      c._s=s;
+      if(s<0)return;
+      counts.all++;
+      c._c.trim().split(' ').forEach(function(k){counts[k]=(counts[k]||0)+1;});
+    });
+    cards.forEach(function(c){
+      var ok=c._s>=0&&(cat==='all'||c._c.indexOf(' '+cat+' ')>-1);
+      c.hidden=!ok;
+      if(ok)shown++;
+      list.push(c);
+    });
+    list.sort(function(a,b){return (toks.length?(b._s-a._s):0)||(a._i-b._i);});
+    list.forEach(function(c){grid.appendChild(c);});
+
+    pills.forEach(function(p){
+      var n=counts[p.getAttribute('data-cat')]||0;
+      p.querySelector('i').textContent=n;
+      p.classList.toggle('sr-zero',n===0);
+    });
+
+    titleEl.textContent=raw?'ผลการค้นหา':defaultTitle;
+    countEl.textContent=raw?('พบ '+shown+' หน้าที่เกี่ยวกับ “'+raw+'”'):('ทั้งหมด '+shown+' หน้า');
+    empty.hidden=shown>0;
+    more.hidden=!raw||shown===0;
+    $$('.sr-empty-q,.sr-more-q').forEach(function(el){el.textContent=raw;});
+    $$('.sr-wp-link').forEach(function(a){a.href='https://chinesechiwchiw.com/?s='+encodeURIComponent(raw);});
+    clearBtn.classList.toggle('sr-on',!!raw);
+
+    try{
+      var u=new URL(window.location.href);
+      if(raw)u.searchParams.set('q',raw);else u.searchParams.delete('q');
+      if(cat!=='all')u.searchParams.set('cat',cat);else u.searchParams.delete('cat');
+      history.replaceState(null,'',u.toString());
+    }catch(e){}
+  }
+
+  function setCat(c){
+    cat=c;
+    pills.forEach(function(p){p.setAttribute('aria-pressed',p.getAttribute('data-cat')===c?'true':'false');});
+  }
+
+  function toResults(){
+    var r=$('#sr-results');
+    if(r&&r.scrollIntoView)r.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+
+  var t;
+  input.addEventListener('input',function(){clearTimeout(t);t=setTimeout(run,120);});
+  form.addEventListener('submit',function(e){e.preventDefault();run();input.blur();toResults();});
+  clearBtn.addEventListener('click',function(){input.value='';run();input.focus();});
+  pills.forEach(function(p){p.addEventListener('click',function(){setCat(p.getAttribute('data-cat'));run();});});
+  $$('.sr-chip').forEach(function(a){
+    a.addEventListener('click',function(e){
+      e.preventDefault();
+      input.value=a.getAttribute('data-q');
+      setCat('all');run();toResults();
+    });
+  });
+
+  // ?q=…&cat=… lets other pages / LINE messages link straight to a search
+  try{
+    var p=new URLSearchParams(window.location.search);
+    if(p.get('q'))input.value=p.get('q');
+    var pc=p.get('cat');
+    if(pc&&pills.some(function(x){return x.getAttribute('data-cat')===pc;}))setCat(pc);
+  }catch(e){}
+  run();
+
+  var rv=$$('.sr-rv');
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(en){if(en.isIntersecting){en.target.classList.add('sr-in');io.unobserve(en.target);}});
+    },{threshold:.1});
+    rv.forEach(function(el){io.observe(el);});
+  }else{
+    rv.forEach(function(el){el.classList.add('sr-in');});
+  }
+})();
+</script>
