@@ -110,6 +110,7 @@ function doGet(e) {
   // Answers for the list (meta / search / uni) are the same for everyone with the same
   // filters, so they are kept ready for 10 minutes. Popular searches skip loading the data.
   var rkey = null, cache = CacheService.getScriptCache();
+  if (action === 'ping') return json_(ping_());
   if (action === 'meta' || action === 'search' || action === 'uni') {
     rkey = 'r:' + Utilities.base64EncodeWebSafe(Utilities.computeDigest(Utilities.DigestAlgorithm.MD5,
       action + '|' + (p.f || '') + '|' + (p.name || ''), Utilities.Charset.UTF_8));
@@ -125,6 +126,15 @@ function doGet(e) {
   var text = JSON.stringify(out);
   if (rkey && !out.error && text.length < 95000) { try { cache.put(rkey, text, CONFIG.cacheSeconds); } catch (err) {} }
   return ContentService.createTextOutput(text).setMimeType(ContentService.MimeType.JSON);
+}
+
+// Health check only (no sheet data): is the fast copy ready, and when was it last refreshed?
+function ping_() {
+  var cache = CacheService.getScriptCache(), n = +(cache.get('um:n') || 0), props = PropertiesService.getScriptProperties();
+  var have = n ? Object.keys(cache.getAll(Array.apply(null, Array(n)).map(function (_, i) { return 'um:' + i; }))).length : 0;
+  var last = +(props.getProperty('lastRefresh') || 0);
+  return {fastCopy: !!n && have === n, autoRefresh: props.getProperty('autoRefresh') === 'on',
+    minutesSinceRefresh: last ? Math.round((Date.now() - last) / 60000) : null, refreshSeconds: +(props.getProperty('refreshSeconds') || 0)};
 }
 
 function doPost(e) {
@@ -163,8 +173,8 @@ function getData_() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var saved = readSaved_(ss), age = saved ? Date.now() - saved.t : Infinity;
   var auto = PropertiesService.getScriptProperties().getProperty('autoRefresh') === 'on';
-  if (saved && age < (auto ? 6 * 3600e3 : CONFIG.cacheSeconds * 1000)) {
-    putCache_(saved.b64);
+  if (saved && (auto || age < CONFIG.cacheSeconds * 1000)) {
+    putCache_(saved.b64, auto ? 3600 : CONFIG.cacheSeconds);
     return hydrate_(JSON.parse(unpack_(saved.b64)));
   }
   var lock = LockService.getScriptLock();
@@ -201,10 +211,10 @@ function buildData_(ss) {
   return data;
 }
 
-function rebuild_(ss) {
+function rebuild_(ss, ttl) {
   var data = buildData_(ss), b64 = pack_(JSON.stringify(slim_(data)));
   writeSaved_(ss, b64);
-  putCache_(b64);
+  putCache_(b64, ttl);
   return data;
 }
 
@@ -215,11 +225,11 @@ function unpack_(b64) {
   return Utilities.ungzip(Utilities.newBlob(Utilities.base64Decode(b64), 'application/x-gzip')).getDataAsString('UTF-8');
 }
 
-function putCache_(b64) {
+function putCache_(b64, ttl) {
   var size = 95000, parts = {}, count = Math.ceil(b64.length / size);
   for (var k = 0; k < count; k++) parts['um:' + k] = b64.substr(k * size, size);
   parts['um:n'] = String(count);
-  try { CacheService.getScriptCache().putAll(parts, CONFIG.cacheSeconds); } catch (err) {}
+  try { CacheService.getScriptCache().putAll(parts, ttl || CONFIG.cacheSeconds); } catch (err) {}
 }
 
 function readSaved_(ss) {
@@ -243,40 +253,32 @@ function writeSaved_(ss, b64) {
 
 // Time-trigger target. Rebuilds the saved copy from the sheet.
 function refreshMatcherData() {
-  var data = rebuild_(SpreadsheetApp.getActiveSpreadsheet()), cache = CacheService.getScriptCache(), parts = {};
+  var started = Date.now(), props = PropertiesService.getScriptProperties();
+  // Kept for an hour; the trigger replaces it every 10 minutes, so it never runs out between runs.
+  var data = rebuild_(SpreadsheetApp.getActiveSpreadsheet(), 3600), cache = CacheService.getScriptCache(), parts = {};
   var keyOf = function (a, f, name) {
     return 'r:' + Utilities.base64EncodeWebSafe(Utilities.computeDigest(Utilities.DigestAlgorithm.MD5, a + '|' + f + '|' + name, Utilities.Charset.UTF_8));
   };
-  var add = function (a, fObj, name) {
-    var f = fObj ? JSON.stringify(fObj) : '', text = JSON.stringify(handle_(a, {f: f, name: name || ''}, data, {}));
-    if (text.length < 95000) parts[keyOf(a, f, name || '')] = text;
+  var add = function (a, fObj) {
+    var f = fObj ? JSON.stringify(fObj) : '', text = JSON.stringify(handle_(a, {f: f, name: ''}, data, {}));
+    if (text.length < 95000) parts[keyOf(a, f, '')] = text;
     return JSON.parse(text);
   };
-  // Pre-compute what most visitors ask for: header numbers, every page of the default
-  // university list, the first pages of the course list, and each university's pop-up.
+  // Pre-compute what most visitors see first: header numbers, every page of the default
+  // university list and the first course pages. (Kept small so the cache doesn't drop the data copy.)
   add('meta', null);
   var first = add('search', defaultSearch_('uni'));
   for (var pg = 2; first.total && pg <= Math.ceil(first.total / first.size); pg++) add('search', defaultSearch_('uni', pg));
-  for (var pp = 1; pp <= 5; pp++) add('search', defaultSearch_('prog', pp));
-  var unis = {};
-  data.rows.forEach(function (r) { unis[r.u] = 1; });
-  Object.keys(unis).forEach(function (u) { add('uni', defaultUni_(), u); });
-  var keys = Object.keys(parts);
-  for (var i = 0; i < keys.length; i += 50) {
-    var batch = {};
-    keys.slice(i, i + 50).forEach(function (k) { batch[k] = parts[k]; });
-    try { cache.putAll(batch, CONFIG.cacheSeconds + 120); } catch (err) {}
-  }
+  for (var pp = 1; pp <= 3; pp++) add('search', defaultSearch_('prog', pp));
+  try { cache.putAll(parts, 1800); } catch (err) {}
+  props.setProperties({autoRefresh: 'on', lastRefresh: String(Date.now()), refreshSeconds: String(Math.round((Date.now() - started) / 1000))});
 }
 
 // Must match the first request the page sends (F in the page script, plus view and page).
 function defaultSearch_(view, page) {
   return {q: '', uni: '', lv: [], city: [], sub: [], lang: [], tier: [], max: 0, myHsk: '', open: false, nohsk: false, nocsca: false, sch: false, sort: 'rel', view: view, page: page || 1};
 }
-// Must match the pop-up's first request (filters without q/uni, plus dq and page).
-function defaultUni_() {
-  return {lv: [], city: [], sub: [], lang: [], tier: [], max: 0, myHsk: '', open: false, nohsk: false, nocsca: false, sch: false, sort: 'rel', dq: '', page: 1};
-}
+
 
 // Run ONCE from the Apps Script editor (select setupAutoRefresh → Run).
 // Rebuilds the data now and then every 10 minutes, so sheet edits reach the

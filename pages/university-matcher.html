@@ -32,7 +32,7 @@
 
 /* ═══ 1. HERO ═══ */
 .um-hero{position:relative;color:#5C4A3E;overflow:hidden;background:radial-gradient(ellipse at 0% 0%,#FFFCF7 0%,rgba(255,252,247,0) 55%),radial-gradient(ellipse at 0% 100%,#FFE6D2 0%,rgba(255,230,210,0) 60%),radial-gradient(ellipse at 78% 50%,#FFF3CC 0%,rgba(255,243,204,0) 58%),#FFF6EC}
-.um-hero .um-wrap{position:relative;padding-top:48px;padding-bottom:104px}
+.um-hero .um-wrap{position:relative;padding-top:84px;padding-bottom:104px}
 .um-hero-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);align-items:center;gap:32px}
 .um-hero-txt{min-width:0;position:relative;z-index:1}
 .um-hero-art{min-width:0;position:relative;display:flex;justify-content:center;align-items:center}
@@ -75,7 +75,7 @@
 .um-step{display:none}
 .um-step.um-on{display:block;animation:umIn .35s ease}
 @keyframes umIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-#uni-matcher .um-q{font-family:'Kanit',sans-serif;font-size:clamp(1.35rem,3vw,1.8rem);font-weight:800;color:#1A0A00!important;line-height:1.35;margin-bottom:6px;padding:0}
+#uni-matcher .um-q{font-family:'Kanit',sans-serif;font-size:clamp(1.35rem,3vw,1.8rem);font-weight:800;color:#1A0A00!important;line-height:1.35;margin:0 0 6px!important;padding:0!important;border:0!important;float:none;width:100%;display:block;position:static;left:auto;text-indent:0}
 .um-qhint{color:#7A6050;font-size:.95rem;margin:0 0 22px}
 .um-sub{font-family:'Kanit',sans-serif;font-weight:700;color:#1A0A00;margin:18px 0 10px;font-size:1rem}
 .um-opts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
@@ -208,8 +208,11 @@
 .um-ugrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
 #uni-matcher .um-ucard{display:flex;flex-direction:column;text-align:left;width:100%;background:#fff;border:1px solid #EDE5DC;border-radius:18px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.05);cursor:pointer;padding:0;transition:transform .2s,box-shadow .2s;color:#5C4A3E;font-family:'Noto Sans Thai',sans-serif;font-size:1rem;line-height:1.7}
 #uni-matcher .um-ucard:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,.09)}
+.um-powered{margin:18px auto 0;max-width:640px;text-align:center;font-size:.72rem;line-height:1.7;color:#A8968A;letter-spacing:.2px}
+.um-powered b{font-family:'Kanit',sans-serif;font-weight:600;letter-spacing:1.5px;color:#C9A98E}
 .um-uban{position:relative;height:150px;background:#2A1305 center/cover no-repeat;flex:none}
-.um-uban-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.um-uban{overflow:hidden}
+#uni-matcher .um-uban-img{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;object-fit:cover;display:block}
 .um-uban .um-tierb,.um-uban .um-logo-b,.um-uban .um-credit{z-index:1}
 .um-uban .um-banzh{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Kanit',sans-serif;font-weight:800;font-size:1.7rem;color:rgba(255,255,255,.88);text-align:center;padding:12px;line-height:1.2}
 .um-tierb{position:absolute;left:12px;top:12px;font-family:'Kanit',sans-serif;font-weight:800;font-size:.72rem;letter-spacing:.5px;padding:3px 10px;border-radius:50px;background:rgba(26,10,0,.75);color:#FFB347}
@@ -265,7 +268,7 @@
 @media (max-width:600px){
   .um-wrap{padding:0 16px}
   .um-sec{padding:64px 0}
-  .um-hero .um-wrap{padding-top:26px;padding-bottom:84px}
+  .um-hero .um-wrap{padding-top:40px;padding-bottom:84px}
   .um-hero-grid{grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:6px}
   .um-kicker{font-size:.58rem;letter-spacing:1px}
   #uni-matcher .um-h1{font-size:1.12rem;line-height:1.35;margin-top:6px}
@@ -642,7 +645,7 @@
   var REQ_TH={portfolio:'🎨 ต้องมี Portfolio',exam:'📝 มีสอบเข้าเฉพาะคณะ',audition:'🎭 มี Audition',interview:'🎤 มีสัมภาษณ์',studyplan:'📄 ต้องมี Study Plan'};
   function reqTags(p){return (p.req||[]).filter(function(k){return REQ_TH[k];}).map(function(k){return '<span class="um-tag req">'+REQ_TH[k]+'</span>';}).join('');}
   function autoDesc(u){return u.short+' ตั้งอยู่ที่'+cityTH(u.city)+(u.prov&&u.prov!==u.city?' มณฑล '+u.prov:'')+' เปิดรับนักศึกษาต่างชาติ '+u.n+' หลักสูตรในระบบ'+(u.feeMin?' ค่าเรียนเริ่มต้นประมาณ '+yuan(u.feeMin)+'/ปี':'');}
-  function credit(u,plain){var c=esc(u.credit||'');if(!c||!safeImg(u.photo))return '';var src=plain?'':safeImg(u.src);return '<span class="um-credit">'+(src?'<a href="'+esc(src)+'" target="_blank" rel="noopener">'+c+'</a>':c)+'</span>';}
+  function credit(){return '';}
   // "South China University of Technology (SCUT)" -> "south-china-university-of-technology"
   // (a trailing all-capitals code is dropped; "(East China)" is kept), matching the WordPress file names.
   function slug(name){
@@ -877,6 +880,7 @@
       (p.csca?'<a class="um-csca" href="'+SITE+'/csca/">📝 ต้องสอบ CSCA'+(p.cscaSub?': '+esc(p.cscaSub):'')+' →</a>':'')+
       (!exact?'<p class="um-gap">ยังไม่มีหลักสูตรที่ตรงทุกข้อ นี่คือตัวเลือกที่ใกล้เคียงที่สุด'+(missing.length?' สิ่งที่ยังไม่ตรง: '+esc(missing.join(' · ')):'')+'</p>':'')+
       '</div></article>'+planHTML(res.plan)+
+      '<p class="um-powered"><b>✦ Powered by CHIWCHIW AI</b> · วิเคราะห์จากฐานข้อมูลมหาวิทยาลัยจีนที่ทีม Chinese Chiwchiw รวบรวมเอง<br>ฐานข้อมูลนี้เป็นของ Chinese Chiwchiw Co., Ltd. ใช้เพื่อแนะนำนักเรียนเท่านั้น · สงวนลิขสิทธิ์</p>'+
       '<div class="um-readmore-wrap"><a class="um-btn um-btn-ghost um-readmore" href="#um-finder">📖 อ่านข้อมูลเพิ่มเติม ↓</a></div>'+
       leadHTML();
     bindLead();
@@ -1042,6 +1046,10 @@
       runSearch(false);
     }else if(b.classList.contains('um-ftoggle')){var fl=$('#um-filters'),on=!fl.classList.contains('um-show');fl.classList.toggle('um-show',on);b.setAttribute('aria-expanded',on?'true':'false');}
     else if(b.classList.contains('um-ucard')){openUni(b.getAttribute('data-uni'),b);}
+  });
+  finder.addEventListener('pointerover',function(e){
+    var c=e.target.closest&&e.target.closest('.um-ucard');if(!c||c.dataset.pf)return;c.dataset.pf=1;
+    var f=filterParams();delete f.q;delete f.uni;f.dq='';f.page=1;api('uni',{name:c.getAttribute('data-uni'),f:f}).catch(function(){});
   });
   var qT;
   $('#um-fq').addEventListener('input',function(e){clearTimeout(qT);qT=setTimeout(function(){F.uni='';F.q=e.target.value.trim().slice(0,80);runSearch(false);},350);});
