@@ -55,7 +55,8 @@ var CONFIG = {
   aiEffort: 'low',         // low keeps answers fast; medium/high think longer and cost more
   aiShortlist: 15,
   aiDailyLimit: 300,       // AI calls per day; after that the rule-based plan is used
-  aiCacheSeconds: 21600    // same answers within 6 hours reuse the saved AI result
+  aiCacheSeconds: 21600,   // same answers within 6 hours reuse the saved AI result
+  leadsPerHour: 60         // spam guard: at most this many new leads are saved per hour
 };
 
 /* ───────────── reference tables ───────────── */
@@ -390,6 +391,10 @@ function saveLead_(b) {
   if (!b.consent) return {error: 'consent'};
   var cache = CacheService.getScriptCache(), key = 'lead:' + email;
   if (cache.get(key)) return {ok: true};
+  // At most CONFIG.leadsPerHour new leads an hour, so an automated flood can't fill the sheet.
+  var hourKey = 'leads:' + Utilities.formatDate(new Date(), 'Asia/Bangkok', 'yyyyMMddHH'), n = +(cache.get(hourKey) || 0);
+  if (n >= CONFIG.leadsPerHour) return {error: 'busy'};
+  cache.put(hourKey, String(n + 1), 3700);
   var lock = LockService.getScriptLock();
   lock.waitLock(5000);
   try {

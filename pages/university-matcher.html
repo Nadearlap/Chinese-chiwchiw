@@ -242,6 +242,20 @@
 .um-otxt b{font-family:'Kanit',sans-serif;font-weight:700;color:#1A0A00;font-size:.98rem}
 .um-otxt small{color:#9A7A60;font-size:.8rem}
 .um-oarr{flex:none;color:#FF6B00;font-weight:700}
+.um-legal{padding:0 0 64px}
+.um-legal-box{max-width:860px;margin:0 auto;border:1px solid #EDE5DC;border-radius:16px;background:#FFFBF7;padding:4px 20px}
+.um-legal-box summary{cursor:pointer;padding:12px 0;font-family:'Kanit',sans-serif;font-weight:600;font-size:.92rem;color:#7A6050;list-style:none}
+.um-legal-box summary::-webkit-details-marker{display:none}
+.um-legal-box summary::after{content:" ▾";color:#C9AE97}
+.um-legal-box[open] summary::after{content:" ▴"}
+.um-legal-box ul{margin:0 0 14px;padding-left:18px;font-size:.84rem;line-height:1.75;color:#7A6050}
+.um-legal-box li{margin-bottom:6px}
+.um-legal-box b{color:#5C4A3E}
+#uni-matcher .um-legal-box a{color:#FF6B00!important;text-decoration:underline!important}
+.um-mnote{margin:14px auto 0;max-width:680px;text-align:center;font-size:.78rem;line-height:1.7;color:#A8968A}
+#uni-matcher .um-mnote a{color:#C9864A!important;text-decoration:underline!important}
+#um-modal .um-mo-credit{margin:6px 0 0;font-size:.7rem;color:#B5A396}
+#um-modal .um-mo-credit a{color:#B5A396;text-decoration:underline}
 .um-powered{margin:22px auto 0;max-width:640px;text-align:center;font-size:.72rem;line-height:1.7;color:#A8968A;letter-spacing:.2px}
 .um-powered b{font-family:'Kanit',sans-serif;font-weight:600;letter-spacing:1.5px;color:#C9A98E}
 .um-uban{position:relative;height:150px;background:#2A1305 center/cover no-repeat;flex:none}
@@ -620,6 +634,23 @@
   </div>
 </section>
 
+<!-- ═══ 4. DISCLAIMER ═══ -->
+<section class="um-legal" id="um-legal">
+  <div class="um-wrap">
+    <details class="um-legal-box">
+      <summary>ⓘ ข้อจำกัดความรับผิดชอบและการใช้ข้อมูล</summary>
+      <ul>
+        <li><b>ข้อมูลอาจเปลี่ยนแปลง:</b> ข้อมูลมหาวิทยาลัย หลักสูตร ค่าเรียน เกณฑ์ภาษา และกำหนดการรับสมัครในหน้านี้ ทีม Chinese Chiwchiw รวบรวมจากเว็บไซต์และประกาศทางการของมหาวิทยาลัย มหาวิทยาลัยอาจเปลี่ยนแปลงได้โดยไม่แจ้งล่วงหน้า โปรดตรวจสอบกับมหาวิทยาลัยหรือทีมของเราอีกครั้งก่อนยื่นสมัคร</li>
+        <li><b>ค่าใช้จ่ายเป็นค่าประมาณ:</b> ค่าครองชีพเป็นตัวเลขโดยประมาณ และการแปลงเป็นเงินบาทใช้อัตรา 1 หยวน ≈ <span class="um-rate">4.6</span> บาท ซึ่งอาจต่างจากอัตราแลกเปลี่ยนจริง</li>
+        <li><b>ผลจาก AI เป็นคำแนะนำเบื้องต้น:</b> ผลจับคู่ แผน และ Timeline สร้างโดย CHIWCHIW AI จากคำตอบที่นักเรียนกรอก ไม่ใช่การรับประกันการตอบรับเข้าเรียน ทุนการศึกษา หรือวีซ่า ผลการพิจารณาเป็นของมหาวิทยาลัยและหน่วยงานที่เกี่ยวข้อง</li>
+        <li><b>ชื่อและรูปภาพ:</b> ชื่อ โลโก้ และรูปภาพของมหาวิทยาลัยเป็นของเจ้าของแต่ละราย ใช้เพื่อการอ้างอิงและให้ข้อมูลเท่านั้น ไม่ได้แสดงว่ามหาวิทยาลัยรับรองหรือเป็นพันธมิตรอย่างเป็นทางการกับ Chinese Chiwchiw เครดิตรูปภาพดูได้ในหน้ารายละเอียดของแต่ละมหาวิทยาลัย</li>
+        <li><b>ข้อมูลส่วนบุคคล:</b> ข้อมูลที่นักเรียนกรอกในแบบฟอร์มจะใช้ตาม<a href="/privacy-policy/" target="_blank" rel="noopener">นโยบายความเป็นส่วนตัว</a> ส่วนคำตอบในแบบทดสอบจะส่งให้ AI ประมวลผลโดยไม่มีชื่อหรือช่องทางติดต่อของนักเรียน</li>
+        <li><b>ลิขสิทธิ์ฐานข้อมูล:</b> © <span class="um-yr">2026</span> Chinese Chiwchiw Co., Ltd. ฐานข้อมูลและเนื้อหาในหน้านี้สงวนลิขสิทธิ์ ห้ามคัดลอกหรือนำไปใช้เชิงพาณิชย์โดยไม่ได้รับอนุญาต</li>
+      </ul>
+    </details>
+  </div>
+</section>
+
 <!-- Course pop-up: the script moves this to the end of <body> so theme layouts can't trap it -->
 <div id="um-modal" hidden>
   <div class="um-mo-back" data-close="1"></div>
@@ -629,6 +660,7 @@
     <div class="um-mo-in">
       <div><h2 id="um-mo-title"></h2><div class="um-mo-meta"></div></div>
       <p class="um-mo-desc"></p>
+      <p class="um-mo-credit" hidden></p>
       <div class="um-mo-tools"><input class="um-mo-q" type="search" placeholder="ค้นหาหลักสูตรในมหาวิทยาลัยนี้" aria-label="ค้นหาหลักสูตรในมหาวิทยาลัยนี้"><span class="um-count"></span></div>
       <div class="um-plist um-mo-list"></div>
       <button type="button" class="um-more um-mo-more" hidden>แสดงเพิ่ม</button>
@@ -739,6 +771,7 @@
   /* ---------- logo ---------- */
   if(safeImg(LOGO)&&$('.um-logo-link')){$('.um-logo-link').innerHTML='<img src="'+esc(LOGO)+'" alt="Chinese Chiwchiw">';}
   $$('.um-rate').forEach(function(el){el.textContent=RATE;});
+  $$('.um-yr').forEach(function(el){el.textContent=new Date().getFullYear();});
 
   // Numbers run from 0 up to their value (ease-out, about 1.6s).
   function countUp(els){
@@ -967,6 +1000,7 @@
       (p.csca?'<a class="um-csca" href="'+SITE+'/csca/">📝 ต้องสอบ CSCA'+(p.cscaSub?': '+esc(p.cscaSub):'')+' →</a>':'')+
       (!exact?'<p class="um-gap">ยังไม่มีหลักสูตรที่ตรงทุกข้อ นี่คือตัวเลือกที่ใกล้เคียงที่สุด'+(missing.length?' สิ่งที่ยังไม่ตรง: '+esc(missing.join(' · ')):'')+'</p>':'')+
       '</div></article>'+planHTML(res.plan)+othersHTML(res.others)+
+      '<p class="um-mnote">ผลนี้เป็นคำแนะนำเบื้องต้นจาก CHIWCHIW AI ไม่ใช่การรับประกันการตอบรับเข้าเรียนหรือทุน ข้อมูลอาจเปลี่ยนแปลง โปรดตรวจสอบก่อนยื่นสมัคร · <a href="#um-legal" class="um-legal-link">อ่านเพิ่มเติม</a></p>'+
       '<div class="um-readmore-wrap"><a class="um-btn um-btn-ghost um-readmore" href="#um-finder">📖 อ่านข้อมูลเพิ่มเติม ↓</a></div>'+
       leadHTML();
     bindLead();
@@ -1131,6 +1165,7 @@
     if(!t)return;
     e.preventDefault();t.scrollIntoView({behavior:REDUCED?'auto':'smooth',block:'start'});
   });
+  root.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('.um-legal-link'))$('.um-legal-box').open=true;},true);
   if(/^#um-/.test(location.hash)&&history.replaceState){
     history.replaceState(null,'',location.pathname+location.search);
     window.scrollTo(0,0);window.addEventListener('load',function(){window.scrollTo(0,0);});
@@ -1186,7 +1221,7 @@
     moQ.value='';
     modal.querySelector('#um-mo-title').textContent='';
     modal.querySelector('.um-mo-meta').textContent='';
-    modal.querySelector('.um-mo-desc').textContent='';
+    modal.querySelector('.um-mo-desc').textContent='';modal.querySelector('.um-mo-credit').hidden=true;
     modal.querySelector('.um-mo-ban').removeAttribute('style');
     modal.querySelector('.um-mo-ban').innerHTML='';
     moList.innerHTML='<div class="um-empty">กำลังโหลดหลักสูตร…</div>';moMore.hidden=true;moCount.textContent='';
@@ -1204,6 +1239,9 @@
       modal.querySelector('#um-mo-title').innerHTML=esc(u.short)+(u.cn?'<span>'+esc(u.cn)+'</span>':'');
       modal.querySelector('.um-mo-meta').textContent='📍 '+cityTH(u.city)+(u.tiers&&u.tiers.length?' · '+TIER_TH[u.tiers[0]]:'')+' · '+u.n+' หลักสูตร';
       modal.querySelector('.um-mo-desc').textContent=u.desc||autoDesc(u);
+      var cr=modal.querySelector('.um-mo-credit'),src=safeImg(u.src);
+      cr.hidden=!(u.credit&&safeImg(u.photo));
+      cr.innerHTML=cr.hidden?'':'📷 '+(src?'<a href="'+esc(src)+'" target="_blank" rel="noopener">'+esc(u.credit)+'</a>':esc(u.credit));
       moCount.textContent='แสดง '+fmt(res.total)+' หลักสูตรที่ตรงกับตัวกรอง';
       var html=res.items.map(function(p){return progRow(p,false);}).join('');
       if(append)moList.insertAdjacentHTML('beforeend',html);
