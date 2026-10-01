@@ -539,7 +539,7 @@ function buildProfiles_(values) {
   for (var k = 1; k < values.length; k++) {
     var r = values[k], g = function (i) { return i < 0 ? '' : String(r[i] == null ? '' : r[i]).trim(); }, u = g(C.u);
     if (!u) continue;
-    out[nameKey_(u)] = {desc: g(C.desc).slice(0, 400), photo: url(g(C.photo)), logo: url(g(C.logo)), credit: g(C.credit).slice(0, 200), src: url(g(C.src))};
+    out[nameKey_(u)] = {desc: g(C.desc).slice(0, 4000), photo: url(g(C.photo)), logo: url(g(C.logo)), credit: g(C.credit).slice(0, 200), src: url(g(C.src))};
   }
   return out;
 }
@@ -563,7 +563,7 @@ function pub_(r) {
     campus: r.campus, f: r.f, s: r.s, req: r.req || []};
 }
 
-function uniSummary_(name, list, profiles) {
+function uniSummary_(name, list, profiles, fullDesc) {
   var r0 = list[0], prof = profileOf_(profiles, name), fees = [], lv = {}, fc = {}, open = false, sch = false, en = 0;
   list.forEach(function (r) {
     if (r.tu) fees.push(r.tu);
@@ -571,10 +571,18 @@ function uniSummary_(name, list, profiles) {
     if (r.open) open = true; if (r.sch) sch = true; if (r.lang !== 'zh') en++;
   });
   return {name: name, short: shortName_(name), cn: r0.cn, city: r0.city, prov: r0.prov, code: r0.code, tiers: TIERS[r0.code] || [],
-    desc: prof.desc || '', photo: prof.photo || '', logo: prof.logo || '', credit: prof.credit || '', src: prof.src || '', n: list.length,
+    desc: fullDesc ? prof.desc || '' : cardDesc_(prof.desc), photo: prof.photo || '', logo: prof.logo || '', credit: prof.credit || '', src: prof.src || '', n: list.length,
     feeMin: fees.length ? Math.min.apply(null, fees) : 0, feeMax: fees.length ? Math.max.apply(null, fees) : 0,
     levels: ['UG', 'PG', 'PHD', 'LANG'].filter(function (k) { return lv[k]; }),
     top: Object.keys(fc).sort(function (a, b) { return fc[b] - fc[a]; }).slice(0, 2), open: open, sch: sch, en: en};
+}
+
+// Cards show only two lines, so lists carry a shorter copy (cut at a space); the pop-up gets the full text.
+function cardDesc_(d) {
+  d = String(d || '');
+  if (d.length <= 240) return d;
+  var cut = d.lastIndexOf(' ', 240);
+  return d.slice(0, cut > 120 ? cut : 240) + '…';
 }
 
 function meta_(rows) {
@@ -661,7 +669,7 @@ function uniDetail_(rows, profiles, name, f) {
   }
   sortRows_(list, f.sort);
   var pg = page_(f);
-  return {uni: uniSummary_(name, all, profiles), total: list.length, page: pg.page, size: pg.size,
+  return {uni: uniSummary_(name, all, profiles, true), total: list.length, page: pg.page, size: pg.size,
     items: list.slice((pg.page - 1) * pg.size, pg.page * pg.size).map(pub_)};
 }
 
