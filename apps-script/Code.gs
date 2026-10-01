@@ -17,11 +17,17 @@
  * 4. Paste that URL into data-api="…" on the website block.
  * After editing this script later: Deploy → Manage deployments → Edit → Version: New.
  *
- * OPTIONAL TAB "University Profiles" (row 1 headers):
- *   University | Description | Photo URL
- *   University must match the "University" column of Master Data exactly.
- *   Description = 1–2 Thai sentences. Photo URL = an https:// image (e.g. from
- *   the WordPress media library).
+ * OPTIONAL TABS for university photos and descriptions:
+ *   "University Profiles"     = import "WordPress university images (…).csv" as is
+ *                               (University, Logo URL, Campus photo URL, Photo credit, Photo source page)
+ *   "University Descriptions" = import university-descriptions.csv (University, Description)
+ *   University matches Master Data with or without the "(CODE)" at the end.
+ *   URLs must start with https://. The photo credit is shown on the photo
+ *   (Wikimedia licences require it).
+ *
+ * OPTIONAL COLUMNS in Master Data for extra requirements (Yes/No):
+ *   Portfolio Required? | Entrance Exam Required? | Interview Required? | Study Plan Required?
+ *   Without them, the script looks for these words in "Academic Prerequisites".
  *
  * Leads from the email form are appended to the "Matcher Leads" tab (created
  * automatically). Sending the report email is not set up yet.
@@ -40,13 +46,14 @@
 var CONFIG = {
   dataSheet: 'Master Data',
   profileSheet: 'University Profiles',
+  descSheet: 'University Descriptions',
   leadsSheet: 'Matcher Leads',
   onlyCanApply: true,      // only programmes where "Chinese Chiwchiw Can Apply?" starts with Yes
   thbPerRmb: 4.6,          // keep in sync with data-rate on the page
   pageSize: 12,
   maxPageSize: 24,
   cacheSeconds: 600,       // sheet edits show on the site within ~10 minutes
-  aiModel: 'claude-opus-5-5',
+  aiModel: 'claude-sonnet-5-5',
   aiEffort: 'low',         // low keeps answers fast; medium/high think longer and cost more
   aiShortlist: 15,
   aiDailyLimit: 300,       // AI calls per day; after that the rule-based plan is used
@@ -141,8 +148,10 @@ function getData_() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sh = ss.getSheetByName(CONFIG.dataSheet);
   var data = {rows: buildRows_(sh.getDataRange().getDisplayValues()), profiles: {}};
-  var ps = ss.getSheetByName(CONFIG.profileSheet);
-  if (ps) data.profiles = buildProfiles_(ps.getDataRange().getDisplayValues());
+  [CONFIG.profileSheet, CONFIG.descSheet].forEach(function (name) {
+    var t = ss.getSheetByName(name);
+    if (t) mergeProfiles_(data.profiles, buildProfiles_(t.getDataRange().getDisplayValues()));
+  });
   var str = JSON.stringify(data), size = 90000, parts = {}, count = Math.ceil(str.length / size);
   for (var k = 0; k < count; k++) parts['um:' + k] = str.substr(k * size, size);
   parts['um:n'] = String(count);
@@ -244,6 +253,14 @@ function buildRows_(values) {
     row.f = 'oth'; row.s = '';
     if (lv === 'LANG') { row.f = 'lang'; row.s = 'cnprog'; }
     else for (var t = 0; t < TAXO.length; t++) if (TAXO[t][2].test(low)) { row.f = TAXO[t][0]; row.s = TAXO[t][1]; break; }
+    var pre = (g('Academic Prerequisites') + ' ' + g('Chinese Requirement Notes')).toLowerCase(), req = [];
+    var flag = function (col, re) { var v = g(col); return v ? yes_(v) : re.test(pre); };
+    if (flag('Portfolio Required?', /portfolio|作品集/)) req.push('portfolio');
+    if (/audition|演奏|面试演唱/.test(pre)) req.push('audition');
+    else if (flag('Entrance Exam Required?', /entrance exam|admission exam|written exam|professional exam|校考|专业考试|入学考试/)) req.push('exam');
+    if (flag('Interview Required?', /interview|面试/)) req.push('interview');
+    if (flag('Study Plan Required?', /study plan|research proposal|research plan|研究计划|学习计划/)) req.push('studyplan');
+    row.req = req;
     row.code = codeOf_(uni);
     row.hay = (uni + ' ' + row.cn + ' ' + row.city + ' ' + (CITY_TH[row.city] || '') + ' ' + low).toLowerCase();
     out.push(row);
@@ -251,16 +268,34 @@ function buildRows_(values) {
   return out;
 }
 
+function nameKey_(s) { return String(s || '').toLowerCase().replace(/[^a-z0-9]/g, ''); }
+
+// Accepts header variants, e.g. "Logo URL (WordPress)" or "Campus photo URL (WordPress)".
 function buildProfiles_(values) {
-  var H = {}, out = {};
-  values[0].forEach(function (h, i) { H[String(h).trim().toLowerCase()] = i; });
+  var heads = values[0].map(function (h) { return String(h).trim().toLowerCase(); }), out = {};
+  var col = function (test) { for (var i = 0; i < heads.length; i++) if (test(heads[i])) return i; return -1; };
+  var C = {u: col(function (h) { return h === 'university'; }), desc: col(function (h) { return h.indexOf('description') === 0; }),
+    logo: col(function (h) { return h.indexOf('logo') > -1; }), photo: col(function (h) { return h.indexOf('photo') > -1 && h.indexOf('url') > -1; }),
+    credit: col(function (h) { return h.indexOf('credit') > -1; }), src: col(function (h) { return h.indexOf('source') > -1; })};
+  if (C.u < 0) return out;
+  var url = function (v) { v = String(v || '').trim(); return /^https:\/\/[^\s"'<>]+$/.test(v) ? v : ''; };
   for (var k = 1; k < values.length; k++) {
-    var r = values[k], u = String(r[H['university']] || '').trim();
+    var r = values[k], g = function (i) { return i < 0 ? '' : String(r[i] == null ? '' : r[i]).trim(); }, u = g(C.u);
     if (!u) continue;
-    var photo = String(r[H['photo url']] || '').trim();
-    out[u] = {desc: String(r[H['description']] || '').trim().slice(0, 400), photo: /^https:\/\//.test(photo) ? photo : ''};
+    out[nameKey_(u)] = {desc: g(C.desc).slice(0, 400), photo: url(g(C.photo)), logo: url(g(C.logo)), credit: g(C.credit).slice(0, 200), src: url(g(C.src))};
   }
   return out;
+}
+
+function mergeProfiles_(into, from) {
+  Object.keys(from).forEach(function (k) {
+    var a = into[k] || (into[k] = {}), b = from[k];
+    Object.keys(b).forEach(function (f) { if (b[f] && !a[f]) a[f] = b[f]; });
+  });
+}
+
+function profileOf_(profiles, name) {
+  return profiles[nameKey_(name)] || profiles[nameKey_(shortName_(name))] || {};
 }
 
 // The ONLY programme fields that are ever sent to the website.
@@ -268,18 +303,18 @@ function pub_(r) {
   return {id: r.id, u: r.u, cn: r.cn, city: r.city, lv: r.lv, prog: r.prog, track: r.track, school: r.school, lang: r.lang,
     dur: r.dur, tu: r.tu, tot: r.tot, hsk: r.hsk, hskTxt: r.hskTxt, hskk: r.hskk, hskkLv: r.hskkLv, ielts: r.ielts, toefl: r.toefl,
     eng: r.eng, csca: r.csca, cscaSub: r.cscaSub, sch: r.sch, dl: r.dl, cyc: r.cyc, open: r.open, past: r.past, review: r.review,
-    campus: r.campus, f: r.f, s: r.s};
+    campus: r.campus, f: r.f, s: r.s, req: r.req || []};
 }
 
 function uniSummary_(name, list, profiles) {
-  var r0 = list[0], prof = profiles[name] || {}, fees = [], lv = {}, fc = {}, open = false, sch = false, en = 0;
+  var r0 = list[0], prof = profileOf_(profiles, name), fees = [], lv = {}, fc = {}, open = false, sch = false, en = 0;
   list.forEach(function (r) {
     if (r.tu) fees.push(r.tu);
     lv[r.lv] = 1; if (r.f !== 'oth') fc[r.f] = (fc[r.f] || 0) + 1;
     if (r.open) open = true; if (r.sch) sch = true; if (r.lang !== 'zh') en++;
   });
   return {name: name, short: shortName_(name), cn: r0.cn, city: r0.city, prov: r0.prov, code: r0.code, tiers: TIERS[r0.code] || [],
-    desc: prof.desc || '', photo: prof.photo || '', n: list.length,
+    desc: prof.desc || '', photo: prof.photo || '', logo: prof.logo || '', credit: prof.credit || '', src: prof.src || '', n: list.length,
     feeMin: fees.length ? Math.min.apply(null, fees) : 0, feeMax: fees.length ? Math.max.apply(null, fees) : 0,
     levels: ['UG', 'PG', 'PHD', 'LANG'].filter(function (k) { return lv[k]; }),
     top: Object.keys(fc).sort(function (a, b) { return fc[b] - fc[a]; }).slice(0, 2), open: open, sch: sch, en: en};
@@ -434,7 +469,7 @@ function bestMatch_(rows, profiles, a, deps) {
 
   var all = rows.filter(function (x) { return x.u === chosen.r.u; });
   var us = uniSummary_(chosen.r.u, all, profiles);
-  return {item: pub_(chosen.r), uni: {name: us.name, short: us.short, cn: us.cn, city: us.city, photo: us.photo, desc: us.desc, tiers: us.tiers},
+  return {item: pub_(chosen.r), uni: {name: us.name, short: us.short, cn: us.cn, city: us.city, photo: us.photo, logo: us.logo, credit: us.credit, src: us.src, desc: us.desc, tiers: us.tiers},
     gaps: chosen.g, exact: chosen.g.exact, ai: usedAI,
     plan: {headline: plan.headline, why_fit: plan.why_fit, watch_out: plan.watch_out, prepare: plan.prepare, timeline: plan.timeline}};
 }
@@ -453,22 +488,28 @@ function deadlineYear_(dl) { var m = String(dl || '').match(/(20\d{2})/); return
 // Rule-based plan in the same shape the AI returns; used when the AI is unavailable.
 function fallbackPlan_(r, g, a, today) {
   var short = shortName_(r.u), why = [], watch = [], prep = [], tl = [];
-  if (g.major) why.push('สาขา ' + r.prog + ' ตรงกับสายที่น้องสนใจ');
-  if (g.lang) why.push(r.lang === 'en' ? 'เรียนเป็นภาษาอังกฤษ ตรงกับที่น้องเลือก' : 'เรียนเป็นภาษาจีน ได้ทั้งปริญญาและภาษาไปพร้อมกัน');
-  if (g.thb && !g.over && a.budget) why.push('ค่าใช้จ่ายต่อปีอยู่ในงบที่น้องตั้งไว้');
+  if (g.major) why.push('สาขา ' + r.prog + ' ตรงกับสายที่นักเรียนสนใจ');
+  if (g.lang) why.push(r.lang === 'en' ? 'เรียนเป็นภาษาอังกฤษ ตรงกับที่นักเรียนเลือก' : 'เรียนเป็นภาษาจีน ได้ทั้งปริญญาและภาษาไปพร้อมกัน');
+  if (g.thb && !g.over && a.budget) why.push('ค่าใช้จ่ายต่อปีอยู่ในงบที่นักเรียนตั้งไว้');
   if (r.sch) why.push('มีทุนการศึกษาให้ยื่นสมัคร');
-  if (!why.length) why.push('เป็นตัวเลือกที่ใกล้เคียงกับคำตอบของน้องที่สุดในระบบตอนนี้');
-  if (!g.major) watch.push('สาขานี้ไม่ตรงกลุ่มที่น้องเลือกทั้งหมด ลองดูสาขาอื่นของมหาวิทยาลัยนี้ด้วย');
+  if (!why.length) why.push('เป็นตัวเลือกที่ใกล้เคียงกับคำตอบของนักเรียนที่สุดในระบบตอนนี้');
+  if (!g.major) watch.push('สาขานี้ไม่ตรงกลุ่มที่นักเรียนเลือกทั้งหมด ลองดูสาขาอื่นของมหาวิทยาลัยนี้ด้วย');
   if (g.hskGap) watch.push('ต้องอัป HSK อีก ' + g.hskGap + ' ระดับก่อนยื่นสมัคร');
   if (g.ieltsGap) watch.push('ต้องได้ IELTS เพิ่มอีก ' + g.ieltsGap + ' ก่อนยื่นสมัคร');
   if (g.testUnknown) watch.push(g.useZh ? 'หลักสูตรนี้สอนเป็นภาษาจีน ต้องใช้ผล HSK' : 'หลักสูตรนี้สอนเป็นภาษาอังกฤษ ต้องใช้ผล IELTS หรือ TOEFL');
   if (g.over) watch.push('ค่าใช้จ่ายเกินงบที่ตั้งไว้ประมาณ ' + Math.round(g.over / 1000) * 1000 + ' บาทต่อปี');
-  if (!g.city) watch.push('มหาวิทยาลัยนี้อยู่นอกเมืองที่น้องเลือก');
+  if (!g.city) watch.push('มหาวิทยาลัยนี้อยู่นอกเมืองที่นักเรียนเลือก');
   if (r.review) watch.push('ข้อมูลบางส่วนของหลักสูตรนี้ทีมกำลังตรวจสอบ');
   var kk = r.hskk ? ' และ HSKK ' + (r.hskkLv || '') : '';
   if (r.lang !== 'en' && r.hsk) prep.push(g.hskGap || g.testUnknown ? 'เตรียมสอบ HSK ' + r.hsk + kk + ' ให้ได้คะแนนตามเกณฑ์' : 'ถ้ายังไม่มีใบผล HSK ' + r.hsk + kk + ' ให้สอบก่อนยื่นสมัคร (ผลสอบใช้ได้ 2 ปี)');
   if (r.lang !== 'zh' && r.ielts) prep.push(g.ieltsGap || g.testUnknown ? 'เตรียมสอบ IELTS ให้ได้ ' + r.ielts + ' ขึ้นไป' + (r.toefl ? ' (หรือ TOEFL ' + r.toefl + ')' : '') : 'ถ้ายังไม่มีใบผล IELTS ' + r.ielts + ' ขึ้นไป ให้สอบก่อนยื่นสมัคร (ผลสอบใช้ได้ 2 ปี)');
   if (r.csca) prep.push('เตรียมสอบ CSCA' + (r.cscaSub ? ' วิชา ' + r.cscaSub : ''));
+  var req = r.req || [], needPlan = req.indexOf('studyplan') > -1 || r.lv === 'PG' || r.lv === 'PHD';
+  if (req.indexOf('portfolio') > -1) prep.push('เตรียม Portfolio ผลงานตามที่คณะกำหนด');
+  if (req.indexOf('exam') > -1) prep.push('เตรียมสอบเข้าเฉพาะของคณะ');
+  if (req.indexOf('audition') > -1) prep.push('ซ้อมสำหรับ Audition ทดสอบความสามารถ');
+  if (needPlan) prep.push('เขียน Study Plan' + (r.lv === 'PHD' ? ' / Research Proposal' : '') + ' ให้ชัดว่าอยากเรียนอะไรและทำไม');
+  if (req.indexOf('interview') > -1) prep.push('ฝึกสัมภาษณ์ เล่าเป้าหมายการเรียนให้กระชับ');
   prep.push('เตรียมเอกสารหลัก: หนังสือเดินทาง ใบแสดงผลการเรียน และเอกสารที่มหาวิทยาลัยกำหนด');
   if (r.sch) prep.push('เตรียมเอกสารยื่นทุนไปพร้อมกับใบสมัคร');
   var when = a.when === 'later' || a.when === 'explore' ? a.when : 'next';
@@ -488,7 +529,9 @@ function fallbackPlan_(r, g, a, today) {
     if (r.lang !== 'en' && r.hsk) tl.push({when: 'ประมาณ 1 ปีก่อนยื่นสมัคร', task: 'ปูพื้นภาษาจีนและสอบ HSK ' + r.hsk + (r.hskk ? ' และ HSKK' : '') + ' ให้ถึงเกณฑ์'});
     if (r.lang !== 'zh' && r.ielts) tl.push({when: 'ประมาณ 1 ปีก่อนยื่นสมัคร', task: 'เตรียมสอบ IELTS ให้ได้ ' + r.ielts + ' ขึ้นไป'});
     if (r.csca) tl.push({when: '2–3 เดือนก่อนปิดรับ', task: 'สอบ CSCA และเก็บผลสอบไว้ยื่น'});
+    if (req.indexOf('portfolio') > -1 || needPlan) tl.push({when: '2–3 เดือนก่อนปิดรับ', task: [req.indexOf('portfolio') > -1 ? 'ทำ Portfolio' : '', needPlan ? 'เขียน Study Plan' : ''].filter(String).join(' และ ')});
     tl.push({when: '1–2 เดือนก่อนปิดรับ', task: 'รวบรวมเอกสารและยื่นใบสมัคร' + (r.sch ? ' พร้อมใบสมัครทุน' : '')});
+    if (req.indexOf('exam') > -1 || req.indexOf('audition') > -1 || req.indexOf('interview') > -1) tl.push({when: 'หลังยื่นสมัคร', task: 'สอบเข้า / Audition / สัมภาษณ์ ตามที่คณะกำหนด'});
     tl.push({when: dmLabel ? dmLabel + ' ของปีที่ยื่น' : 'วันปิดรับสมัคร', task: 'ปิดรับสมัคร' + (dmLabel ? ' (อ้างอิงเดือนของรอบที่ผ่านมา ทีมจะยืนยันให้)' : '')});
     tl.push({when: 'หลังได้รับผล', task: 'ขอวีซ่านักเรียน เตรียมที่พัก และเข้าร่วม Pre-Departure กับทีม'});
   } else if (dm > -1 && tm) {
@@ -504,7 +547,11 @@ function fallbackPlan_(r, g, a, today) {
     if (r.lang !== 'en' && r.hsk) tl.push({when: lab(dl - (lgap ? 4 : 3)), task: (g.hskGap ? 'เรียนเพิ่มและสอบ HSK ' : 'สอบหรือเตรียมใบผล HSK ') + r.hsk + (r.hskk ? ' และ HSKK' : '')});
     if (r.lang !== 'zh' && r.ielts) tl.push({when: lab(dl - (lgap ? 4 : 3)), task: 'สอบหรือเตรียมใบผล IELTS ' + r.ielts + ' ขึ้นไป'});
     if (r.csca) tl.push({when: lab(dl - 2), task: 'สอบ CSCA และเก็บผลสอบไว้ยื่น'});
+    if (req.indexOf('portfolio') > -1) tl.push({when: lab(dl - 2), task: 'ทำ Portfolio ให้เสร็จ'});
+    if (needPlan) tl.push({when: lab(dl - 2), task: 'เขียน Study Plan' + (r.lv === 'PHD' ? ' / Research Proposal' : '') + ' และขอจดหมายแนะนำ'});
     tl.push({when: lab(dl - 1), task: 'รวบรวมเอกสารและยื่นใบสมัคร' + (r.sch ? ' พร้อมใบสมัครทุน' : '')});
+    if (req.indexOf('exam') > -1 || req.indexOf('audition') > -1 || req.indexOf('interview') > -1)
+      tl.push({when: lab(dl), task: [req.indexOf('exam') > -1 ? 'สอบเข้า' : '', req.indexOf('audition') > -1 ? 'Audition' : '', req.indexOf('interview') > -1 ? 'สัมภาษณ์' : ''].filter(String).join(' / ') + ' ตามตารางของคณะ (มักจัดช่วงหลังยื่นสมัคร)'});
     tl.push({when: lab(dl), task: 'ปิดรับสมัคร' + (r.past ? ' (อ้างอิงเดือนของรอบที่ผ่านมา ทีมจะยืนยันวันของรอบใหม่ให้)' : '')});
     tl.push({when: lab(dl + 2), task: 'ได้รับผล ขอวีซ่านักเรียน เตรียมที่พัก และเข้าร่วม Pre-Departure กับทีม'});
   } else {
@@ -515,12 +562,12 @@ function fallbackPlan_(r, g, a, today) {
     tl.push({when: 'ก่อนปิดรับ', task: 'รวบรวมเอกสารและยื่นใบสมัคร' + (r.sch ? ' พร้อมใบสมัครทุน' : '')});
     tl.push({when: 'หลังได้รับผล', task: 'ขอวีซ่านักเรียน เตรียมที่พัก และเข้าร่วม Pre-Departure กับทีม'});
   }
-  var head = g.exact ? short + ' สาขา ' + r.prog + ' ตรงกับเป้าหมายของน้องมากที่สุดจากคำตอบทั้งหมด' : short + ' สาขา ' + r.prog + ' เป็นตัวเลือกที่ใกล้เคียงที่สุด แม้ยังมีบางข้อที่ต้องเตรียมเพิ่ม';
+  var head = g.exact ? short + ' สาขา ' + r.prog + ' ตรงกับเป้าหมายของนักเรียนมากที่สุดจากคำตอบทั้งหมด' : short + ' สาขา ' + r.prog + ' เป็นตัวเลือกที่ใกล้เคียงที่สุด แม้ยังมีบางข้อที่ต้องเตรียมเพิ่ม';
   if (when === 'explore') head = short + ' สาขา ' + r.prog + ' เป็นจุดเริ่มต้นที่ดีสำหรับเทียบตัวเลือก ยังมีเวลาหาข้อมูลเพิ่มได้ไม่ต้องรีบ';
-  else if (when === 'later' && !g.exact) head = short + ' สาขา ' + r.prog + ' เหมาะกับน้อง และน้องยังมีเวลาเตรียมส่วนที่ยังขาด';
+  else if (when === 'later' && !g.exact) head = short + ' สาขา ' + r.prog + ' เหมาะกับนักเรียน และยังมีเวลาเตรียมส่วนที่ยังขาด';
   return {
     headline: head,
-    why_fit: why.slice(0, 4), watch_out: watch.slice(0, 3), prepare: prep.slice(0, 5), timeline: tl.slice(0, 7)
+    why_fit: why.slice(0, 4), watch_out: watch.slice(0, 3), prepare: prep.slice(0, 6), timeline: tl.slice(0, 9)
   };
 }
 
@@ -534,11 +581,11 @@ var AI_SYSTEM = [
   '',
   'Facts: use only the data given for each programme. Never invent fees, requirements, rankings, deadlines, scholarships or anything about campus life. If something is missing, say the team will confirm it (ทีมจะยืนยันให้). Never promise admission, a visa or a scholarship; "scholarship available" means the student can apply, not that they will receive it. If cycle_past is true, say the dates are from the previous round and the new round is usually announced around the same time.',
   '',
-  'Timeline: 5 to 7 steps from today (given) until departure, worked back from the deadline. Use real Thai month abbreviations for every step. If cycle_past is false, add the Christian-era year (for example มี.ค. 2027). If cycle_past is true, the new round has not opened yet: base the months on the previous round\'s deadline, write months WITHOUT a year (for example มี.ค.), and say in one step that the team will confirm the new round\'s dates. Cover the language test, CSCA if required, documents, the application, the scholarship application if available, and visa and pre-departure. Keep the steps in order.',
+  'Timeline: 5 to 9 steps from today (given) until departure, worked back from the deadline. Use real Thai month abbreviations for every step. If cycle_past is false, add the Christian-era year (for example มี.ค. 2027). If cycle_past is true, the new round has not opened yet: base the months on the previous round\'s deadline, write months WITHOUT a year (for example มี.ค.), and say in one step that the team will confirm the new round\'s dates. Cover the language test, CSCA if required, a portfolio or entrance exam or audition if listed in extra_requirements, writing the study plan (always for master and PhD, and whenever studyplan is listed; for bachelor scholarships mention that some scholarships ask for one), documents, the application, the scholarship application if available, interview preparation if interview is listed, and visa and pre-departure. Keep the steps in order. Living costs inside total cost are estimates; say so if you mention the total.',
   '',
   'Start plan: if the student is applying in the next round, use the dated timeline above. If they are planning ahead for a later year, use phases relative to the application year (for example ประมาณ 1 ปีก่อนยื่นสมัคร, 2–3 เดือนก่อนปิดรับ) with no years, and treat language gaps as time to prepare. If they are just exploring, do not push them to apply: make the plan about comparing 2–3 options from the list on the page, trying Chinese lessons or a short camp, and choosing a start year with the team; use relative phases with no dates.',
   '',
-  'Writing: Thai, warm and encouraging, like an older sibling (พี่ ๆ ชิวชิว) talking to the student (น้อง). Short sentences, one idea per bullet, at most two sentences each, no emoji, no markdown. watch_out lists honest gaps (language, budget, city, data still being verified) and is an empty array when there are none.'
+  'Writing: Thai, warm and encouraging, in the voice of the Chinese Chiwchiw team. Address the reader as นักเรียน and never as น้อง. Short sentences, one idea per bullet, at most two sentences each, no emoji, no markdown. watch_out lists honest gaps (language, budget, city, data still being verified) and is an empty array when there are none.'
 ].join('\n');
 
 var AI_SCHEMA_BASE = {
@@ -549,9 +596,9 @@ var AI_SCHEMA_BASE = {
     headline: {type: 'string', description: 'one Thai sentence saying why this is the best fit'},
     why_fit: {type: 'array', items: {type: 'string'}, description: '3 or 4 reasons this programme fits this student'},
     watch_out: {type: 'array', items: {type: 'string'}, description: '0 to 3 honest gaps or caveats'},
-    prepare: {type: 'array', items: {type: 'string'}, description: '3 to 5 concrete preparation steps'},
+    prepare: {type: 'array', items: {type: 'string'}, description: '3 to 6 concrete preparation steps'},
     timeline: {type: 'array', items: {type: 'object', additionalProperties: false, required: ['when', 'task'],
-      properties: {when: {type: 'string'}, task: {type: 'string'}}}, description: '5 to 7 steps in order'}
+      properties: {when: {type: 'string'}, task: {type: 'string'}}}, description: '5 to 9 steps in order'}
   }
 };
 
@@ -568,7 +615,7 @@ function aiPlan_(a, shortlist, today) {
     var r = c.r;
     return {id: r.id, university: r.u, city: r.city, level: r.lv, programme: r.prog + (r.track ? ' (' + r.track + ')' : ''), school: r.school,
       teaching_language: r.lang, duration_years: r.dur, tuition_rmb_per_year: r.tu || null, total_rmb_per_year: r.tot || null,
-      estimated_thb_per_year: c.g.thb || null, hsk_requirement: r.hskTxt || (r.hsk ? 'HSK ' + r.hsk : null), hskk_level: r.hskk ? (r.hskkLv || 'required') : null,
+      total_includes_estimated_living_costs: !!r.tot, estimated_thb_per_year: c.g.thb || null, extra_requirements: r.req || [], hsk_requirement: r.hskTxt || (r.hsk ? 'HSK ' + r.hsk : null), hskk_level: r.hskk ? (r.hskkLv || 'required') : null,
       ielts_min: r.ielts || null, toefl_min: r.toefl || null, csca_required: r.csca, csca_subjects: r.cscaSub || null,
       scholarship_available: r.sch, deadline: r.dl || null, cycle: r.cyc || null, cycle_past: r.past, data_being_verified: r.review,
       gaps: {major_match: c.g.major, language_match: c.g.lang, hsk_levels_short: c.g.hskGap || 0, ielts_short: c.g.ieltsGap || 0,
@@ -602,8 +649,8 @@ function aiPlan_(a, shortlist, today) {
   var plan = JSON.parse(txt);
   plan.why_fit = arr_(plan.why_fit).slice(0, 4);
   plan.watch_out = arr_(plan.watch_out).slice(0, 3);
-  plan.prepare = arr_(plan.prepare).slice(0, 5);
-  plan.timeline = (Array.isArray(plan.timeline) ? plan.timeline : []).slice(0, 7).map(function (t) { return {when: String(t.when || ''), task: String(t.task || '')}; });
+  plan.prepare = arr_(plan.prepare).slice(0, 6);
+  plan.timeline = (Array.isArray(plan.timeline) ? plan.timeline : []).slice(0, 9).map(function (t) { return {when: String(t.when || ''), task: String(t.task || '')}; });
   try { cache.put(ck, JSON.stringify(plan), CONFIG.aiCacheSeconds); } catch (err) {}
   return {plan: plan};
 }
