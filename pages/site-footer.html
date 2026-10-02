@@ -1,0 +1,88 @@
+<!-- Chinese Chiwchiw site footer · lives in Blocksy "Footer Widget Area 1" as a Custom HTML block -->
+<style>
+/* hide the theme's old footer rows (social row + auto page list); this block replaces them */
+.ct-footer [data-row="top"],.ct-footer [data-row="middle"]{display:none!important}
+.ct-footer [data-row="bottom"]>.ct-container{padding-top:0!important;padding-bottom:0!important}
+.ccf{--ccf-fg:#1A1A1A;--ccf-muted:#6B6460;--ccf-line:#E8E2DC;--ccf-accent:#FF6B00;font-family:'Noto Sans Thai','Kanit',system-ui,sans-serif;color:var(--ccf-fg);width:100%;padding:56px 0 28px;text-align:left}
+.ccf a{text-decoration:none!important;color:inherit}
+.ccf-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr 1.25fr;gap:40px}
+.ccf-brand{display:flex;align-items:center;gap:12px}
+.ccf-brand img{width:48px;height:48px;border-radius:50%;object-fit:cover;flex:none;margin:0!important}
+.ccf-name{font-family:'Kanit',sans-serif;font-weight:700;font-size:1.15rem;line-height:1.2;color:var(--ccf-accent);letter-spacing:.5px}
+.ccf-sub{display:block;font-size:.68rem;letter-spacing:2.5px;color:var(--ccf-muted);margin-top:3px;text-transform:uppercase}
+.ccf-about{margin:16px 0 0;font-size:.88rem;line-height:1.7;color:var(--ccf-muted);max-width:280px}
+.ccf h4{font-family:'Kanit',sans-serif;font-weight:600;font-size:.98rem;color:var(--ccf-fg)!important;margin:0 0 16px;letter-spacing:0}
+.ccf ul{list-style:none;margin:0;padding:0;display:grid;gap:11px}
+.ccf li{margin:0;padding:0;font-size:.92rem;line-height:1.4}
+.ccf li a{color:var(--ccf-muted)!important;transition:color .15s}
+.ccf li a:hover,.ccf li a:focus-visible{color:var(--ccf-accent)!important}
+.ccf-contact li{display:flex;align-items:center;gap:9px}
+.ccf-contact svg{width:16px;height:16px;flex:none;stroke:var(--ccf-muted);fill:none;stroke-width:1.8}
+.ccf-social{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
+.ccf-social a{width:40px;height:40px;border:1px solid var(--ccf-line);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--ccf-muted)!important;transition:border-color .15s,color .15s}
+.ccf-social a:hover,.ccf-social a:focus-visible{border-color:var(--ccf-accent);color:var(--ccf-accent)!important}
+.ccf-social svg{width:17px;height:17px;fill:currentColor}
+.ccf-bottom{margin-top:48px;padding-top:22px;border-top:1px solid var(--ccf-line);display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 24px;font-size:.78rem;color:var(--ccf-muted);line-height:1.6}
+.ccf-bottom p{margin:0}
+@media (max-width:1000px){.ccf-grid{grid-template-columns:1fr 1fr 1fr}.ccf-col-brand{grid-column:1/-1}}
+@media (max-width:600px){.ccf{padding-top:40px}.ccf-grid{grid-template-columns:1fr 1fr;gap:32px 20px}.ccf-col-contact{grid-column:1/-1}}
+</style>
+<div class="ccf">
+  <div class="ccf-grid">
+    <div class="ccf-col-brand">
+      <a class="ccf-brand" href="/">
+        <img src="https://chinesechiwchiw.com/wp-content/uploads/2026/03/Chinesechiwchiw-Logo.webp" alt="Chinese Chiwchiw" width="48" height="48" loading="lazy">
+        <span><span class="ccf-name">CHINESE CHIWCHIW</span><span class="ccf-sub">Study in China</span></span>
+      </a>
+      <p class="ccf-about">เรียนจีน เรียนต่อประเทศจีน ดูแลครบตั้งแต่เลือกมหาวิทยาลัยจนถึงวันเดินทาง</p>
+    </div>
+    <nav aria-label="เรียนกับเรา">
+      <h4>เรียนกับเรา</h4>
+      <ul>
+        <li><a href="/university-match/">Chiwchiw Match</a></li>
+        <li><a href="/%e0%b9%80%e0%b8%a3%e0%b8%b5%e0%b8%a2%e0%b8%99%e0%b8%95%e0%b9%88%e0%b8%ad%e0%b8%9b%e0%b8%a3%e0%b8%b0%e0%b9%80%e0%b8%97%e0%b8%a8%e0%b8%88%e0%b8%b5%e0%b8%99/">เรียนต่อประเทศจีน</a></li>
+        <li><a href="/long-term-language-programmes-in-china/">เรียนภาษา 1 เทอม / 1 ปี</a></li>
+        <li><a href="/%e0%b8%84%e0%b9%88%e0%b8%b2%e0%b8%a2%e0%b8%a3%e0%b8%b0%e0%b8%a2%e0%b8%b0%e0%b8%aa%e0%b8%b1%e0%b9%89%e0%b8%99/">ค่ายระยะสั้น</a></li>
+        <li><a href="/%e0%b8%ab%e0%b8%a5%e0%b8%b1%e0%b8%81%e0%b8%aa%e0%b8%b9%e0%b8%95%e0%b8%a3%e0%b8%a0%e0%b8%b2%e0%b8%a9%e0%b8%b2%e0%b8%88%e0%b8%b5%e0%b8%99/">เรียนภาษาจีนออนไลน์</a></li>
+      </ul>
+    </nav>
+    <nav aria-label="ข้อมูล">
+      <h4>ข้อมูล</h4>
+      <ul>
+        <li><a href="/%e0%b8%97%e0%b8%b8%e0%b8%99%e0%b8%9b%e0%b8%a3%e0%b8%b4%e0%b8%8d%e0%b8%8d%e0%b8%b2%e0%b8%95%e0%b8%a3/">ทุนปริญญาตรี</a></li>
+        <li><a href="/csca/">CSCA</a></li>
+        <li><a href="/%e0%b8%a3%e0%b8%b0%e0%b8%94%e0%b8%b1%e0%b8%9a%e0%b8%a0%e0%b8%b2%e0%b8%a9%e0%b8%b2%e0%b8%88%e0%b8%b5%e0%b8%99/">วัดระดับภาษาจีน</a></li>
+        <li><a href="/testimonials/">รีวิวจากนักเรียน</a></li>
+        <li><a href="/chinese-chiwchiw-blogs/">บทความ</a></li>
+      </ul>
+    </nav>
+    <nav aria-label="บริษัท">
+      <h4>บริษัท</h4>
+      <ul>
+        <li><a href="/about/">เกี่ยวกับเรา</a></li>
+        <li><a href="/%e0%b8%9a%e0%b8%a3%e0%b8%b4%e0%b8%81%e0%b8%b2%e0%b8%a3%e0%b8%82%e0%b8%ad%e0%b8%87%e0%b9%80%e0%b8%a3%e0%b8%b2-2/">บริการของเรา</a></li>
+        <li><a href="/privacy-policy/">นโยบายความเป็นส่วนตัว</a></li>
+        <li><a href="/cookie-policy/">นโยบายคุกกี้</a></li>
+        <li><a href="/terms-of-service/">ข้อกำหนดการใช้บริการ</a></li>
+      </ul>
+    </nav>
+    <div class="ccf-col-contact">
+      <h4>ติดต่อเรา</h4>
+      <ul class="ccf-contact">
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5c0 4.1-4 7.5-9 7.5-1 0-2-.1-2.9-.4L5 20l1-3.4C4.2 15.2 3 13.5 3 11.5 3 7.4 7 4 12 4s9 3.4 9 7.5z"/></svg><a href="https://lin.ee/C0CmZGa" target="_blank" rel="noopener">LINE @chiwchiw</a></li>
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg><a href="mailto:admin@chinesechiwchiw.com">admin@chinesechiwchiw.com</a></li>
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span style="color:var(--ccf-muted)">ศรีราชา ชลบุรี</span></li>
+      </ul>
+      <div class="ccf-social">
+        <a href="https://www.facebook.com/Chinesechiwchiw/" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 20 20"><path d="M20 10.1C20 4.5 15.5.1 10 .1S0 4.5 0 10.1c0 5 3.7 9.1 8.4 9.9v-7H5.9v-2.9h2.5V7.9C8.4 5.4 9.9 4 12.2 4c1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6v1.9h2.8l-.4 2.8h-2.3v7c4.7-.8 8.4-4.9 8.4-9.9z"/></svg></a>
+        <a href="https://www.instagram.com/chinese_chiwchiw/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="3.3"/><path d="M14.2 0H5.8C2.6 0 0 2.6 0 5.8v8.3C0 17.4 2.6 20 5.8 20h8.3c3.2 0 5.8-2.6 5.8-5.8V5.8C20 2.6 17.4 0 14.2 0zM10 15c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5zm5.8-10c-.4 0-.8-.4-.8-.8s.4-.8.8-.8.8.4.8.8-.4.8-.8.8z"/></svg></a>
+        <a href="https://www.tiktok.com/@chinesechiwchiw" target="_blank" rel="noopener" aria-label="TikTok"><svg viewBox="0 0 20 20"><path d="M14.6 0h-3.3v13.6c0 1.6-1.3 2.9-2.9 2.9s-2.9-1.3-2.9-2.9 1.3-2.9 2.9-2.9c.3 0 .6 0 .9.1V7.4c-.3 0-.6-.1-.9-.1C4.9 7.3 2 10.1 2 13.6S4.9 20 8.4 20s6.2-2.8 6.2-6.4V6.8c1.3.9 2.8 1.4 4.4 1.4V4.9c-2.4 0-4.4-2-4.4-4.4V0z"/></svg></a>
+        <a href="http://www.youtube.com/@chinese_chiwchiw" target="_blank" rel="noopener" aria-label="YouTube"><svg viewBox="0 0 20 20"><path d="M19.6 5.2c-.2-.9-.9-1.6-1.8-1.8C16.2 3 10 3 10 3s-6.2 0-7.8.4c-.9.2-1.6.9-1.8 1.8C0 6.8 0 10 0 10s0 3.2.4 4.8c.2.9.9 1.6 1.8 1.8C3.8 17 10 17 10 17s6.2 0 7.8-.4c.9-.2 1.6-.9 1.8-1.8.4-1.6.4-4.8.4-4.8s0-3.2-.4-4.8zM8 13V7l5.2 3L8 13z"/></svg></a>
+      </div>
+    </div>
+  </div>
+  <div class="ccf-bottom">
+    <p>© 2026 Chinese Chiwchiw Co., Ltd. บริษัท ไชนีส ชิวชิว จำกัด สงวนลิขสิทธิ์</p>
+    <p>ทะเบียนนิติบุคคลเลขที่ 0205568033020 · 188/30 หมู่บ้าน เดอะ บลูเลอวาร์ด ศรีราชา หมู่ที่ 1 ซอย 1 ถนนหนองยายบู่ ต.หนองขาม อ.ศรีราชา จ.ชลบุรี 20230</p>
+  </div>
+</div>
