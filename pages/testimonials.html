@@ -31,10 +31,10 @@
 #tm-page .tm-btn-pri{background:linear-gradient(135deg,#FFB300,#FF6B00);color:#1A0A00!important;box-shadow:0 6px 24px rgba(255,140,0,.45)}
 #tm-page .tm-btn-line{background:#06C755;color:#fff!important}
 #tm-page .tm-btn-fb{background:#1877F2;color:#fff!important}
-.tm-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));max-width:860px;margin:34px auto 0}
+.tm-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));max-width:1060px;margin:34px auto 0}
 .tm-stats div{display:flex;flex-direction:column;align-items:center;line-height:1.3;padding:4px 10px;min-width:0}
 .tm-stats div+div{border-left:1px solid rgba(255,179,71,.28)}
-.tm-stats b{font-family:'Kanit',sans-serif;font-weight:900;font-size:clamp(2.7rem,6vw,4.4rem);line-height:1.05;color:#FFB347;white-space:nowrap;font-variant-numeric:tabular-nums;text-shadow:0 4px 24px rgba(255,140,0,.35)}
+.tm-stats b{font-family:'Kanit',sans-serif;font-weight:900;font-size:clamp(2.4rem,5vw,4rem);line-height:1.05;color:#FFB347;white-space:nowrap;font-variant-numeric:tabular-nums;text-shadow:0 4px 24px rgba(255,140,0,.35)}
 .tm-stats b i{font-style:normal}
 .tm-stats b small{font-size:.5em;font-weight:800;color:#FFD9A8;margin-left:2px}
 .tm-stats span{font-size:.95rem;color:#E6CDB4;margin-top:6px}
@@ -68,6 +68,25 @@
 .tm-js .tm-long.tm-open .tm-q{display:block}
 #tm-page .tm-more{align-self:flex-start;background:none;border:0;padding:6px 0 0;color:#FF6B00;font-family:'Kanit',sans-serif;font-weight:600;font-size:.9rem;cursor:pointer}
 .tm-card[hidden]{display:none!important}
+/* facebook reviews: camps + goabroad */
+.tm-fbr{background:linear-gradient(180deg,#FFF3E6 0%,#FFFBF7 100%)}
+.tm-fbr-head{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:44px 0 0;padding-bottom:12px;border-bottom:2px solid #F6DCC2}
+#tm-page .tm-fbr-head h3{font-size:clamp(1.25rem,2.6vw,1.6rem);font-weight:800;color:#1A0A00!important;line-height:1.35}
+.tm-fbr-head h3 i{font-style:normal;font-family:'Noto Sans Thai',sans-serif;font-size:.85rem;font-weight:600;color:#9A7A60;margin-left:8px}
+.tm-fbr-head p{margin:0;font-size:.9rem;color:#9A7A60}
+.tm-fbr .tm-grid{margin-top:22px}
+.tm-fbc{position:relative;break-inside:avoid;background:#fff;border:1px solid #EDE5DC;border-radius:16px;padding:20px 22px;margin:0 0 20px;display:flex;flex-direction:column;box-shadow:0 4px 18px rgba(26,10,0,.05)}
+.tm-fbc header{display:flex;gap:12px;align-items:center;margin-bottom:10px;padding-right:30px}
+.tm-av{flex:none;width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Kanit',sans-serif;font-weight:800;font-size:1.15rem;color:#fff;background:linear-gradient(135deg,#FFB300,#FF6B00)}
+.tm-go .tm-av{background:linear-gradient(135deg,#FF8A3D,#C2410C)}
+.tm-fbc header b{display:block;font-family:'Kanit',sans-serif;color:#1A0A00;font-size:1.02rem;line-height:1.3}
+.tm-fbc header small{display:block;font-size:.78rem;color:#9A7A60;line-height:1.4}
+.tm-fbc .tm-ico{position:absolute;top:18px;right:18px;width:22px;height:22px;fill:#1877F2}
+.tm-tag{display:inline-block;align-self:flex-start;font-size:.75rem;font-weight:700;border-radius:50px;padding:1px 10px;margin:0 0 8px;background:#FFF0E2;color:#C2410C}
+.tm-go .tm-tag{background:#EEF2FF;color:#4338CA}
+.tm-fbc footer{margin-top:10px;font-size:.78rem;color:#A8907C}
+#tm-page .tm-foldbtn{display:none}
+@media (max-width:600px){.tm-folded:not(.tm-all) .tm-fbc:nth-child(n+5){display:none}#tm-page .tm-foldbtn{display:flex;margin:0 auto 6px;background:#fff;border:1px solid #F0C9A4;color:#C2410C;font-family:'Kanit',sans-serif;font-weight:700;font-size:.95rem;border-radius:50px;padding:10px 22px;cursor:pointer}}
 /* youtube */
 .tm-yts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin-top:32px}
 #tm-page .tm-yt{display:flex;flex-direction:column;gap:8px;color:#1A0A00!important}
@@ -98,7 +117,7 @@
 .tm-js .tm-rv{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
 .tm-js .tm-rv.tm-in{opacity:1;transform:none}
 @media (max-width:900px){.tm-scores,.tm-yts{grid-template-columns:repeat(2,minmax(0,1fr))}.tm-fb{grid-template-columns:1fr}}
-@media (max-width:600px){.tm-yts{grid-template-columns:1fr}.tm-wrap{padding:0 16px}.tm-sec{padding:60px 0}.tm-hero{background-image:none}.tm-hero::before{background:radial-gradient(ellipse at 80% 10%,rgba(255,179,71,.22),rgba(255,179,71,0) 55%),linear-gradient(180deg,#1A0A00 0%,#1A0A00 40%,#2E1405 75%,#3A1A06 100%)}.tm-hero{display:flex;flex-direction:column;padding:0}.tm-hero>.tm-wrap{position:relative;z-index:1}.tm-hero-gap{order:-1;position:relative;height:auto;aspect-ratio:1/1;margin:0 0 -30px;background:var(--tm-img) 50% 100%/cover no-repeat}.tm-hero-gap::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(26,10,0,0) 0%,rgba(26,10,0,0) 82%,rgba(26,10,0,.75) 93%,#1A0A00 100%)}.tm-hero-foot{padding-top:30px}.tm-stats div{padding:2px 4px}.tm-scores{grid-template-columns:1fr}#tm-page .tm-btn{width:100%}.tm-fb{padding:24px 20px}.tm-stats b{font-size:2.05rem}.tm-stats span{font-size:.76rem;line-height:1.35}}
+@media (max-width:600px){.tm-yts{grid-template-columns:1fr}.tm-wrap{padding:0 16px}.tm-sec{padding:60px 0}.tm-hero{background-image:none}.tm-hero::before{background:radial-gradient(ellipse at 80% 10%,rgba(255,179,71,.22),rgba(255,179,71,0) 55%),linear-gradient(180deg,#1A0A00 0%,#1A0A00 40%,#2E1405 75%,#3A1A06 100%)}.tm-hero{display:flex;flex-direction:column;padding:0}.tm-hero>.tm-wrap{position:relative;z-index:1}.tm-hero-gap{order:-1;position:relative;height:auto;aspect-ratio:1/1;margin:0 0 -30px;background:var(--tm-img) 50% 100%/cover no-repeat}.tm-hero-gap::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(26,10,0,0) 0%,rgba(26,10,0,0) 82%,rgba(26,10,0,.75) 93%,#1A0A00 100%)}.tm-hero-foot{padding-top:30px}.tm-stats{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:22px}.tm-stats div{padding:2px 6px}.tm-stats div+div{border-left:0}.tm-stats div:nth-child(even){border-left:1px solid rgba(255,179,71,.28)}.tm-scores{grid-template-columns:1fr}#tm-page .tm-btn{width:100%}.tm-fb{padding:24px 20px}.tm-stats b{font-size:2.5rem}.tm-stats span{font-size:.8rem;line-height:1.4}}
 @media (prefers-reduced-motion:reduce){.tm-js .tm-rv{opacity:1;transform:none;transition:none}#tm-page .tm-btn{transition:none}}
 </style>
 
@@ -120,9 +139,10 @@
   <div class="tm-wrap tm-hero-foot">
     <span class="tm-hero-cap">📸 Pre-Departure Event · ครอบครัว Chiwchiw</span>
     <div class="tm-stats">
-      <div><b><i class="tm-n" data-to="50">50</i><small>+</small></b><span>รีวิวจากน้อง ๆ</span></div>
-      <div><b><i class="tm-n" data-to="300">300</i><small>/300</small></b><span>คะแนน HSK 3 เต็ม</span></div>
-      <div><b><i class="tm-n" data-to="8800">8,800</i><small>+</small></b><span>ผู้ติดตามบน Facebook</span></div>
+      <div><b><i class="tm-n" data-to="600">600</i><small>+</small></b><span>น้อง ๆ ที่เรียนกับเรา<br>ตั้งแต่ปี 2021</span></div>
+      <div><b><i class="tm-n" data-to="100">100</i><small>+</small></b><span>น้อง ๆ ที่ส่งไป<br>เรียนที่จีน</span></div>
+      <div><b><i class="tm-n" data-to="150">150</i><small>K+</small></b><span>ผู้ติดตาม<br>TikTok · YouTube · IG</span></div>
+      <div><b><i class="tm-n" data-to="70">70</i><small>+</small></b><span>รีวิว 5 ดาว<br>จากน้อง ๆ และผู้ปกครอง</span></div>
     </div>
   </div>
 </section>
@@ -172,6 +192,184 @@
         <blockquote class="tm-q">เหล่าซือเป็นกันเองมากค่ะ เรียนสนุก อธิบายคำศัพท์และเนื้อหาได้อย่างเข้าใจ ทำให้เข้าใจได้ง่าย</blockquote>
         <figcaption><b>ปิ่น</b></figcaption>
       </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 2b. CAMP + GOABROAD REVIEWS (Facebook) ═══ -->
+<section class="tm-sec tm-fbr" id="tm-camps">
+  <div class="tm-wrap">
+    <div class="tm-center">
+      <span class="tm-eyebrow">✦ รีวิวจาก Facebook ✦</span>
+      <h2 class="tm-h2">ค่ายภาษาที่จีน &amp; <span>เรียนต่อจีน</span></h2>
+      <p class="tm-lead">เสียงจริงจากผู้ปกครองและน้อง ๆ ที่ไปค่ายภาษาและไปเรียนต่อที่จีนกับพี่ ๆ ชิวชิว รีวิวจากเพจ Facebook ของ Chinese Chiwchiw</p>
+    </div>
+    <div class="tm-fbr-head">
+      <h3>🏕️ ค่ายภาษาที่จีน<i>14 รีวิว</i></h3>
+      <p>เฉิงตู · กว่างโจว · ซัมเมอร์แคมป์</p>
+    </div>
+    <div class="tm-grid tm-fold">
+      <article class="tm-fbc tm-camp">
+        <svg viewBox="0 0 20 20" class="tm-ico" aria-hidden="true"><path d="M20 10.1C20 4.5 15.5.1 10 .1S0 4.5 0 10.1c0 5 3.7 9.1 8.4 9.9v-7H5.9v-2.9h2.5V7.9C8.4 5.4 9.9 4 12.2 4c1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6v1.9h2.8l-.4 2.8h-2.3v7c4.7-.8 8.4-4.9 8.4-9.9z"/></svg>
+        <header><span class="tm-av" aria-hidden="true">C</span><div><b>Chutimon L.</b><small>ผู้ปกครอง</small></div></header>
+        <span class="tm-tag">ค่ายกว่างโจว</span>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
+        <p class="tm-q">ก่อนจะตัดสินใจให้ลูกสาวไปเรียนภาษา และหาประสบการณ์ที่จีนกับ Chinese Chiwchiw ดูรีวิวและศึกษามาหลาย Agency มาก จนตัดสินให้ลูกสาวไปกับที่นี่ เนื่องจากมีรีวิวที่ดีจริงจากน.ร.หลาย ๆ คน และโดยเฉพาะมีจัด Pre-Departure บรีฟรายละเอียด การเตรียมตัว จัดรวมกลุ่มน.ร.ที่ไปก่อนวันเดินทาง ให้ได้รู้จักกันก่อนวันเดินทางจริง ซึ่งที่อื่นอาจจะมีอย่างมากก็เป็นทาง online ซึ่งก็จะไม่ได้เจอหน้าทำความรู้จักกันก่อนไป อันนี้ถือว่าเป็นจุดแข็งของที่นี่ที่ต่างกับที่อื่นค่ะ พี่ ๆ staff ก็ดูแลดี มีถ่ายรูปส่ง update มาให้ผปค. ได้ดูตลอดทุกวันที่ไปเลย ทำให้สบายใจหายห่วงได้มาก ๆ เลยค่ะ ขอบคุณทีมงานทุกท่านมากนะคะ 😊🙏💐</p>
+        <footer>รีวิวบน Facebook · เม.ย. 2569</footer>
+      </article>
+      <article class="tm-fbc tm-camp">
+        <svg viewBox="0 0 20 20" class="tm-ico" aria-hidden="true"><path d="M20 10.1C20 4.5 15.5.1 10 .1S0 4.5 0 10.1c0 5 3.7 9.1 8.4 9.9v-7H5.9v-2.9h2.5V7.9C8.4 5.4 9.9 4 12.2 4c1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6v1.9h2.8l-.4 2.8h-2.3v7c4.7-.8 8.4-4.9 8.4-9.9z"/></svg>
+        <header><span class="tm-av" aria-hidden="true">W</span><div><b>Warocha N.</b><small>ผู้ปกครอง</small></div></header>
+        <span class="tm-tag">ซัมเมอร์แคมป์ที่จีน</span>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
+        <p class="tm-q">หาที่เรียนซัมเมอร์จีนหลาย ๆ ที่ สอบถามเยอะจนมาเจอที่นี่ ถามตอบตลอด ราคาสมเหตุสมผล มีการนัดเจอแนะนำตัวทีมสตาฟ เพื่อนร่วมทริปเรียน แนะนำต่าง ๆ ก่อนเดินทาง ส่งรูปอัพเดทตลอดทุกวัน เช้ากลางวันเย็น ก่อนนอน จนวันที่ 3 ไม่ค่อยห่วงแล้วค่ะ นาน ๆ จะแวะมาดูกลุ่มสักที น้องบอกว่าพี่ ๆ ดูแลดี น่ารัก ขอบคุณคุณนาเดียร์ และพี่สตาฟทุก ๆ ท่านที่ให้คำแนะนำ ดูแลน้องเป็นอย่างดี เทอมต่อ ๆ ไปก็คิดว่าจะให้น้องไปอีกค่ะ จนน้องไลน์มาบอกว่าอยากเรียนต่อที่จีนได้ไหม 5555 แนะนำ ผปค.ที่มองหาแคมป์ซัมเมอร์ค่ะ แนะนำ ๆ</p>
+        <footer>รีวิวบน Facebook · เม.ย. 2569</footer>
+      </article>
+      <article class="tm-fbc tm-camp">
+        <svg viewBox="0 0 20 20" class="tm-ico" aria-hidden="true"><path d="M20 10.1C20 4.5 15.5.1 10 .1S0 4.5 0 10.1c0 5 3.7 9.1 8.4 9.9v-7H5.9v-2.9h2.5V7.9C8.4 5.4 9.9 4 12.2 4c1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6v1.9h2.8l-.4 2.8h-2.3v7c4.7-.8 8.4-4.9 8.4-9.9z"/></svg>
+        <header><span class="tm-av" aria-hidden="true">A</span><div><b>Amy P.</b><small>น้องที่ไปค่าย</small></div></header>
+        <span class="tm-tag">SCUT Summer Camp · กว่างโจว</span>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
+        <p class="tm-q">ค่าย scut summer camp เป็นค่ายแรกและเป็นค่ายที่ประทับใจมากค่ะ ได้ฝึกภาษาและได้ใช้เยอะมาก ๆ พี่ ๆ สตาฟดูแลดีมาก เรียกหาได้ตลอด 24 เพื่อน ๆ น่ารักมากค่ะ ceo สุดสวยใจดีพาไปเลี้ยงข้าวบ่อยมาก เรียนจีนไม่เบื่อเลย เหล่าซือน่ารัก ใครที่หาค่ายที่จีนอยู่แนะนำของ Chinese chiwchiw เลยค่ะ</p>
+        <footer>รีวิวบน Facebook · พ.ย. 2568</footer>
+      </article>
+      <article class="tm-fbc tm-camp">
+        <svg viewBox="0 0 20 20" class="tm-ico" aria-hidden="true"><path d="M20 10.1C20 4.5 15.5.1 10 .1S0 4.5 0 10.1c0 5 3.7 9.1 8.4 9.9v-7H5.9v-2.9h2.5V7.9C8.4 5.4 9.9 4 12.2 4c1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6v1.9h2.8l-.4 2.8h-2.3v7c4.7-.8 8.4-4.9 8.4-9.9z"/></svg>
+        <header><span class="tm-av" aria-hidden="true">J</span><div><b>Jarunya R.</b><small>ผู้ปกครอง</small></div></header>
+        <span class="tm-tag">ค่ายกว่างโจว</span>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
+        <p class="tm-q">ค่ายกว่างโจว เมษายน 69 ปั้นบอกสนุกมาก พี่ staff เป็นกันเอง ดูแลเป็นอย่างดี มีการกำกับควบคุมดูแล ไม่ปล่อยปละละเลย ปกติปั้นเป็น introvert แบบไม่สนใจใคร น้องบอกสนุก ถือว่าค่ายนี้ดีมากเลย เดี๋ยวรอน้องคนเล็กโตอีกหน่อย ได้ไปตามแน่นอนค่ะ</p>
+        <footer>รีวิวบน Facebook · เม.ย. 2569</footer>
+      </article>
+      <article class="tm-fbc tm-camp">
+        <svg viewBox="0 0 20 20" class="tm-ico" aria-hidden="true"><path d="M20 10.1C20 4.5 15.5.1 10 .1S0 4.5 0 10.1c0 5 3.7 9.1 8.4 9.9v-7H5.9v-2.9h2.5V7.9C8.4 5.4 9.9 4 12.2 4c1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6v1.9h2.8l-.4 2.8h-2.3v7c4.7-.8 8.4-4.9 8.4-9.9z"/></svg>
+        <header><span class="tm-av" aria-hidden="true">S</span><div><b>Salmio S.</b><small>ผู้ปกครอง</small></div></header>
+        <span class="tm-tag">ค่ายเฉิงตู 4 สัปดาห์</span>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
+        <p class="tm-q">ลูกชายกำลังเรียนแคมป์เฉิงตู 4 สัปดาห์ เดือนก.ค.นี้ สนุกสนานดีค่ะ เรียนแน่น กิจกรรมเยอะ เพื่อนมากมาย พี่ ๆ ทีมงานดูแลเป็นอย่างดี ที่พักดี น้องไม่เบื่อเลย แฮปปี้กับการเรียนและการใช้ชีวิตมากค่ะ</p>
+        <footer>รีวิวบน Facebook · ก.ค. 2569</footer>
+      </article>
+      <article class="tm-fbc tm-camp">
+        <svg viewBox="0 0 20 20" class="tm-ico" aria-hidden="true"><path d="M20 10.1C20 4.5 15.5.1 10 .1S0 4.5 0 10.1c0 5 3.7 9.1 8.4 9.9v-7H5.9v-2.9h2.5V7.9C8.4 5.4 9.9 4 12.2 4c1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6v1.9h2.8l-.4 2.8h-2.3v7c4.7-.8 8.4-4.9 8.4-9.9z"/></svg>
+        <header><span class="tm-av" aria-hidden="true">M</span><div><b>Mac D.</b><small>ผู้ปกครอง</small></div></header>
+        <span class="tm-tag">ค่ายเฉิงตู</span>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
+        <p class="tm-q">ลูกชายไปแคมป์เฉิงตู July นี้ค่ะ ไปได้ 2 วีคแล้ว น้องชอบทุกกิจกรรมที่แคมป์จัด พี่สต๊าฟดูแลดีมากค่ะ ลูกชายอายุ 13 ปี อยู่ดี มีความสุข ฝึกใช้ชีวิตได้ดีค่ะ พี่สต๊าฟคอยช่วยน้องให้เก่งขึ้นมาก</p>
+        <footer>รีวิวบน Facebook · ก.ค. 2569</footer>
+      </article>
+      <article class="tm-fbc tm-camp">
+        <svg viewBox="0 0 20 20" class="tm-ico" aria-hidden="true"><path d="M20 10.1C20 4.5 15.5.1 10 .1S0 4.5 0 10.1c0 5 3.7 9.1 8.4 9.9v-7H5.9v-2.9h2.5V7.9C8.4 5.4 9.9 4 12.2 4c1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6v1.9h2.8l-.4 2.8h-2.3v7c4.7-.8 8.4-4.9 8.4-9.9z"/></svg>
+        <header><span class="tm-av" aria-hidden="true">L</span><div><b>Lavender N.</b><small>ผู้ปกครอง</small></div></header>
+        <span class="tm-tag">ค่ายภาษาที่จีน</span>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
+        <p class="tm-q">ทีม staff ดูแลเด็กอย่างดีเต็มที่ค่ะ ประทับใจผปค. ในส่วนของทักษะทางภาษาจีนอาจจะยังไม่ได้มากนักเพราะไปเรียนในระยะสั้น ๆ แต่เด็กได้ประสบการณ์เรียนรู้ชีวิตนร.จีนซึ่งดีต่อเด็กนะ หากว่าวันนึงมีโอกาสได้ไปเรียนที่จีน แนะนำให้ไปกับ ไชนิส ชิวชิว</p>
+        <footer>รีวิวบน Facebook · เม.ย. 2569</footer>
+      </article>
+      <article class="tm-fbc tm-camp">
+        <svg viewBox="0 0 20 20" class="tm-ico" aria-hidden="true"><path d="M20 10.1C20 4.5 15.5.1 10 .1S0 4.5 0 10.1c0 5 3.7 9.1 8.4 9.9v-7H5.9v-2.9h2.5V7.9C8.4 5.4 9.9 4 12.2 4c1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6v1.9h2.8l-.4 2.8h-2.3v7c4.7-.8 8.4-4.9 8.4-9.9z"/></svg>
+        <header><span class="tm-av" aria-hidden="true">T</span><div><b>Teeratchaya K.</b><small>ผู้ปกครอง</small></div></header>
+        <span class="tm-tag">ค่ายภาษาที่จีน</span>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
+        <p class="tm-q">ดีจริงต้องบอกต่อค่ะ ลช.ไปเด็กสุดในกลุ่ม พี่พี่น่ารักดูแลอย่างดี จนน้องไม่รับโทรสับ ไม่โทรกลับด้วยค่ะ 5555 แสดงว่าที่นี่เขาดีจริงค่ะ ประกบติดเด็ก ๆ ภาพจำแม่ที่เมืองจีนหายหมดค่ะ ปลอดภัย</p>
+        <footer>รีวิวบน Facebook · ก.ค. 2569</footer>
+      </article>
+      <article class="tm-fbc tm-camp">
+        <svg viewBox="0 0 20 20" class="tm-ico" aria-hidden="true"><path d="M20 10.1C20 4.5 15.5.1 10 .1S0 4.5 0 10.1c0 5 3.7 9.1 8.4 9.9v-7H5.9v-2.9h2.5V7.9C8.4 5.4 9.9 4 12.2 4c1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6v1.9h2.8l-.4 2.8h-2.3v7c4.7-.8 8.4-4.9 8.4-9.9z"/></svg>
+        <header><span class="tm-av" aria-hidden="true">C</span><div><b>Chanita M.</b><small>ผู้ปกครอง</small></div></header>
+        <span class="tm-tag">ค่ายภาษาที่จีน</span>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
+        <p class="tm-q">ค่ายดี ดูแลดีมาก ทั้งเรื่องความปลอดภัยและความสนุกสนาน เด็ก ๆ ได้เที่ยว ได้ทำกิจกรรมหลากหลาย ทั้งภาษาและวัฒนธรรมจีน แนะนำเลยค่ะ เป็นประสบการณ์ของเด็กที่ดีมาก</p>
+        <footer>รีวิวบน Facebook · เม.ย. 2569</footer>
+      </article>
+      <article class="tm-fbc tm-camp">
+        <svg viewBox="0 0 20 20" class="tm-ico" aria-hidden="true"><path d="M20 10.1C20 4.5 15.5.1 10 .1S0 4.5 0 10.1c0 5 3.7 9.1 8.4 9.9v-7H5.9v-2.9h2.5V7.9C8.4 5.4 9.9 4 12.2 4c1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6v1.9h2.8l-.4 2.8h-2.3v7c4.7-.8 8.4-4.9 8.4-9.9z"/></svg>
+        <header><span class="tm-av" aria-hidden="true">B</span><div><b>Bird P.</b><small>ผู้ปกครอง</small></div></header>
+        <span class="tm-tag">ค่ายเฉิงตู</span>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
+        <p class="tm-q">ครั้งแรกของลูกสาวกับค่ายเฉินตู พี่ ๆ ทางค่ายดูแลน้อง ๆ เป็นอย่างดี ขอบคุณที่พาน้อง ๆ ไปเปิดโลกกว้างค่ะ 🙏🥰💕🇨🇳</p>
+        <footer>รีวิวบน Facebook · เม.ย. 2569</footer>
+      </article>
+      <article class="tm-fbc tm-camp">
+        <svg viewBox="0 0 20 20" class="tm-ico" aria-hidden="true"><path d="M20 10.1C20 4.5 15.5.1 10 .1S0 4.5 0 10.1c0 5 3.7 9.1 8.4 9.9v-7H5.9v-2.9h2.5V7.9C8.4 5.4 9.9 4 12.2 4c1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6v1.9h2.8l-.4 2.8h-2.3v7c4.7-.8 8.4-4.9 8.4-9.9z"/></svg>
+        <header><span class="tm-av" aria-hidden="true">M</span><div><b>May May</b><small>น้องที่ไปค่าย</small></div></header>
+        <span class="tm-tag">ซัมเมอร์แคมป์ที่จีน</span>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
+        <p class="tm-q">พี่ ๆ น่ารักแล้วก็ดูแลดีมาก ๆ ๆ ได้ใช้ภาษาจีนจริง ๆ ใครที่อยากมาเรียนซัมเมอร์ แนะนำเลย 💖</p>
+        <footer>รีวิวบน Facebook · เม.ย. 2569</footer>
+      </article>
+      <article class="tm-fbc tm-camp">
+        <svg viewBox="0 0 20 20" class="tm-ico" aria-hidden="true"><path d="M20 10.1C20 4.5 15.5.1 10 .1S0 4.5 0 10.1c0 5 3.7 9.1 8.4 9.9v-7H5.9v-2.9h2.5V7.9C8.4 5.4 9.9 4 12.2 4c1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6v1.9h2.8l-.4 2.8h-2.3v7c4.7-.8 8.4-4.9 8.4-9.9z"/></svg>
+        <header><span class="tm-av" aria-hidden="true">P</span><div><b>Putita W.</b></div></header>
+        <span class="tm-tag">ค่ายภาษาที่จีน</span>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
+        <p class="tm-q">พี่ ๆ ดูแลดีมาก มีการเตรียมตัวดี มีกฎระเบียบ ระยะเวลาที่ไปทำให้ไม่เป็นห่วงน้องเลย อุ่นใจมากค่ะ ขอบคุณมากนะคะ 🤍</p>
+        <footer>รีวิวบน Facebook · เม.ย. 2569</footer>
+      </article>
+      <article class="tm-fbc tm-camp">
+        <svg viewBox="0 0 20 20" class="tm-ico" aria-hidden="true"><path d="M20 10.1C20 4.5 15.5.1 10 .1S0 4.5 0 10.1c0 5 3.7 9.1 8.4 9.9v-7H5.9v-2.9h2.5V7.9C8.4 5.4 9.9 4 12.2 4c1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6v1.9h2.8l-.4 2.8h-2.3v7c4.7-.8 8.4-4.9 8.4-9.9z"/></svg>
+        <header><span class="tm-av" aria-hidden="true">น</span><div><b>นก ก.</b><small>ผู้ปกครอง</small></div></header>
+        <span class="tm-tag">ค่ายเฉิงตู</span>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
+        <p class="tm-q">เปิดประสบการณ์ของลูกครั้งแรกที่นี่แล้วจะมีครั้งต่อ ๆ ไป</p>
+        <footer>รีวิวบน Facebook · เม.ย. 2569</footer>
+      </article>
+      <article class="tm-fbc tm-camp">
+        <svg viewBox="0 0 20 20" class="tm-ico" aria-hidden="true"><path d="M20 10.1C20 4.5 15.5.1 10 .1S0 4.5 0 10.1c0 5 3.7 9.1 8.4 9.9v-7H5.9v-2.9h2.5V7.9C8.4 5.4 9.9 4 12.2 4c1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6v1.9h2.8l-.4 2.8h-2.3v7c4.7-.8 8.4-4.9 8.4-9.9z"/></svg>
+        <header><span class="tm-av" aria-hidden="true">N</span><div><b>Natcharin L.</b><small>น้องที่ไปค่าย</small></div></header>
+        <span class="tm-tag">ค่ายภาษาที่จีน</span>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
+        <p class="tm-q">สนุกมากค่ะพี่ CEO ใจดีซื้อขนมให้ทุกวันเลยมาด่วน ๆ ค่ะ</p>
+        <footer>รีวิวบน Facebook · เม.ย. 2569</footer>
+      </article>
+    </div>
+    <div class="tm-fbr-head">
+      <h3>✈️ เรียนต่อจีน · GoAbroad<i>5 รีวิว</i></h3>
+      <p>ดูแลตั้งแต่ปรึกษาจนถึงชีวิตที่จีน</p>
+    </div>
+    <div class="tm-grid tm-fold">
+      <article class="tm-fbc tm-go">
+        <svg viewBox="0 0 20 20" class="tm-ico" aria-hidden="true"><path d="M20 10.1C20 4.5 15.5.1 10 .1S0 4.5 0 10.1c0 5 3.7 9.1 8.4 9.9v-7H5.9v-2.9h2.5V7.9C8.4 5.4 9.9 4 12.2 4c1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6v1.9h2.8l-.4 2.8h-2.3v7c4.7-.8 8.4-4.9 8.4-9.9z"/></svg>
+        <header><span class="tm-av" aria-hidden="true">K</span><div><b>Kong K.</b></div></header>
+        <span class="tm-tag">GoAbroad · Premium Service</span>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
+        <p class="tm-q">ดีครับบริการแบบ Premium Service: ดูแลนักเรียนครบวงจรตั้งแต่ให้คำปรึกษาฟรี เลือกเมืองและมหาวิทยาลัยให้ตรงกับไลฟ์สไตล์และงบประมาณ</p>
+        <footer>รีวิวบน Facebook · ก.ย. 2569</footer>
+      </article>
+      <article class="tm-fbc tm-go">
+        <svg viewBox="0 0 20 20" class="tm-ico" aria-hidden="true"><path d="M20 10.1C20 4.5 15.5.1 10 .1S0 4.5 0 10.1c0 5 3.7 9.1 8.4 9.9v-7H5.9v-2.9h2.5V7.9C8.4 5.4 9.9 4 12.2 4c1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6v1.9h2.8l-.4 2.8h-2.3v7c4.7-.8 8.4-4.9 8.4-9.9z"/></svg>
+        <header><span class="tm-av" aria-hidden="true">T</span><div><b>Thanwalai L.</b><small>น้องที่ไปเรียนจีน</small></div></header>
+        <span class="tm-tag">เรียนต่อจีน</span>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
+        <p class="tm-q">พี่ ๆ ดูแลดีมากค่ะ ช่วยเหลือให้ข้อมูลตลอด ตอบแชทไวมาก ๆ ทุกเวลาไม่มีเคอฟิวส์ ถึงที่จีนก็เป็นกันเองมากค่ะพี่เดียร์</p>
+        <footer>รีวิวบน Facebook · ก.ย. 2569</footer>
+      </article>
+      <article class="tm-fbc tm-go">
+        <svg viewBox="0 0 20 20" class="tm-ico" aria-hidden="true"><path d="M20 10.1C20 4.5 15.5.1 10 .1S0 4.5 0 10.1c0 5 3.7 9.1 8.4 9.9v-7H5.9v-2.9h2.5V7.9C8.4 5.4 9.9 4 12.2 4c1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6v1.9h2.8l-.4 2.8h-2.3v7c4.7-.8 8.4-4.9 8.4-9.9z"/></svg>
+        <header><span class="tm-av" aria-hidden="true">S</span><div><b>Siramanee C.</b><small>น้องที่ไปเรียนจีน</small></div></header>
+        <span class="tm-tag">เรียนต่อจีน</span>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
+        <p class="tm-q">พี่ ๆ ตอบแชทไวมาก ตอบทุกปัญหาตลอด 24 ชม พอมาถึงจีนก็ดูแลดีมากค่ะ 🫶💗</p>
+        <footer>รีวิวบน Facebook · ก.ย. 2569</footer>
+      </article>
+      <article class="tm-fbc tm-go">
+        <svg viewBox="0 0 20 20" class="tm-ico" aria-hidden="true"><path d="M20 10.1C20 4.5 15.5.1 10 .1S0 4.5 0 10.1c0 5 3.7 9.1 8.4 9.9v-7H5.9v-2.9h2.5V7.9C8.4 5.4 9.9 4 12.2 4c1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6v1.9h2.8l-.4 2.8h-2.3v7c4.7-.8 8.4-4.9 8.4-9.9z"/></svg>
+        <header><span class="tm-av" aria-hidden="true">M</span><div><b>Muthita R.</b><small>น้องที่ไปเรียนจีน</small></div></header>
+        <span class="tm-tag">เรียนภาษาที่จีน 1 เทอม</span>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
+        <p class="tm-q">มาเรียนภาษา 1 เทอม พี่ ๆ น่ารัก จัดการทุกอย่างให้ดีมากค่า เลิฟ ๆ</p>
+        <footer>รีวิวบน Facebook · ก.ย. 2569</footer>
+      </article>
+      <article class="tm-fbc tm-go">
+        <svg viewBox="0 0 20 20" class="tm-ico" aria-hidden="true"><path d="M20 10.1C20 4.5 15.5.1 10 .1S0 4.5 0 10.1c0 5 3.7 9.1 8.4 9.9v-7H5.9v-2.9h2.5V7.9C8.4 5.4 9.9 4 12.2 4c1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6v1.9h2.8l-.4 2.8h-2.3v7c4.7-.8 8.4-4.9 8.4-9.9z"/></svg>
+        <header><span class="tm-av" aria-hidden="true">W</span><div><b>Wasinee</b><small>ครอบครัวของน้อง</small></div></header>
+        <span class="tm-tag">เรียนต่อจีน</span>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
+        <p class="tm-q">น้องสาวไปเรียนจีน ถ่ายภาพมาแล้วน่าอิจฉา ดีจนอยากไปเอง น้องสาวดูสนุกมาก ได้ความรู้ไปทำงาน...ไปกันต่อ</p>
+        <footer>รีวิวบน Facebook · ก.ค. 2569</footer>
+      </article>
+    </div>
+    <div class="tm-cta" style="margin-top:14px">
+      <a class="tm-btn tm-btn-fb" href="https://www.facebook.com/Chinesechiwchiw/reviews" target="_blank" rel="noopener">⭐ อ่านรีวิวทั้งหมดบน Facebook</a>
     </div>
   </div>
 </section>
@@ -498,8 +696,8 @@
         </div>
       </div>
       <div class="tm-fb-stats">
-        <div><b>8,800+</b><span>ผู้ติดตาม</span></div>
-        <div><b>2021</b><span>เริ่มดูแลน้อง ๆ ตั้งแต่ปี</span></div>
+        <div><b>8,800+</b><span>ผู้ติดตามบน Facebook</span></div>
+        <div><b>150K+</b><span>ผู้ติดตาม TikTok · YouTube · IG</span></div>
       </div>
     </div>
   </div>
@@ -524,7 +722,7 @@
   var root=document.getElementById('tm-page');if(!root)return;
   root.classList.add('tm-js');
   var cards=root.querySelectorAll('.tm-card');
-  root.querySelectorAll('.tm-card,.tm-score').forEach(function(c){
+  root.querySelectorAll('.tm-card,.tm-score,.tm-fbc').forEach(function(c){
     var q=c.querySelector('.tm-q');
     if(q&&q.textContent.length>260){
       c.classList.add('tm-long');
@@ -532,6 +730,12 @@
       b.addEventListener('click',function(){var o=c.classList.toggle('tm-open');b.textContent=o?'ย่อ':'อ่านต่อ';});
       q.insertAdjacentElement('afterend',b);
     }
+  });
+  root.querySelectorAll('.tm-fold').forEach(function(g){
+    var n=g.querySelectorAll('.tm-fbc').length-4;if(n<3)return;g.classList.add('tm-folded');
+    var b=document.createElement('button');b.type='button';b.className='tm-foldbtn';b.textContent='ดูรีวิวเพิ่มอีก '+n+' รีวิว';
+    b.addEventListener('click',function(){g.classList.add('tm-all');b.remove();});
+    g.insertAdjacentElement('afterend',b);
   });
   root.querySelectorAll('.tm-yt').forEach(function(a){a.addEventListener('click',function(e){
     e.preventDefault();var id=a.getAttribute('data-yt'),t=a.querySelector('.tm-yt-thumb');
