@@ -40,32 +40,31 @@ var top=function(){if(!moved&&window.scrollY)window.scrollTo(0,0);};top();docume
 #nd-page .nd-pol img{display:block;width:100%;height:auto;aspect-ratio:var(--ar,4/5);object-fit:cover;margin:0;border-radius:2px}
 .nd-pol figcaption,.nd-pol .nd-cap{display:block;font-family:'Kanit',sans-serif;font-weight:600;color:#1A0A00;text-align:center;font-size:.9rem;line-height:1.35;padding:8px 4px 12px}
 
-/* ═══ HERO (original layout: photo strip on top, dark text block below) ═══ */
-.nd-hero{position:relative;overflow:hidden;background:#2D1000}
-.nd-hero-photos{display:grid;grid-template-columns:1.5fr 1fr 1fr;height:380px;width:100%;overflow:hidden;position:relative}
-.nd-hero-photos::before{content:'';position:absolute;left:0;right:0;top:0;height:130px;z-index:2;pointer-events:none;background:linear-gradient(180deg,rgba(26,10,0,.6),rgba(26,10,0,0))}
-.nd-hero-photo{overflow:hidden;background:#1A0800;position:relative}
-#nd-page .nd-hero-photo img{width:100%;height:100%;object-fit:cover;object-position:center top;transition:transform .5s ease;display:block;margin:0}
-.nd-hero-photo:hover img{transform:scale(1.04)}
-.nd-hero-photo::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 50%,rgba(26,8,0,.5) 100%)}
-.nd-hero-bottom{background:linear-gradient(135deg,#2D1000 0%,#1A0A00 100%);padding:56px 0 64px;position:relative}
-.nd-hero-bottom::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 5% 80%,rgba(244,157,15,.12) 0%,transparent 50%),radial-gradient(ellipse at 95% 10%,rgba(255,107,0,.1) 0%,transparent 50%)}
-.nd-hero-inner{position:relative;z-index:1}
-.nd-hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(244,157,15,.15);border:1px solid rgba(244,157,15,.4);color:#f49d0f;padding:6px 18px;border-radius:50px;font-family:'Kanit',sans-serif;font-size:.78rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin-bottom:22px}
-#nd-page .nd-hero-name{font-size:clamp(2.4rem,5vw,4.2rem);font-weight:900;color:#fff!important;line-height:1.08;margin-bottom:10px}
-#nd-page .nd-hero-name span{color:#f49d0f!important}
-.nd-hero-role{font-size:1.05rem;color:rgba(255,255,255,.55);margin-bottom:20px;letter-spacing:.04em}
-.nd-hero-desc{font-size:1.08rem;color:rgba(255,255,255,.8);line-height:1.85;max-width:720px;margin:0 0 28px}
-.nd-hero-desc strong{color:#fff}
-.nd-hero-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:30px}
-.nd-hero-tags span{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.85);padding:6px 15px;border-radius:50px;font-size:.84rem}
-.nd-hero-socials{display:flex;flex-wrap:wrap;gap:10px}
+/* ═══ HERO (clean: photo banner, then a light centred heading block — same pattern as the city pages) ═══ */
+.nd-hero{position:relative;background:#fff}
+.nd-hero-photos{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:6px;height:460px;width:100%;overflow:hidden;position:relative;background:#fff}
+.nd-hero-photos::before{content:'';position:absolute;left:0;right:0;top:0;height:120px;z-index:2;pointer-events:none;background:linear-gradient(180deg,rgba(26,10,0,.45),rgba(26,10,0,0))}
+.nd-hero-photo{overflow:hidden;background:#F1E6DA;position:relative}
+#nd-page .nd-hero-photo img{width:100%;height:100%;object-fit:cover;object-position:center 30%;transition:transform .6s ease;display:block;margin:0}
+.nd-hero-photo:hover img{transform:scale(1.03)}
+.nd-hero-bottom{background:#fff;padding:64px 0 72px;text-align:center}
+.nd-hero-inner{max-width:900px;margin:0 auto}
+.nd-hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:'Kanit',sans-serif;font-weight:700;font-size:.82rem;letter-spacing:2px;color:#FF6B00;background:rgba(255,107,0,.08);border:1px solid rgba(255,107,0,.2);padding:6px 18px;border-radius:50px;margin-bottom:18px}
+.nd-hero-eyebrow::before{content:'';width:7px;height:7px;border-radius:50%;background:#FF6B00}
+#nd-page .nd-hero-name{font-size:clamp(2.3rem,5vw,3.8rem);font-weight:900;color:#1A0A00!important;line-height:1.15;margin-bottom:10px}
+#nd-page .nd-hero-name span{color:#FF6B00!important}
+.nd-hero-role{font-family:'Kanit',sans-serif;font-weight:600;font-size:1.02rem;color:#9A7A60;margin-bottom:18px}
+.nd-hero-desc{font-size:1.06rem;color:#5C4A3E;line-height:1.9;max-width:760px;margin:0 auto 26px}
+.nd-hero-desc strong{color:#1A0A00}
+.nd-hero-tags{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:26px}
+.nd-hero-tags span{background:#FFF6EE;border:1px solid #F6DCC2;color:#1A0A00;padding:6px 15px;border-radius:50px;font-family:'Kanit',sans-serif;font-weight:600;font-size:.86rem}
+.nd-hero-socials{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
 #nd-page .nd-sbtn{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:50px;font-family:'Kanit',sans-serif;font-size:.86rem;font-weight:600;color:#fff!important;transition:all .25s;white-space:nowrap}
 .nd-sbtn svg{width:16px;height:16px;flex-shrink:0;fill:#fff}
-.nd-sbtn.yt{background:#FF0000}.nd-sbtn.ig{background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)}.nd-sbtn.tt{background:#111;border:1px solid rgba(255,255,255,.18)}.nd-sbtn.fb{background:#1877F2}
-#nd-page .nd-sbtn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.nd-sbtn.yt{background:#FF0000}.nd-sbtn.ig{background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)}.nd-sbtn.tt{background:#111}.nd-sbtn.fb{background:#1877F2}
+#nd-page .nd-sbtn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.18)}
 /* ═══ MY LIFE photo slider (kept from the original page) ═══ */
-.nd-slider{padding:44px 0 10px;overflow:hidden;background:#FFF8F0}
+.nd-slider{padding:34px 0 30px;overflow:hidden;background:#FFF8F0}
 .nd-slider-track{display:flex;gap:18px;animation:nd-slide 40s linear infinite;width:max-content;padding:12px 0}
 .nd-slider-track:hover{animation-play-state:paused}
 .nd-slide{width:310px;height:230px;border-radius:18px;overflow:hidden;flex-shrink:0;box-shadow:0 8px 28px rgba(0,0,0,.12);border:2px solid rgba(255,107,0,.12);background:linear-gradient(135deg,#f5e8d0,#ffe0b0)}
@@ -191,10 +190,10 @@ var top=function(){if(!moved&&window.scrollY)window.scrollTo(0,0);};top();docume
 .nd-js .nd-rv{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
 .nd-js .nd-rv.nd-in{opacity:1;transform:none}
 
-@media (max-width:980px){.nd-hero-photos{grid-template-columns:1fr 1fr;height:300px}.nd-hero-photo:last-child{display:none}.nd-hero-bottom{padding:44px 0 52px}.nd-why-grid{grid-template-columns:1fr}.nd-impact{grid-template-columns:repeat(2,minmax(0,1fr))}.nd-ach{grid-template-columns:repeat(2,minmax(0,1fr))}.nd-socials{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (max-width:980px){.nd-hero-photos{grid-template-columns:1fr 1fr;height:360px}.nd-hero-photo:last-child{display:none}.nd-hero-bottom{padding:48px 0 56px}.nd-why-grid{grid-template-columns:1fr}.nd-impact{grid-template-columns:repeat(2,minmax(0,1fr))}.nd-ach{grid-template-columns:repeat(2,minmax(0,1fr))}.nd-socials{grid-template-columns:repeat(2,minmax(0,1fr))}
  .nd-thread{left:22px}.nd-pin{left:22px;top:44px}.nd-ch{grid-template-columns:1fr;gap:26px;padding:26px 0 26px 56px}.nd-ch:nth-child(odd) .nd-ch-note{order:0}}
 @media (max-width:600px){.nd-wrap{padding:0 16px}.nd-sec{padding:64px 0}#nd-page .nd-btn{width:100%}
-.nd-hero-photos{grid-template-columns:1fr;height:280px}.nd-hero-photo:not(:first-child){display:none}.nd-hero-bottom{padding:36px 0 44px}.nd-slide{width:240px;height:180px}.nd-small{grid-template-columns:1fr;padding:18px}#nd-page .nd-small img{aspect-ratio:16/11;object-position:50% 30%}
+.nd-hero-photos{grid-template-columns:1fr;height:340px}.nd-hero-photo:not(:first-child){display:none}.nd-hero-bottom{padding:36px 0 44px}.nd-slide{width:240px;height:180px}.nd-small{grid-template-columns:1fr;padding:18px}#nd-page .nd-small img{aspect-ratio:16/11;object-position:50% 30%}
  .nd-story{grid-template-columns:1fr}.nd-impact{grid-template-columns:1fr 1fr;gap:10px}.nd-impact div{padding:14px}
  .nd-thread{left:12px}.nd-pin{left:12px;width:22px;height:22px;margin:-11px 0 0 -11px}.nd-ch{padding:20px 0 20px 34px}.nd-ch-note{padding:20px 18px 18px}.nd-ch-pics{height:360px}.nd-ch-pics .nd-pol{width:48%}.nd-ch-pics .nd-pol:nth-child(3){width:46%;left:26%}.nd-ch-pics.nd-one .nd-pol{width:86%}.nd-emo{gap:10px;min-height:0;padding:6px 0}.nd-emo span{width:72px;height:88px;font-size:.68rem;border-radius:16px}.nd-emo span i{font-size:1.5rem}
  .nd-edu div{grid-template-columns:1fr;gap:4px}.nd-ach{grid-template-columns:1fr}.nd-socials{grid-template-columns:1fr}}
@@ -212,8 +211,8 @@ var top=function(){if(!moved&&window.scrollY)window.scrollTo(0,0);};top();docume
   </div>
   <div class="nd-hero-bottom">
     <div class="nd-wrap nd-hero-inner">
-      <span class="nd-hero-eyebrow">✦ OUR FOUNDER · ผู้ก่อตั้ง & CEO</span>
-      <h1 class="nd-hero-name">คุณนาเดียร์<br><span>Nadear Lap-itti</span></h1>
+      <span class="nd-hero-eyebrow">OUR FOUNDER · ผู้ก่อตั้ง & CEO</span>
+      <h1 class="nd-hero-name">คุณนาเดียร์ <span>Nadear Lap-itti</span></h1>
       <div class="nd-hero-role">นักกฎหมาย · นักธุรกิจการศึกษา · ผู้เปลี่ยนชีวิตเด็กไทยด้วยภาษาจีน</div>
       <p class="nd-hero-desc"><strong>My journey hasn’t been perfect, and it definitely hasn’t been easy.</strong> แต่ทุกช่วงเวลาที่เดียร์ได้เรียนรู้ เติบโต และใช้ชีวิตในต่างประเทศ ทำให้เดียร์ยิ่งเชื่อมากขึ้นว่า <strong>การศึกษาสามารถเปลี่ยนชีวิตคนได้จริง ๆ</strong> 🌏 Chinese Chiwchiw เลยเป็นมากกว่าธุรกิจ แต่มันคือ passion ของเดียร์ ที่อยากใช้ประสบการณ์ของตัวเองในการเปิดโลก เปิดโอกาส และช่วยให้เด็กไทยได้ <strong>fulfil their full potential.</strong></p>
       <div class="nd-hero-tags"><span>🎓 LLB Law – Queen Mary London</span><span>⚖️ LLM – LSE TOP 6 ของโลก</span><span>🇨🇳 HSK 5</span><span>7 ปีในลอนดอน</span><span>ปริญญาโทอายุ 21</span><span>🏢 กรรมการ 3 บริษัท</span></div>
@@ -298,31 +297,31 @@ var top=function(){if(!moved&&window.scrollY)window.scrollTo(0,0);};top();docume
       <article class="nd-ch">
         <span class="nd-pin" aria-hidden="true"></span>
         <div class="nd-ch-note"><span class="nd-year">2018 – 2024 🇬🇧</span><h3>London 7 ปี · Boarding School → LLB → LLM</h3><p>เริ่มจาก Royal Russell Boarding School ย้ายไป MPW South Kensington ใน Year 13 ต่อ LLB Law ที่ Queen Mary University of London — และก่อตั้ง Chinese Chiwchiw ในปี 2021 ระหว่างเรียน จากนั้นจบ LLM International Business Law ที่ LSE (TOP 6 ของโลกด้านกฎหมาย) ด้วยเกียรตินิยมตอนอายุ 21 พร้อมตีพิมพ์บทความวิชาการกฎหมาย 2 บทความ</p><div class="nd-tags"><span>🏫 Royal Russell Boarding School</span><span>📚 MPW</span><span>⚖️ Queen Mary</span><span>🎓 LSE 2024</span><span>📝 Law Journal ×2</span></div></div>
-        <div class="nd-ch-pics"><figure class="nd-pol" style="--ar:4/5"><span class="nd-tape"></span><img src="{{P:2026/03/IMG_9523.jpg:480:600}}" alt="เดียร์ที่ลอนดอน" width="480" height="600" loading="lazy" decoding="async"><figcaption>ชีวิตที่ลอนดอน</figcaption></figure><figure class="nd-pol" style="--ar:4/5"><span class="nd-tape nd-t2"></span><img src="{{P:2026/10/opt-6C210327-B2EE-40C5-B56F-0914123DD681_1_102_o-6674.webp:480:600}}" alt="เดียร์รับปริญญาริมแม่น้ำเทมส์" width="480" height="600" loading="lazy" decoding="async"><figcaption>Graduation day 🎓</figcaption></figure><figure class="nd-pol" style="--ar:4/5"><span class="nd-tape nd-t3"></span><img src="{{P:2026/03/Nadear-grad-pic-1.webp:480:600}}" alt="เดียร์รับปริญญา LSE" width="480" height="600" loading="lazy" decoding="async"><figcaption>LSE · LLM เกียรตินิยม 🎓</figcaption></figure></div>
+        <div class="nd-ch-pics"><figure class="nd-pol" style="--ar:4/5"><img src="{{P:2026/03/IMG_9523.jpg:480:600}}" alt="เดียร์ที่ลอนดอน" width="480" height="600" loading="lazy" decoding="async"><figcaption>ชีวิตที่ลอนดอน</figcaption></figure><figure class="nd-pol" style="--ar:4/5"><img src="{{P:2026/10/opt-6C210327-B2EE-40C5-B56F-0914123DD681_1_102_o-6674.webp:480:600}}" alt="เดียร์รับปริญญาริมแม่น้ำเทมส์" width="480" height="600" loading="lazy" decoding="async"><figcaption>Graduation day 🎓</figcaption></figure><figure class="nd-pol" style="--ar:4/5"><img src="{{P:2026/03/Nadear-grad-pic-1.webp:480:600}}" alt="เดียร์รับปริญญา LSE" width="480" height="600" loading="lazy" decoding="async"><figcaption>LSE · LLM เกียรตินิยม 🎓</figcaption></figure></div>
       </article>
 
       <article class="nd-ch">
         <span class="nd-pin" aria-hidden="true"></span>
         <div class="nd-ch-note"><span class="nd-year">2021 – ปัจจุบัน 🌏</span><h3>CEO & Founder · Chinese Chiwchiw</h3><p>ก่อตั้ง Chinese Chiwchiw ในปี 2021 ระหว่างเรียนที่ Queen Mary จากคลาสภาษาจีนออนไลน์เล็ก ๆ จนวันนี้ดูแลน้อง ๆ มาแล้ว 600+ คน มอบทุนการศึกษา จัดงานแนะแนวทั่วไทย และสร้างพาร์ทเนอร์ในจีน รวมถึง SCedu นอกจากนี้ยังเป็นกรรมการและผู้ถือหุ้นใน 3 บริษัท รวมทั้ง 1 บริษัทที่เมือง Guiyang ประเทศจีน</p><div class="nd-tags"><span>🏢 CEO ตั้งแต่ 2021</span><span>🤝 พาร์ทเนอร์ SCedu</span><span>🏗️ กรรมการ 3 บริษัท</span><span>🇨🇳 Guiyang</span><span>🏆 ทุนการศึกษา</span></div></div>
-        <div class="nd-ch-pics"><figure class="nd-pol" style="--ar:4/5"><span class="nd-tape nd-t2"></span><img src="{{P:2026/03/IMG_2337.jpg:480:600}}" alt="เดียร์บนเวทีงานไปจีนกับ Chinese Chiwchiw" width="480" height="600" loading="lazy" decoding="async"><figcaption>บนเวทีแนะแนว 🎤</figcaption></figure><figure class="nd-pol" style="--ar:4/5"><span class="nd-tape"></span><img src="{{P:2026/03/IMG_2269-1.jpg:480:600}}" alt="เดียร์กับน้อง ๆ ในงานแนะแนว" width="480" height="600" loading="lazy" decoding="async"><figcaption>กับน้อง ๆ ในงาน</figcaption></figure><figure class="nd-pol" style="--ar:6/5"><span class="nd-tape nd-t3"></span><img src="{{P:2026/03/548925591_18053538578538044_6332023643666926458_n.jpg:480:400}}" alt="มอบทุน Chinese Chiwchiw" width="480" height="400" loading="lazy" decoding="async"><figcaption>มอบทุน Chiwchiw 🧡</figcaption></figure></div>
+        <div class="nd-ch-pics"><figure class="nd-pol" style="--ar:4/5"><img src="{{P:2026/03/IMG_2337.jpg:480:600}}" alt="เดียร์บนเวทีงานไปจีนกับ Chinese Chiwchiw" width="480" height="600" loading="lazy" decoding="async"><figcaption>บนเวทีแนะแนว 🎤</figcaption></figure><figure class="nd-pol" style="--ar:4/5"><img src="{{P:2026/03/IMG_2269-1.jpg:480:600}}" alt="เดียร์กับน้อง ๆ ในงานแนะแนว" width="480" height="600" loading="lazy" decoding="async"><figcaption>กับน้อง ๆ ในงาน</figcaption></figure><figure class="nd-pol" style="--ar:6/5"><img src="{{P:2026/03/548925591_18053538578538044_6332023643666926458_n.jpg:480:400}}" alt="มอบทุน Chinese Chiwchiw" width="480" height="400" loading="lazy" decoding="async"><figcaption>มอบทุน Chiwchiw 🧡</figcaption></figure></div>
       </article>
 
       <article class="nd-ch">
         <span class="nd-pin" aria-hidden="true"></span>
         <div class="nd-ch-note"><span class="nd-year">2025 🇨🇳</span><h3>กลับไปเรียนที่ Fudan University</h3><p>ไปเรียนภาษาจีนที่ Fudan University เซี่ยงไฮ้ 1 เทอม เพื่อทบทวนและพัฒนาภาษาจีนของตัวเอง — เพราะเดียร์เชื่อใน lifelong learning และอยากเข้าใจประสบการณ์ของน้อง ๆ ที่ไปเรียนจริง</p><span class="nd-hand">เป็นนักเรียนอีกครั้ง 📚</span></div>
-        <div class="nd-ch-pics nd-one"><figure class="nd-pol" style="--ar:4/3"><span class="nd-tape"></span><img src="{{P:2026/10/opt-_-_4-745.webp:560:420}}" alt="Fudan University เซี่ยงไฮ้" width="560" height="420" loading="lazy" decoding="async"><figcaption>Fudan University · Shanghai</figcaption></figure></div>
+        <div class="nd-ch-pics nd-one"><figure class="nd-pol" style="--ar:4/3"><img src="{{P:2026/10/opt-_-_4-745.webp:560:420}}" alt="Fudan University เซี่ยงไฮ้" width="560" height="420" loading="lazy" decoding="async"><figcaption>Fudan University · Shanghai</figcaption></figure></div>
       </article>
 
       <article class="nd-ch">
         <span class="nd-pin" aria-hidden="true"></span>
         <div class="nd-ch-note"><span class="nd-year">Lifelong learner 🌍</span><h3>ออกไปเห็นโลก ไม่หยุดเรียนรู้</h3><p>ใช้ชีวิตข้ามหลายประเทศ ทั้งไทย สหราชอาณาจักร สหรัฐอเมริกา จีน และไต้หวัน เที่ยวมาแล้วกว่า 15 ประเทศ ผ่าน WSET Level 2 กำลังเรียน Level 3 และกำลังเรียนภาษาฝรั่งเศส</p><div class="nd-tags"><span>🌍 15+ ประเทศ</span><span>🍷 WSET Level 2</span><span>🇫🇷 เรียนฝรั่งเศส</span></div></div>
-        <div class="nd-ch-pics"><figure class="nd-pol" style="--ar:4/5"><span class="nd-tape"></span><img src="{{P:2026/03/IMG_8543-1-e1773578097737.jpg:480:600}}" alt="เดียร์ที่ Times Square นิวยอร์ก" width="480" height="600" loading="lazy" decoding="async"><figcaption>New York 🗽</figcaption></figure><figure class="nd-pol" style="--ar:4/5"><span class="nd-tape nd-t3"></span><img src="{{P:2026/03/IMG_7712.jpg:480:600}}" alt="เดียร์ตีกอล์ฟ" width="480" height="600" loading="lazy" decoding="async"><figcaption>ลองอะไรใหม่ ๆ ⛳</figcaption></figure><figure class="nd-pol" style="--ar:4/3"><span class="nd-tape nd-t2"></span><img src="{{P:2026/03/IMG_5057.jpg:480:360}}" alt="เดียร์ที่ Hollywood" width="480" height="360" loading="lazy" decoding="async"><figcaption>Los Angeles ☀️</figcaption></figure></div>
+        <div class="nd-ch-pics"><figure class="nd-pol" style="--ar:4/5"><img src="{{P:2026/03/IMG_8543-1-e1773578097737.jpg:480:600}}" alt="เดียร์ที่ Times Square นิวยอร์ก" width="480" height="600" loading="lazy" decoding="async"><figcaption>New York 🗽</figcaption></figure><figure class="nd-pol" style="--ar:4/5"><img src="{{P:2026/03/IMG_7712.jpg:480:600}}" alt="เดียร์ตีกอล์ฟ" width="480" height="600" loading="lazy" decoding="async"><figcaption>ลองอะไรใหม่ ๆ ⛳</figcaption></figure><figure class="nd-pol" style="--ar:4/3"><img src="{{P:2026/03/IMG_5057.jpg:480:360}}" alt="เดียร์ที่ Hollywood" width="480" height="360" loading="lazy" decoding="async"><figcaption>Los Angeles ☀️</figcaption></figure></div>
       </article>
 
       <article class="nd-ch nd-future">
         <span class="nd-pin" aria-hidden="true"></span>
         <div class="nd-ch-note"><span class="nd-year">อนาคต 🇺🇸</span><h3>Harvard Business School</h3><p>วางแผนศึกษาต่อที่ Harvard Business School (HBS) เพื่อพัฒนาตัวเอง ธุรกิจ และการศึกษาไทย — แล้วนำความรู้กลับมาส่งต่อให้น้อง ๆ และสังคม</p><span class="nd-hand">Dream big & keep doing ✨</span></div>
-        <div class="nd-ch-pics nd-one"><figure class="nd-pol" style="--ar:4/5"><span class="nd-tape nd-t2"></span><img src="{{P:2026/03/IMG_1274.jpg:480:600}}" alt="เดียร์ที่ Harvard" width="480" height="600" loading="lazy" decoding="async"><figcaption>Next chapter → HBS</figcaption></figure></div>
+        <div class="nd-ch-pics nd-one"><figure class="nd-pol" style="--ar:4/5"><img src="{{P:2026/03/IMG_1274.jpg:480:600}}" alt="เดียร์ที่ Harvard" width="480" height="600" loading="lazy" decoding="async"><figcaption>Next chapter → HBS</figcaption></figure></div>
       </article>
     </div>
   </div>
