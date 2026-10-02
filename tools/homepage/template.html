@@ -1,0 +1,543 @@
+<!-- Chinese Chiwchiw · Homepage 2027 (concise) · prefix hm- · one Elementor HTML widget · photos from the media library, resized by Jetpack -->
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700;800;900&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap">
+<link rel="preload" as="image" href="{{HERO1_SM}}" imagesrcset="{{HERO1_SM}} 800w, {{HERO1_LG}} 1600w" imagesizes="100vw" fetchpriority="high">
+<style>
+#hm-page{width:100vw!important;max-width:none!important;position:relative;left:50%;right:50%;margin-left:-50vw!important;margin-right:-50vw!important;display:flow-root;overflow-x:clip;background:#FFFBF7;color:#5C4A3E;font-family:'Noto Sans Thai',sans-serif;font-size:17px;line-height:1.8}
+#hm-page *,#hm-page *::before,#hm-page *::after{box-sizing:border-box}
+#hm-page a{text-decoration:none!important}
+#hm-page h1,#hm-page h2,#hm-page h3{font-family:'Kanit',sans-serif;margin:0;letter-spacing:0}
+#hm-page img{max-width:100%;height:auto}
+.hm-wrap{max-width:1180px;margin:0 auto;padding:0 28px}
+.hm-sec{padding:88px 0}
+.hm-white{background:#fff}
+.hm-center{text-align:center}.hm-center .hm-lead{margin-left:auto;margin-right:auto}
+.hm-eyebrow{display:inline-block;font-family:'Kanit',sans-serif;font-weight:700;font-size:.82rem;letter-spacing:2px;color:#FF6B00;background:rgba(255,107,0,.08);border:1px solid rgba(255,107,0,.2);padding:6px 16px;border-radius:50px;margin-bottom:14px}
+#hm-page .hm-h2{font-size:clamp(1.9rem,4vw,2.7rem);font-weight:900;line-height:1.28;color:#1A0A00!important}
+#hm-page .hm-h2 span{color:#FF6B00!important}
+.hm-lead{font-size:clamp(1rem,1.8vw,1.08rem);line-height:1.85;max-width:680px;margin:12px 0 0}
+.hm-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+.hm-center .hm-cta{justify-content:center}
+#hm-page .hm-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:'Kanit',sans-serif;font-weight:800;font-size:1rem;line-height:1.3;padding:14px 28px;border-radius:50px;transition:transform .2s;cursor:pointer;border:0;text-align:center}
+#hm-page .hm-btn:hover{transform:translateY(-2px)}
+#hm-page .hm-pri{background:linear-gradient(135deg,#FFB300,#FF6B00);color:#1A0A00!important;box-shadow:0 6px 24px rgba(255,140,0,.4)}
+#hm-page .hm-line{background:#06C755;color:#fff!important}
+#hm-page .hm-out{background:#fff;color:#FF6B00!important;border:2px solid #FF6B00}
+#hm-page .hm-ghost{background:rgba(255,255,255,.1);color:#fff!important;border:2px solid rgba(255,255,255,.7);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+#hm-page .hm-link{font-family:'Kanit',sans-serif;font-weight:700;color:#FF6B00!important}
+/* announcement */
+.hm-ann{position:absolute;top:-2px;left:0;right:0;z-index:10;background:#fff;overflow:hidden;white-space:nowrap;padding:6px 0;font-family:'Kanit',sans-serif;font-weight:600;font-size:.92rem}
+.hm-ann-track{display:inline-block;animation:hm-mq 38s linear infinite}
+.hm-ann:hover .hm-ann-track{animation-play-state:paused}
+.hm-ann span{display:inline-block;padding:0 22px;color:#C2410C}.hm-ann b{color:#1A0A00}
+.hm-ann i{font-style:normal;color:#FFB347}
+@keyframes hm-mq{to{transform:translateX(-50%)}}
+/* hero */
+.hm-hero{position:relative;isolation:isolate;overflow:hidden;margin-top:-120px;background:#1A0A00;color:#F5E9DD}
+.hm-slide{position:absolute;inset:0;z-index:-2;opacity:0;background:center/cover no-repeat;transition:opacity 1.6s ease}
+.hm-slide.hm-on{opacity:1;animation:hm-zoom 8s ease-out both}
+#hm-page .hm-slide img{width:100%;height:100%;object-fit:cover;display:block;margin:0}
+@keyframes hm-zoom{from{transform:scale(1.06)}to{transform:scale(1)}}
+.hm-hero::before{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(26,10,0,.94) 0%,rgba(26,10,0,.8) 42%,rgba(26,10,0,.3) 75%,rgba(26,10,0,.15) 100%),linear-gradient(0deg,rgba(26,10,0,.75),rgba(26,10,0,0) 40%)}
+.hm-hero-in{max-width:1180px;margin:0 auto;padding:200px 28px 110px}
+.hm-hero-box{max-width:640px}
+.hm-kicker{display:inline-flex;gap:8px;align-items:center;background:rgba(255,107,0,.18);border:1px solid rgba(255,179,71,.45);color:#FFB347;border-radius:50px;padding:6px 16px;font-family:'Kanit',sans-serif;font-weight:700;font-size:.92rem;margin-bottom:18px}
+#hm-page .hm-h1{font-size:clamp(2.2rem,5.2vw,3.7rem);font-weight:900;line-height:1.18;color:#fff!important}
+#hm-page .hm-h1 span{color:#FFB347!important}
+.hm-hero p{margin:16px 0 0;color:#EBD9C8;font-size:clamp(1rem,1.8vw,1.1rem)}
+.hm-hero p.hm-sure{color:#fff;font-weight:600;margin-top:10px}
+.hm-trust{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:30px;font-size:.95rem;color:#F5E9DD}
+.hm-trust b{font-family:'Kanit',sans-serif;color:#FFB347;font-size:1.15rem;font-weight:800}
+/* "ฉันอยาก" quick nav */
+.hm-quick{position:relative;z-index:3;margin-top:-46px}
+.hm-quick-card{background:#fff;border:1px solid #EDE5DC;border-radius:22px;box-shadow:0 14px 40px rgba(26,10,0,.12);padding:18px 20px}
+.hm-quick-t{font-family:'Kanit',sans-serif;font-weight:800;color:#1A0A00;font-size:1rem;margin:0 0 10px}
+.hm-quick-t span{color:#9A7A60;font-weight:600;font-size:.88rem;margin-left:6px}
+.hm-chips{display:flex;flex-wrap:wrap;gap:10px}
+#hm-page .hm-chip{display:inline-flex;align-items:center;gap:6px;font-family:'Kanit',sans-serif;font-weight:700;font-size:.95rem;color:#1A0A00!important;background:#FFF6EE;border:1px solid #F6DCC2;border-radius:50px;padding:9px 16px;transition:background .2s,transform .2s}
+#hm-page .hm-chip:hover{background:#FFE8D1;transform:translateY(-2px)}
+/* promo */
+.hm-promo{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px 18px;margin:22px auto 0;background:#1A0A00;color:#F5E9DD;border-radius:50px;padding:10px 22px;font-size:.95rem;width:fit-content;max-width:100%}
+.hm-dot{width:9px;height:9px;border-radius:50%;background:#FF6B00;box-shadow:0 0 0 0 rgba(255,107,0,.6);animation:hm-blink 1.6s infinite;flex:none}
+@keyframes hm-blink{0%{box-shadow:0 0 0 0 rgba(255,107,0,.6)}70%{box-shadow:0 0 0 9px rgba(255,107,0,0)}100%{box-shadow:0 0 0 0 rgba(255,107,0,0)}}
+.hm-promo b{color:#FFB347;font-family:'Kanit',sans-serif}
+.hm-cd{font-family:'Kanit',sans-serif;font-weight:700;color:#fff;font-variant-numeric:tabular-nums}
+#hm-page .hm-promo a{color:#FFB347!important;font-family:'Kanit',sans-serif;font-weight:700}
+/* paths (tabs) */
+.hm-tabs{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:30px}
+#hm-page .hm-tab{font-family:'Kanit',sans-serif;font-weight:700;font-size:1rem;border:2px solid #EDE5DC;background:#fff;color:#5C4A3E;border-radius:50px;padding:10px 20px;cursor:pointer;transition:all .2s}
+#hm-page .hm-tab[aria-selected="true"]{background:var(--c,#FF6B00);border-color:var(--c,#FF6B00);color:#fff}
+.hm-panel{margin-top:26px;background:#fff;border:1px solid #EDE5DC;border-radius:22px;box-shadow:0 6px 28px rgba(26,10,0,.06);overflow:hidden;display:grid;grid-template-columns:1fr 1.25fr;scroll-margin-top:110px}
+.hm-js .hm-panel[hidden]{display:none}
+.hm-panel-img{position:relative;min-height:320px;background:#F1E6DA}
+#hm-page .hm-panel-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;margin:0}
+.hm-panel-tag{position:absolute;left:16px;top:16px;background:var(--c);color:#fff;font-family:'Kanit',sans-serif;font-weight:800;font-size:.85rem;border-radius:50px;padding:5px 14px}
+.hm-panel-body{padding:30px 32px}
+#hm-page .hm-panel-body h3{font-size:1.55rem;font-weight:900;color:#1A0A00!important;line-height:1.3}
+.hm-panel-body h3 small{display:block;font-size:.95rem;font-weight:600;color:var(--c);margin-top:2px}
+.hm-ticks{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:6px}
+.hm-ticks li{position:relative;padding-left:26px;font-size:.98rem;line-height:1.65}
+.hm-ticks li::before{content:'✓';position:absolute;left:0;top:0;font-weight:800;color:var(--c,#FF6B00)}
+.hm-rows{display:grid;gap:10px;margin-top:16px}
+#hm-page .hm-row{display:flex;justify-content:space-between;align-items:center;gap:12px;border:1px solid #EDE5DC;border-radius:14px;padding:12px 16px;color:#5C4A3E!important;transition:border-color .2s,transform .2s}
+#hm-page .hm-row:hover{border-color:var(--c);transform:translateX(3px)}
+.hm-row b{display:block;font-family:'Kanit',sans-serif;color:#1A0A00;font-size:1rem;line-height:1.35}
+.hm-row small{display:block;font-size:.85rem;color:#9A7A60;line-height:1.5}
+.hm-row em{font-style:normal;font-family:'Kanit',sans-serif;font-weight:800;color:var(--c);white-space:nowrap;text-align:right;line-height:1.3}
+.hm-row em s{display:block;font-weight:600;font-size:.78rem;color:#B8A090}
+.hm-cities{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:16px}
+#hm-page .hm-city{border:1px solid #EDE5DC;border-radius:14px;padding:12px 14px;color:#5C4A3E!important;transition:border-color .2s,transform .2s;display:block}
+#hm-page .hm-city:hover{border-color:#FF6B00;transform:translateY(-2px)}
+.hm-city b{display:block;font-family:'Kanit',sans-serif;color:#1A0A00;font-size:1rem}
+.hm-city small{display:block;font-size:.8rem;color:#9A7A60;line-height:1.45}
+.hm-city em{display:block;font-style:normal;font-family:'Kanit',sans-serif;font-weight:800;color:#FF6B00;margin-top:4px}
+.hm-note{font-size:.85rem;color:#9A7A60;margin:10px 0 0}
+.hm-honest{margin-top:14px;background:#FFF8F0;border-left:3px solid #FF6B00;border-radius:0 12px 12px 0;padding:10px 14px;font-size:.92rem;line-height:1.7}
+.hm-price{margin-top:14px;font-size:.95rem}.hm-price b{font-family:'Kanit',sans-serif;font-size:1.35rem;color:var(--c)}
+.hm-panel .hm-cta{margin-top:20px}
+/* AI match */
+.hm-ai{position:relative;overflow:hidden;background:radial-gradient(ellipse at 85% 0%,rgba(255,179,71,.28),rgba(255,179,71,0) 55%),linear-gradient(135deg,#1A0A00 0%,#2E1405 65%,#3A1A06 100%);border-radius:26px;padding:48px;display:grid;grid-template-columns:1.1fr 1fr;gap:36px;align-items:center;color:#EBD9C8}
+.hm-ai .hm-eyebrow{color:#FFB347;background:rgba(255,179,71,.12);border-color:rgba(255,179,71,.3)}
+#hm-page .hm-ai .hm-h2{color:#fff!important}#hm-page .hm-ai .hm-h2 span{color:#FFB347!important}
+.hm-ai-stats{display:flex;flex-wrap:wrap;gap:12px 26px;margin-top:20px}
+.hm-ai-stats b{display:block;font-family:'Kanit',sans-serif;font-weight:900;font-size:1.9rem;color:#FFB347;line-height:1.1}
+.hm-ai-stats span{font-size:.85rem}
+.hm-ai-steps{display:grid;gap:12px;counter-reset:s}
+.hm-ai-step{display:flex;gap:14px;align-items:flex-start;background:rgba(255,255,255,.06);border:1px solid rgba(255,179,71,.2);border-radius:16px;padding:14px 16px}
+.hm-ai-step i{flex:none;width:38px;height:38px;border-radius:12px;background:rgba(255,179,71,.16);display:flex;align-items:center;justify-content:center;font-style:normal;font-size:1.2rem}
+.hm-ai-step b{display:block;font-family:'Kanit',sans-serif;color:#fff;font-size:1.02rem}
+.hm-ai-step span{font-size:.9rem;line-height:1.6}
+/* care journey */
+.hm-route{position:relative;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin-top:34px}
+.hm-route::before{content:'';position:absolute;left:8%;right:8%;top:30px;height:3px;background:repeating-linear-gradient(90deg,#F6C9A0 0 10px,transparent 10px 18px)}
+#hm-page .hm-stop{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;background:none;border:0;padding:0;cursor:pointer;font-family:'Kanit',sans-serif;color:#5C4A3E;text-align:center}
+.hm-stop i{width:62px;height:62px;border-radius:50%;background:#fff;border:2px solid #F1E6DA;display:flex;align-items:center;justify-content:center;font-style:normal;font-size:1.5rem;transition:all .2s;box-shadow:0 4px 14px rgba(26,10,0,.06)}
+.hm-stop b{font-weight:700;font-size:.92rem;line-height:1.3;color:#1A0A00}
+.hm-stop small{font-size:.78rem;color:#9A7A60;font-weight:600}
+#hm-page .hm-stop[aria-selected="true"] i{border-color:#FF6B00;background:#FFF0E2;transform:scale(1.08);box-shadow:0 6px 20px rgba(255,107,0,.25)}
+.hm-route-ends{display:flex;justify-content:space-between;font-family:'Kanit',sans-serif;font-weight:700;color:#9A7A60;font-size:.85rem;margin-top:14px}
+.hm-care{margin-top:22px;display:grid;grid-template-columns:.9fr 1.1fr;background:#fff;border:1px solid #EDE5DC;border-radius:22px;overflow:hidden;box-shadow:0 6px 28px rgba(26,10,0,.06)}
+.hm-js .hm-care[hidden]{display:none}
+.hm-care-img{position:relative;min-height:260px;background:#F1E6DA}
+#hm-page .hm-care-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;margin:0}
+.hm-care-body{padding:28px 30px;display:flex;flex-direction:column;justify-content:center}
+.hm-care-n{font-family:'Kanit',sans-serif;font-weight:800;color:#FF6B00;font-size:.9rem;letter-spacing:1px}
+#hm-page .hm-care-body h3{font-size:1.45rem;font-weight:900;color:#1A0A00!important;line-height:1.3;margin:2px 0 8px}
+.hm-care-body p{margin:0;font-size:1rem;line-height:1.8}
+.hm-care-body .hm-link{margin-top:14px;display:inline-block}
+/* steps */
+.hm-steps{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;margin-top:34px;counter-reset:st}
+.hm-step{background:#FFFBF7;border:1px solid #EDE5DC;border-radius:18px;padding:20px 18px;position:relative}
+.hm-step::before{counter-increment:st;content:counter(st,decimal-leading-zero);display:inline-flex;align-items:center;justify-content:center;min-width:44px;height:30px;border-radius:50px;border:2px solid #FF6B00;color:#FF6B00;background:#fff;font-family:'Kanit',sans-serif;font-weight:800;font-size:.95rem;margin-bottom:10px}
+.hm-step b{display:block;font-family:'Kanit',sans-serif;color:#1A0A00;font-size:1.02rem;line-height:1.4}
+.hm-step span{display:block;font-size:.88rem;line-height:1.65;margin-top:4px}
+/* video */
+.hm-video{position:relative;display:block;max-width:980px;margin:32px auto 0;aspect-ratio:16/9;border-radius:22px;overflow:hidden;background:#1A0A00;box-shadow:0 18px 50px rgba(26,10,0,.25);cursor:pointer}
+#hm-page .hm-video img,#hm-page .hm-video iframe{position:absolute;inset:0;width:100%!important;height:100%!important;object-fit:cover;margin:0;border:0;max-width:none}
+.hm-play{position:absolute;left:50%;top:50%;width:84px;height:60px;margin:-30px 0 0 -42px;border-radius:16px;background:rgba(255,0,0,.92);transition:transform .2s;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.hm-play::after{content:'';position:absolute;left:34px;top:18px;border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff}
+.hm-video:hover .hm-play{transform:scale(1.08)}
+/* gallery */
+.hm-gal{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-top:32px}
+.hm-gal figure{margin:0;position:relative;border-radius:16px;overflow:hidden;aspect-ratio:4/5;background:#F1E6DA}
+#hm-page .hm-gal img{width:100%;height:100%;object-fit:cover;margin:0;filter:saturate(.9) contrast(.97);transition:transform .5s ease}
+.hm-gal figure:hover img{transform:scale(1.04)}
+.hm-gal figcaption{position:absolute;left:0;right:0;bottom:0;padding:26px 12px 10px;background:linear-gradient(0deg,rgba(26,10,0,.7),rgba(26,10,0,0));color:#fff;font-family:'Kanit',sans-serif;font-weight:600;font-size:.85rem;line-height:1.35}
+/* reviews */
+.hm-revs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:32px}
+.hm-rev{background:#fff;border:1px solid #EDE5DC;border-radius:18px;padding:22px;box-shadow:0 4px 18px rgba(26,10,0,.05);display:flex;flex-direction:column}
+.hm-rev header{display:flex;gap:12px;align-items:center}
+.hm-av{flex:none;width:46px;height:46px;border-radius:50%;background:#F1E6DA url('https://chinesechiwchiw.com/wp-content/uploads/2026/10/chiwchiw-fb-reviewers.webp') no-repeat;background-size:46px auto;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.hm-rev header b{display:block;font-family:'Kanit',sans-serif;color:#1A0A00;line-height:1.3}
+.hm-rev header small{display:block;font-size:.8rem;color:#9A7A60}
+.hm-stars{color:#FFB300;letter-spacing:2px;margin:12px 0 6px;font-size:.95rem}
+.hm-rev p{margin:0;font-size:.95rem;line-height:1.8;flex:1}
+.hm-rev footer{margin-top:12px;font-size:.78rem;color:#A8907C}
+.hm-rev-top{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:10px;font-family:'Kanit',sans-serif;font-weight:700;color:#1A0A00}
+.hm-rev-top span{color:#FFB300;letter-spacing:2px}
+/* founder (dark) */
+.hm-dark{background:linear-gradient(135deg,#1A0A00 0%,#2E1405 60%,#3A1A06 100%);color:#EBD9C8}
+.hm-dark .hm-eyebrow{color:#FFB347;background:rgba(255,179,71,.12);border-color:rgba(255,179,71,.3)}
+#hm-page .hm-dark .hm-h2{color:#fff!important}#hm-page .hm-dark .hm-h2 span{color:#FFB347!important}
+.hm-founder{display:grid;grid-template-columns:.8fr 1.2fr;gap:44px;align-items:center}
+.hm-f-photo{position:relative;border-radius:22px;overflow:hidden;aspect-ratio:4/5;box-shadow:0 18px 50px rgba(0,0,0,.35)}
+#hm-page .hm-f-photo img{width:100%;height:100%;object-fit:cover;margin:0}
+.hm-f-name{position:absolute;left:0;right:0;bottom:0;padding:40px 18px 16px;background:linear-gradient(0deg,rgba(26,10,0,.9),rgba(26,10,0,0));color:#fff;font-family:'Kanit',sans-serif;font-weight:700;line-height:1.35}
+.hm-f-name small{display:block;font-weight:500;color:#FFB347;font-size:.85rem}
+.hm-pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.hm-pills span{font-family:'Kanit',sans-serif;font-weight:600;font-size:.88rem;color:#fff;background:rgba(255,255,255,.08);border:1px solid rgba(255,179,71,.35);border-radius:50px;padding:5px 14px}
+.hm-tl{display:flex;gap:8px;flex-wrap:wrap;margin-top:24px}
+#hm-page .hm-tl button{font-family:'Kanit',sans-serif;font-weight:700;font-size:.92rem;color:#EBD9C8;background:transparent;border:1px solid rgba(255,179,71,.35);border-radius:50px;padding:7px 15px;cursor:pointer;transition:all .2s}
+#hm-page .hm-tl button[aria-selected="true"]{background:#FFB347;color:#1A0A00;border-color:#FFB347}
+.hm-tl-box{margin-top:14px;min-height:92px;background:rgba(255,255,255,.05);border:1px solid rgba(255,179,71,.2);border-radius:16px;padding:16px 18px}
+.hm-tl-item b{display:block;font-family:'Kanit',sans-serif;color:#fff;font-size:1.05rem}
+.hm-tl-item p{margin:4px 0 0;font-size:.97rem;line-height:1.75}
+.hm-js .hm-tl-item[hidden]{display:none}
+.hm-quote{margin:22px 0 0;padding-left:16px;border-left:3px solid #FFB347;font-size:1.02rem;color:#fff;font-style:italic}
+.hm-quote small{display:block;font-style:normal;color:#C8B4A2;font-size:.85rem;margin-top:4px}
+.hm-pillars{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:52px}
+.hm-pillar{background:rgba(255,255,255,.05);border:1px solid rgba(255,179,71,.18);border-radius:18px;padding:18px}
+.hm-pillar b{display:block;font-family:'Kanit',sans-serif;color:#fff;font-size:1.05rem;margin-bottom:4px}
+.hm-pillar span{font-size:.9rem;line-height:1.65}
+.hm-partners{margin-top:28px;display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;justify-content:center;font-size:.9rem}
+.hm-partners strong{font-family:'Kanit',sans-serif;color:#FFB347;font-weight:700}
+.hm-partners span{background:#fff;color:#1A0A00;border-radius:50px;padding:5px 14px;font-family:'Kanit',sans-serif;font-weight:700;font-size:.85rem}
+.hm-legal{text-align:center;margin-top:14px;font-size:.82rem;color:#B8A090}
+/* faq */
+.hm-faq{max-width:860px;margin:30px auto 0;display:grid;gap:10px}
+.hm-faq details{background:#fff;border:1px solid #EDE5DC;border-radius:16px;padding:0 20px;transition:box-shadow .2s}
+.hm-faq details[open]{box-shadow:0 6px 22px rgba(26,10,0,.07)}
+.hm-faq summary{list-style:none;cursor:pointer;padding:16px 30px 16px 0;position:relative;font-family:'Kanit',sans-serif;font-weight:700;color:#1A0A00;font-size:1.03rem;line-height:1.45}
+.hm-faq summary::-webkit-details-marker{display:none}
+.hm-faq summary::after{content:'+';position:absolute;right:0;top:12px;font-size:1.5rem;color:#FF6B00;font-weight:400;transition:transform .2s}
+.hm-faq details[open] summary::after{transform:rotate(45deg)}
+.hm-faq details p{margin:0 0 18px;font-size:.97rem;line-height:1.85}
+/* final */
+.hm-final{text-align:center;padding:88px 0}
+#hm-page .hm-final h2{font-size:clamp(1.9rem,4vw,2.7rem);font-weight:900;color:#fff!important;line-height:1.3}
+#hm-page .hm-final h2 span{color:#FFB347!important}
+.hm-ticks2{margin-top:20px;font-size:.92rem;color:#E6CDB4}
+.hm-eb{margin-top:10px;font-size:.92rem;color:#FFB347;font-family:'Kanit',sans-serif;font-weight:600}
+/* reveal */
+.hm-js .hm-rv{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+.hm-js .hm-rv.hm-in{opacity:1;transform:none}
+@media (max-width:1000px){.hm-route{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:18px}.hm-route::before{display:none}.hm-steps{grid-template-columns:repeat(2,minmax(0,1fr))}.hm-gal{grid-template-columns:repeat(4,minmax(0,1fr))}.hm-gal figure:nth-child(n+9){display:none}.hm-pillars{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:900px){.hm-panel,.hm-care,.hm-ai,.hm-founder{grid-template-columns:1fr}.hm-panel-img{min-height:220px}.hm-care-img{min-height:210px}.hm-revs{grid-template-columns:1fr}.hm-ai{padding:34px 26px}.hm-f-photo{max-width:380px;margin:0 auto;width:100%}}
+@media (max-width:600px){.hm-wrap{padding:0 16px}.hm-sec{padding:64px 0}.hm-hero-in{padding:170px 16px 96px}.hm-hero::before{background:linear-gradient(180deg,rgba(26,10,0,.55) 0%,rgba(26,10,0,.82) 45%,rgba(26,10,0,.95) 100%)}
+ #hm-page .hm-btn{width:100%}.hm-trust{gap:6px 16px;font-size:.88rem}.hm-quick-card{padding:16px}.hm-chips{gap:8px}#hm-page .hm-chip{font-size:.88rem;padding:8px 13px}
+ .hm-promo{border-radius:18px;font-size:.88rem}.hm-tabs{gap:8px}#hm-page .hm-tab{font-size:.9rem;padding:8px 14px}.hm-panel-body{padding:22px 18px}.hm-care-body{padding:22px 18px}
+ .hm-route{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 6px}.hm-stop i{width:52px;height:52px;font-size:1.3rem}.hm-stop b{font-size:.82rem}
+ .hm-steps{grid-template-columns:1fr}.hm-gal{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:10px;padding-bottom:6px;margin-left:-16px;margin-right:-16px;padding-left:16px;padding-right:16px}.hm-gal figure{flex:0 0 62%;scroll-snap-align:start}.hm-gal figure:nth-child(n+9){display:block}
+ .hm-pillars{grid-template-columns:1fr}.hm-ai{padding:28px 18px;border-radius:20px}.hm-cities{grid-template-columns:repeat(2,minmax(0,1fr))} .hm-chips{display:grid;grid-template-columns:1fr 1fr}#hm-page .hm-chip{font-size:.82rem;padding:8px 10px;line-height:1.35;border-radius:14px} .hm-promo{display:grid;justify-items:center;text-align:center;gap:4px;padding:12px 16px;width:100%}.hm-dot{display:none} .hm-steps{gap:10px}.hm-step{display:grid;grid-template-columns:auto 1fr;column-gap:12px;align-items:start;padding:14px 16px}.hm-step::before{grid-row:span 2;margin:0}.hm-step span{margin-top:0} .hm-ai-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.hm-ai-stats b{font-size:1.45rem}.hm-ai-stats span{font-size:.75rem;line-height:1.35;display:block}}
+@media (prefers-reduced-motion:reduce){.hm-ann-track,.hm-slide.hm-on,.hm-dot{animation:none}.hm-slide{transition:none}.hm-js .hm-rv{opacity:1;transform:none;transition:none}#hm-page .hm-btn,#hm-page .hm-chip,.hm-gal img{transition:none}}
+</style>
+
+<div id="hm-page">
+
+<!-- ═══ 0. ANNOUNCEMENT ═══ -->
+<div class="hm-ann" aria-label="ประกาศ"><div class="hm-ann-track">{{ANN}}{{ANN}}</div></div>
+
+<!-- ═══ 1. HERO ═══ -->
+<section class="hm-hero" aria-label="Chinese Chiwchiw">
+  <div class="hm-slide hm-on"><img src="{{HERO1_SM}}" srcset="{{HERO1_SM}} 800w, {{HERO1_LG}} 1600w" sizes="100vw" width="1600" height="1067" alt="" fetchpriority="high" decoding="async"></div>
+  <div class="hm-slide" data-bg="{{HERO2}}"></div>
+  <div class="hm-slide" data-bg="{{HERO3}}"></div>
+  <div class="hm-hero-in"><div class="hm-hero-box">
+    <span class="hm-kicker">เรียนภาษาจีน · เรียนต่อ · ใช้ชีวิตที่จีน</span>
+    <h1 class="hm-h1">ไปจีนให้เป็นเรื่องง่าย <span>กับ Chinese Chiwchiw</span> 🇨🇳</h1>
+    <p>ดูแลครบตั้งแต่เลือกเมืองและมหาวิทยาลัย สมัครเรียน วีซ่า ที่พัก จนถึงวันแรกที่จีน — ทั้งค่ายระยะสั้น เรียนภาษา 1 เทอม–1 ปี และปริญญา & ทุน</p>
+    <p class="hm-sure">ไม่รู้จะเริ่มจากตรงไหน? ไม่เป็นไร — พี่ ๆ ช่วยวางแผนให้ทีละขั้น 🧡</p>
+    <div class="hm-cta">
+      <a class="hm-btn hm-pri" href="#hm-paths">🧭 ค้นหาโปรแกรมที่เหมาะกับฉัน</a>
+      <a class="hm-btn hm-ghost" href="https://line.me/ti/p/~@chiwchiw" target="_blank" rel="noopener">💬 ปรึกษาทีมฟรี</a>
+    </div>
+    <div class="hm-trust">
+      <span>🇨🇳 ตั้งแต่ปี <b>2021</b></span><span>🎓 <b>600+</b> นักเรียน</span><span>✈️ <b>100+</b> น้อง ๆ ไปจีนแล้ว</span><span>💛 <b>150,000+</b> ผู้ติดตาม</span>
+    </div>
+  </div></div>
+</section>
+
+<!-- ═══ 2. QUICK NAV + PROMO ═══ -->
+<div class="hm-quick"><div class="hm-wrap">
+  <div class="hm-quick-card">
+    <p class="hm-quick-t">ฉันอยาก…<span>กดเพื่อไปที่ข้อมูลที่ใช่</span></p>
+    <nav class="hm-chips" aria-label="ไปยังหัวข้อ">
+      <a class="hm-chip" href="#hm-p-camp" data-tab="camp">🐼 ลองไปจีนช่วงปิดเทอม</a>
+      <a class="hm-chip" href="#hm-p-lang" data-tab="lang">🎓 เรียนภาษาที่จีน 1 เทอม–1 ปี</a>
+      <a class="hm-chip" href="#hm-p-degree" data-tab="degree">🏅 เรียนปริญญา & หาทุน</a>
+      <a class="hm-chip" href="#hm-p-online" data-tab="online">💻 เรียนจีนออนไลน์ก่อน</a>
+      <a class="hm-chip" href="#hm-match">🔎 หามหาวิทยาลัยจีนด้วย AI</a>
+      <a class="hm-chip" href="#hm-care">👨‍👩‍👧 ดูว่าพี่ ๆ ดูแลอะไรบ้าง</a>
+    </nav>
+  </div>
+  <div class="hm-promo"><span class="hm-dot" aria-hidden="true"></span><span>🐼 ค่ายเฉิงตู 2027 · Early Bird <b>฿69,500</b> ถึง 30 ต.ค.</span><span class="hm-cd" data-end="2026-10-30T23:59:59+07:00" aria-live="off"></span><a href="https://chinesechiwchiw.com/chengdu-camp-april-2027/">ดูรายละเอียด →</a></div>
+</div></div>
+
+<!-- ═══ 3. CHOOSE YOUR PATH (tabs) ═══ -->
+<section class="hm-sec" id="hm-paths">
+  <div class="hm-wrap">
+    <div class="hm-center">
+      <span class="hm-eyebrow">✦ เลือกเส้นทางไปจีน ✦</span>
+      <h2 class="hm-h2">เส้นทางที่ <span>ใช่สำหรับคุณ</span></h2>
+      <p class="hm-lead">เลือกตามเป้าหมาย — ลองใช้ชีวิตสั้น ๆ เอาภาษาจริงจัง หรือเรียนต่อปริญญา พี่ ๆ ดูแลครบทุกเส้นทาง</p>
+    </div>
+    <div class="hm-tabs" role="tablist" aria-label="เส้นทาง">
+      <button class="hm-tab" role="tab" id="hm-t-camp" aria-controls="hm-p-camp" aria-selected="true" style="--c:#2B6CB0">🐼 ค่ายระยะสั้น</button>
+      <button class="hm-tab" role="tab" id="hm-t-lang" aria-controls="hm-p-lang" aria-selected="false" style="--c:#FF6B00">🎓 เรียนภาษา 1 เทอม–1 ปี</button>
+      <button class="hm-tab" role="tab" id="hm-t-degree" aria-controls="hm-p-degree" aria-selected="false" style="--c:#00A38C">🏅 ปริญญา & ทุน</button>
+      <button class="hm-tab" role="tab" id="hm-t-online" aria-controls="hm-p-online" aria-selected="false" style="--c:#C2410C">💻 เรียนจีนออนไลน์</button>
+    </div>
+
+    <div class="hm-panel" role="tabpanel" id="hm-p-camp" aria-labelledby="hm-t-camp" style="--c:#2B6CB0">
+      <div class="hm-panel-img"><img src="{{IMG_CAMP}}" alt="น้อง ๆ ค่ายเฉิงตูกับป้าย I love SWUFE" loading="lazy" decoding="async" width="720" height="600"><span class="hm-panel-tag">2 สัปดาห์–2 เดือน</span></div>
+      <div class="hm-panel-body">
+        <h3>ค่ายภาษาจีนที่จีน<small>ช่วงปิดเทอม · อยากลองไปจีนก่อน · อายุ 13+</small></h3>
+        <div class="hm-rows">
+          <a class="hm-row" href="https://chinesechiwchiw.com/ค่ายเฉิงตู-ธันวาคม-2569/"><span><b>❄️ Winter Camp เฉิงตู · 2 สัปดาห์</b><small>13–26 ธ.ค. 2026 · SWUFE · รวมตั๋ว + ที่พัก</small></span><em>฿59,000</em></a>
+          <a class="hm-row" href="https://chinesechiwchiw.com/chengdu-camp-april-2027/"><span><b>🐼 ค่ายเฉิงตู 1 เดือน</b><small>30 มี.ค.–23 เม.ย. 2027 · SWUFE · 🔥 Early Bird ถึง 30 ต.ค.</small></span><em>฿69,500<s>฿78,900</s></em></a>
+          <a class="hm-row" href="https://chinesechiwchiw.com/chengdu-chinese-language-2-months-swufe-2027/"><span><b>⭐ ค่ายเฉิงตู 2 เดือน</b><small>30 มี.ค.–23 พ.ค. 2027 · ได้ภาษามากที่สุด</small></span><em>฿99,900<s style="text-decoration:none">รวม VAT</s></em></a>
+        </div>
+        <ul class="hm-ticks"><li>พี่สตาฟไทยดูแลตลอดทริป</li><li>เรียนภาษาทุกเช้า + Panda Base, Hotpot, Business Lecture</li><li>Certificate จากมหาวิทยาลัยจีน</li></ul>
+        <div class="hm-cta"><a class="hm-btn hm-pri" href="https://chinesechiwchiw.com/ค่ายระยะสั้น/">ดูค่ายทั้งหมด →</a><a class="hm-btn hm-line" href="https://line.me/ti/p/~@chiwchiw" target="_blank" rel="noopener">💬 ถามเรื่องค่าย</a></div>
+      </div>
+    </div>
+
+    <div class="hm-panel" role="tabpanel" id="hm-p-lang" aria-labelledby="hm-t-lang" style="--c:#FF6B00">
+      <div class="hm-panel-img"><img src="{{IMG_LANG}}" alt="น้อง ๆ ที่ Fudan University เซี่ยงไฮ้" loading="lazy" decoding="async" width="720" height="600"><span class="hm-panel-tag">เปิดรับ มี.ค. 2027</span></div>
+      <div class="hm-panel-body">
+        <h3>เรียนภาษาที่จีน 1 เทอม / 1 ปี<small>ไม่ต้องมีพื้นฐาน · ไม่ต้องใช้ HSK · มัดจำ ฿25,000</small></h3>
+        <div class="hm-cities">
+          <a class="hm-city" href="https://chinesechiwchiw.com/chinese-language-course-fudan-shanghai/"><b>🏙️ เซี่ยงไฮ้</b><small>Fudan · เมืองนานาชาติ</small><em>฿99,500</em></a>
+          <a class="hm-city" href="https://chinesechiwchiw.com/beijing/"><b>🏯 ปักกิ่ง</b><small>BLCU · ภาษาเข้มข้น</small><em>฿119,000</em></a>
+          <a class="hm-city" href="https://chinesechiwchiw.com/chinese-language-course-in-guangzhou/"><b>🌇 กว่างโจว</b><small>SCUT · ใกล้ไทย 2.5 ชม.</small><em>฿89,000</em></a>
+          <a class="hm-city" href="https://chinesechiwchiw.com/chinese-language-in-swufe/"><b>🐼 เฉิงตู</b><small>SWUFE · ค่าครองชีพเบา</small><em>฿87,500</em></a>
+          <a class="hm-city" href="https://chinesechiwchiw.com/qingdao/"><b>🌊 ชิงเต่า</b><small>QCU · ริมทะเล คลาสเล็ก</small><em>฿124,750+</em></a>
+          <a class="hm-city" href="https://chinesechiwchiw.com/chinese-programme-in-urban-vocational-college-of-sichuan/"><b>💰 เฉิงตู คุมงบ</b><small>SCUVC · รวมหอพัก</small><em>฿79,125</em></a>
+        </div>
+        <p class="hm-note">ราคาเริ่มต้นต่อ 1 เทอม · บางโปรแกรม +VAT / รวมหอพัก — ดูรายละเอียดในหน้าของแต่ละเมือง</p>
+        <div class="hm-cta"><a class="hm-btn hm-pri" href="https://chinesechiwchiw.com/long-term-language-programmes-in-china/">ดูโปรแกรม & ราคา →</a><a class="hm-btn hm-out open-quiz" href="https://chinesechiwchiw.com/long-term-language-programmes-in-china/">🧭 ทำ Quiz หาเมืองที่ใช่</a></div>
+      </div>
+    </div>
+
+    <div class="hm-panel" role="tabpanel" id="hm-p-degree" aria-labelledby="hm-t-degree" style="--c:#00A38C">
+      <div class="hm-panel-img"><img src="{{IMG_DEGREE}}" alt="น้อง ๆ หน้ามหาวิทยาลัยในจีน" loading="lazy" decoding="async" width="720" height="600"><span class="hm-panel-tag">ป.ตรี · ป.โท · ทุน</span></div>
+      <div class="hm-panel-body">
+        <h3>เรียนปริญญา & ทุนที่จีน<small>สายภาษาจีน · สายภาษาอังกฤษ · ทุน 1+4</small></h3>
+        <div class="hm-rows">
+          <a class="hm-row" href="https://chinesechiwchiw.com/ทุน-1-4/"><span><b>🌱 ทุน 1+4 · ยังไม่มีพื้นฐานจีน</b><small>ปรับภาษา 1 ปีที่เฉิงตู แล้วต่อ ป.ตรี 4 ปี · ไม่ต้องใช้ HSK ตอนสมัคร</small></span><em>ปีแรก ฿200,000</em></a>
+          <a class="hm-row" href="https://chinesechiwchiw.com/ทุนปริญญาตร/"><span><b>🎓 ทุนปริญญาตรีที่จีน</b><small>ทุนรัฐบาล ทุนมณฑล ทุนมหาวิทยาลัย — มีกี่แบบ สมัครเมื่อไหร่</small></span><em>ดูทุน →</em></a>
+          <a class="hm-row" href="https://chinesechiwchiw.com/เรียนปริญญา/"><span><b>📘 คู่มือเรียนต่อ ตรี / โท / เอก</b><small>สายจีนและสายอังกฤษ (เช่น SILC) · เอกสาร · Timeline</small></span><em>อ่าน →</em></a>
+          <a class="hm-row" href="https://chinesechiwchiw.com/csca/"><span><b>📝 สอบ CSCA</b><small>สรุปข้อสอบ + คลาสติว CSCA แบบกลุ่มทุกเดือน</small></span><em>ดู →</em></a>
+        </div>
+        <p class="hm-honest">⏰ เตรียมตัว 1–1.5 ปี — ทุนหลายโครงการปิดรับตั้งแต่ ก.พ. · ผ่านเกณฑ์ไม่ได้แปลว่าได้ทุนเสมอไป พี่ ๆ ช่วยวางแผนให้มีโอกาสมากที่สุด</p>
+        <div class="hm-cta"><a class="hm-btn hm-pri" href="https://chinesechiwchiw.com/เรียนปริญญา/">เริ่มวางแผนเรียนต่อ →</a><a class="hm-btn hm-line" href="https://line.me/ti/p/~@chiwchiw" target="_blank" rel="noopener">💬 ให้ทีมช่วยเช็กคุณสมบัติ</a></div>
+      </div>
+    </div>
+
+    <div class="hm-panel" role="tabpanel" id="hm-p-online" aria-labelledby="hm-t-online" style="--c:#C2410C">
+      <div class="hm-panel-img"><img src="{{IMG_ONLINE}}" alt="ห้องเรียนภาษาจีน" loading="lazy" decoding="async" width="720" height="600"><span class="hm-panel-tag">เริ่มได้ทันที</span></div>
+      <div class="hm-panel-body">
+        <h3>เรียนจีนออนไลน์ 1:1<small>ปูพื้นก่อนบิน · เตรียมสอบ HSK</small></h3>
+        <ul class="hm-ticks"><li>HSK 1–6 · HSKK · ภาษาจีนธุรกิจ</li><li>เลือกวันและเวลาเรียนเองได้</li><li>ครูคนไทยที่เคยเรียนและได้ทุนที่จีน อธิบายเข้าใจง่าย</li><li>ไม่แน่ใจว่าอยู่ระดับไหน? ทำแบบวัดระดับก่อนได้</li></ul>
+        <p class="hm-price">เริ่มต้น <b>฿5,900</b> / 20 ชม.</p>
+        <div class="hm-cta"><a class="hm-btn hm-pri" href="https://chinesechiwchiw.com/หลักสูตรภาษาจีน/">ดูคอร์สทั้งหมด →</a><a class="hm-btn hm-out" href="https://chinesechiwchiw.com/ระดับภาษาจีน/">📊 วัดระดับภาษาจีน</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 4. CHIWCHIW MATCH (AI) ═══ -->
+<section class="hm-sec hm-white" id="hm-match" style="scroll-margin-top:90px">
+  <div class="hm-wrap">
+    <div class="hm-ai hm-rv">
+      <div>
+        <span class="hm-eyebrow">✦ ใหม่ · Chiwchiw Match ✦</span>
+        <h2 class="hm-h2">หามหาวิทยาลัยจีนที่ใช่ <span>ด้วย AI</span></h2>
+        <p class="hm-lead">ตอบคำถามสั้น ๆ แล้วให้ AI จับคู่มหาวิทยาลัยและหลักสูตรที่ตรงกับเป้าหมาย งบ และระดับภาษาของน้อง — หรือค้นหาเองจากฐานข้อมูลของเรา</p>
+        <div class="hm-ai-stats"><div><b>100+</b><span>มหาวิทยาลัย</span></div><div><b>7,000+</b><span>หลักสูตร</span></div><div><b>1,500+</b><span>หลักสูตรสอนเป็นภาษาอังกฤษ</span></div></div>
+        <div class="hm-cta"><a class="hm-btn hm-pri" href="https://chinesechiwchiw.com/university-match/">✨ ให้ AI ช่วยหามหาวิทยาลัย</a><a class="hm-btn hm-ghost" href="https://chinesechiwchiw.com/university-match/">🔎 ค้นหาเองตามเมือง / สาขา</a></div>
+      </div>
+      <div class="hm-ai-steps">
+        <div class="hm-ai-step"><i>🎯</i><div><b>บอกเป้าหมาย</b><span>อยากเรียนอะไร ระดับไหน งบเท่าไหร่ ชอบเมืองแบบไหน</span></div></div>
+        <div class="hm-ai-step"><i>🤖</i><div><b>AI จับคู่ให้</b><span>คัดมหาวิทยาลัยและหลักสูตรที่เข้าเงื่อนไข พร้อมเหตุผลว่าทำไมเหมาะ</span></div></div>
+        <div class="hm-ai-step"><i>💬</i><div><b>คุยต่อกับพี่ ๆ</b><span>ส่งผลให้ทีมช่วยเช็กคุณสมบัติ ทุน และวาง Timeline ต่อ — ฟรี</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 5. WHAT WE DO — Thailand → China journey ═══ -->
+<section class="hm-sec" id="hm-care" style="scroll-margin-top:90px">
+  <div class="hm-wrap">
+    <div class="hm-center">
+      <span class="hm-eyebrow">✦ บริการของเรา ✦</span>
+      <h2 class="hm-h2">ดูแลทุกขั้น <span>จากไทยถึงจีน</span></h2>
+      <p class="hm-lead">พี่ ๆ ไม่ได้แค่ส่งน้องไปจีน — กดดูแต่ละขั้นได้เลยว่าเราช่วยอะไรบ้าง</p>
+    </div>
+    <div class="hm-route" role="tablist" aria-label="ขั้นตอนการดูแล">{{STOPS}}
+    </div>
+    <div class="hm-route-ends" aria-hidden="true"><span>🇹🇭 ไทย</span><span>🇨🇳 จีน</span></div>
+    {{CAREPANELS}}
+    <div class="hm-cta" style="justify-content:center"><a class="hm-btn hm-out" href="https://chinesechiwchiw.com/บริการของเรา/">ดูบริการทั้งหมด →</a><a class="hm-btn hm-line" href="https://line.me/ti/p/~@chiwchiw" target="_blank" rel="noopener">💬 ปรึกษาทีมฟรี</a></div>
+  </div>
+</section>
+
+<!-- ═══ 6. STEPS ═══ -->
+<section class="hm-sec hm-white" id="hm-steps">
+  <div class="hm-wrap">
+    <div class="hm-center">
+      <span class="hm-eyebrow">✦ ขั้นตอนการสมัคร ✦</span>
+      <h2 class="hm-h2">ง่ายกว่าที่คิด <span>แค่ 5 ขั้นตอน</span></h2>
+    </div>
+    <div class="hm-steps">
+      <div class="hm-step hm-rv"><b>ทำ Quiz หรือ Chiwchiw Match</b><span>1 นาที บอกเป้าหมาย งบ และเมืองที่สนใจ</span></div>
+      <div class="hm-step hm-rv"><b>คุย 1:1 กับทีม (ฟรี)</b><span>เลือกมหาวิทยาลัย วางแผนสมัครและงบ ไม่มีข้อผูกมัด</span></div>
+      <div class="hm-step hm-rv"><b>วางมัดจำ ฿25,000</b><span>ยืนยันที่นั่งและเริ่มเอกสารทันที ที่นั่งมีจำกัดในแต่ละรุ่น</span></div>
+      <div class="hm-step hm-rv"><b>เอกสาร วีซ่า ที่พัก</b><span>พี่ ๆ ดูแลให้ น้องแค่เตรียมกระเป๋า</span></div>
+      <div class="hm-step hm-rv"><b>Pre-Departure → บินไปจีน ✈️</b><span>เจอเพื่อนร่วมรุ่น รับ Handbook แล้วเจอกันที่จีน</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 7. BIG VIDEO ═══ -->
+<section class="hm-sec">
+  <div class="hm-wrap">
+    <div class="hm-center">
+      <span class="hm-eyebrow">✦ ดูก่อนตัดสินใจ ✦</span>
+      <h2 class="hm-h2">ชีวิตจริงที่จีน <span>กับ Chiwchiw</span></h2>
+    </div>
+    <a class="hm-video hm-rv" href="https://www.youtube.com/watch?v=A8wcxJ0DjBM" data-yt="A8wcxJ0DjBM" target="_blank" rel="noopener" aria-label="เล่นวิดีโอ Chinese Chiwchiw">
+      <img src="https://i.ytimg.com/vi/A8wcxJ0DjBM/sddefault.jpg" srcset="https://i.ytimg.com/vi/A8wcxJ0DjBM/sddefault.jpg 640w, https://i.ytimg.com/vi/A8wcxJ0DjBM/maxresdefault.jpg 1280w" sizes="(max-width:980px) 100vw, 980px" alt="" loading="lazy" decoding="async" width="1280" height="720"><span class="hm-play"></span>
+    </a>
+    <div class="hm-cta" style="justify-content:center"><a class="hm-link" href="https://chinesechiwchiw.com/testimonials/">ดูวิดีโอน้อง ๆ เพิ่มเติม →</a></div>
+  </div>
+</section>
+
+<!-- ═══ 8. GALLERY ═══ -->
+<section class="hm-sec hm-white">
+  <div class="hm-wrap">
+    <div class="hm-center">
+      <span class="hm-eyebrow">#chiwchiwfamily</span>
+      <h2 class="hm-h2">น้อง ๆ ของเรา <span>ที่จีน</span></h2>
+      <p class="hm-lead">ภาพจริงจากค่าย ห้องเรียน และชีวิตประจำวันของน้อง ๆ ที่ไปกับ Chinese Chiwchiw</p>
+    </div>
+    <div class="hm-gal">{{GALLERY}}
+    </div>
+    <div class="hm-cta" style="justify-content:center"><a class="hm-link" href="https://www.facebook.com/Chinesechiwchiw/photos" target="_blank" rel="noopener">📸 ดูรูปเพิ่มเติมบน Facebook →</a></div>
+  </div>
+</section>
+
+<!-- ═══ 9. REVIEWS ═══ -->
+<section class="hm-sec">
+  <div class="hm-wrap">
+    <div class="hm-center">
+      <span class="hm-eyebrow">✦ รีวิวจริง ✦</span>
+      <h2 class="hm-h2">เสียงจาก <span>น้อง ๆ และผู้ปกครอง</span></h2>
+      <div class="hm-rev-top"><span aria-hidden="true">★★★★★</span> 70+ รีวิว 5 ดาว</div>
+    </div>
+    <div class="hm-revs">{{REVIEWS}}
+    </div>
+    <div class="hm-cta" style="justify-content:center"><a class="hm-btn hm-out" href="https://chinesechiwchiw.com/testimonials/">อ่านรีวิวทั้งหมด →</a></div>
+  </div>
+</section>
+
+<!-- ═══ 10. FOUNDER + ABOUT (dark, interactive) ═══ -->
+<section class="hm-sec hm-dark" id="hm-about">
+  <div class="hm-wrap">
+    <div class="hm-founder">
+      <div class="hm-f-photo hm-rv"><img src="{{FOUNDER}}" alt="นาเดียร์ ลาภอิทธิ ผู้ก่อตั้ง Chinese Chiwchiw" loading="lazy" decoding="async" width="560" height="700"><div class="hm-f-name">นาเดียร์ ลาภอิทธิ (เดียร์)<small>Founder & CEO · บริษัท ไชนีส ชิวชิว จำกัด</small></div></div>
+      <div>
+        <span class="hm-eyebrow">✦ About Our Founder ✦</span>
+        <h2 class="hm-h2">เคยเป็นเด็กที่ไปจีนคนเดียว <span>เลยอยากอยู่ข้าง ๆ น้อง</span></h2>
+        <div class="hm-pills"><span>🇨🇳 HSK 4 & 5</span><span>🇨🇳 Fudan University</span><span>🇬🇧 Queen Mary · LLB</span><span>🇬🇧 LSE · LLM</span></div>
+        <div class="hm-tl" role="tablist" aria-label="เส้นทางของเดียร์">
+          <button role="tab" aria-selected="true" aria-controls="hm-f1" id="hm-fb1">อายุ 15</button>
+          <button role="tab" aria-selected="false" aria-controls="hm-f2" id="hm-fb2">London</button>
+          <button role="tab" aria-selected="false" aria-controls="hm-f3" id="hm-fb3">2021</button>
+          <button role="tab" aria-selected="false" aria-controls="hm-f4" id="hm-fb4">LSE</button>
+          <button role="tab" aria-selected="false" aria-controls="hm-f5" id="hm-fb5">วันนี้</button>
+        </div>
+        <div class="hm-tl-box">
+          <div class="hm-tl-item" id="hm-f1" role="tabpanel" aria-labelledby="hm-fb1"><b>🇨🇳 ไปเรียนภาษาที่จีนคนเดียว</b><p>อายุ 15 สอบเทียบ IGCSE แล้วบินไปเรียนภาษาที่จีนคนเดียว — สอบผ่าน HSK 4 และ HSK 5 ภายใน 3 เดือน</p></div>
+          <div class="hm-tl-item" id="hm-f2" role="tabpanel" aria-labelledby="hm-fb2"><b>🇬🇧 ต่อที่ลอนดอน</b><p>เรียน A-levels ที่ลอนดอน แล้วต่อ LLB Law ที่ Queen Mary University of London</p></div>
+          <div class="hm-tl-item" id="hm-f3" role="tabpanel" aria-labelledby="hm-fb3"><b>🌱 ก่อตั้ง Chinese Chiwchiw</b><p>เริ่มตั้งแต่เรียน ป.ตรี ปี 1 จากคลาสภาษาจีนออนไลน์เล็ก ๆ</p></div>
+          <div class="hm-tl-item" id="hm-f4" role="tabpanel" aria-labelledby="hm-fb4"><b>🎓 LLM เกียรตินิยม จาก LSE</b><p>จบ LLM International Business Law เกียรตินิยม จาก London School of Economics</p></div>
+          <div class="hm-tl-item" id="hm-f5" role="tabpanel" aria-labelledby="hm-fb5"><b>🧡 ทำ Chinese Chiwchiw เต็มเวลา</b><p>ดูแลน้อง ๆ มาแล้ว 600+ คน เพื่อทำให้การศึกษาง่ายขึ้น และเด็กไทยทุกคนเข้าถึงได้</p></div>
+        </div>
+        <p class="hm-quote">“Make education easy and easily accessible.”<small>ทำให้การศึกษาง่ายขึ้น และเด็กไทยทุกคนเข้าถึงได้ — เดียร์, Founder & CEO</small></p>
+        <div class="hm-cta"><a class="hm-btn hm-ghost" href="https://chinesechiwchiw.com/เกี่ยวกับนาเดียร์/">อ่านเรื่องราวของเดียร์ →</a><a class="hm-btn hm-ghost" href="https://www.youtube.com/watch?v=m7MUU4qMkCg" target="_blank" rel="noopener">▶ ดูคลิปเรื่องราวของเดียร์</a></div>
+      </div>
+    </div>
+    <div class="hm-pillars">
+      <div class="hm-pillar hm-rv"><b>📚 เรียน</b><span>เริ่มจากการเป็นครู — สอนภาษาจีนเองตั้งแต่ Beginner ถึง HSK 6</span></div>
+      <div class="hm-pillar hm-rv"><b>✈️ ไป</b><span>ทำงานกับมหาวิทยาลัยในจีนโดยตรง ดูแลตั้งแต่สมัครจนถึงวันลงทะเบียน</span></div>
+      <div class="hm-pillar hm-rv"><b>💛 ชุมชน</b><span>Chiwchiw Family — มีเพื่อนร่วมรุ่นและรุ่นพี่ตั้งแต่ก่อนบินจนหลังเรียนจบ</span></div>
+      <div class="hm-pillar hm-rv"><b>🎁 ส่งต่อ</b><span>กำไรส่วนหนึ่งกลับมาเป็นทุน Chiwchiw Scholarship และ Roadshow แนะแนวในโรงเรียนไทย</span></div>
+    </div>
+    <div class="hm-partners"><strong>🎓 พาร์ทเนอร์ในจีน</strong><span>SCUT · กว่างโจว</span><span>SWUFE · เฉิงตู</span><span>SILC · เซี่ยงไฮ้</span><span>Qingdao City University</span><span>SCedu · เฉิงตู</span></div>
+    <p class="hm-legal">🏢 บริษัท ไชนีส ชิวชิว จำกัด · เลขทะเบียนนิติบุคคล 0205568033020 · จดทะเบียนภาษีมูลค่าเพิ่ม (ภ.พ.20) · <a class="hm-link" href="https://chinesechiwchiw.com/about/" style="color:#FFB347!important">เกี่ยวกับเรา →</a></p>
+  </div>
+</section>
+
+<!-- ═══ 11. FAQ ═══ -->
+<section class="hm-sec" id="hm-faq">
+  <div class="hm-wrap">
+    <div class="hm-center">
+      <span class="hm-eyebrow">✦ FAQ ✦</span>
+      <h2 class="hm-h2">คำถามที่ <span>เจอบ่อย</span></h2>
+    </div>
+    <div class="hm-faq">{{FAQ}}
+    </div>
+    <div class="hm-cta" style="justify-content:center"><a class="hm-btn hm-line" href="https://line.me/ti/p/~@chiwchiw" target="_blank" rel="noopener">💬 มีคำถามอื่น? ถามทีมทาง LINE</a></div>
+  </div>
+</section>
+
+<!-- ═══ 12. FINAL CTA ═══ -->
+<section class="hm-dark hm-final">
+  <div class="hm-wrap">
+    <h2>พร้อมเริ่ม <span>เส้นทางไปจีน</span> ของคุณหรือยัง?</h2>
+    <div class="hm-cta" style="justify-content:center">
+      <a class="hm-btn hm-pri" href="#hm-paths">🧭 ค้นหาโปรแกรมที่เหมาะกับฉัน</a>
+      <a class="hm-btn hm-line" href="https://line.me/ti/p/~@chiwchiw" target="_blank" rel="noopener">💬 ปรึกษาฟรี LINE @chiwchiw</a>
+    </div>
+    <p class="hm-ticks2">✓ ปรึกษาฟรี ไม่มีข้อผูกมัด · ✓ ผู้ปกครองคุยกับทีมได้โดยตรง · ✓ ดูแลตั้งแต่สมัครจนถึงจีน</p>
+    <p class="hm-eb">🔥 ค่ายเฉิงตู เม.ย. 2027 ราคา Early Bird ฿69,500 ถึง 30 ต.ค. นี้เท่านั้น</p>
+  </div>
+</section>
+
+</div>
+
+<script>
+/* keep this script free of the less-than sign: the site's output filter treats it as a tag start and re-encodes ampersands after it */
+(function(){
+  var root=document.getElementById('hm-page');if(!root)return;
+  root.classList.add('hm-js');
+  var still=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function tabs(btnSel,getPanel){
+    var bs=root.querySelectorAll(btnSel);
+    function pick(b,focus){bs.forEach(function(x){var on=x===b;x.setAttribute('aria-selected',on?'true':'false');x.tabIndex=on?0:-1;var p=getPanel(x);if(p)p.hidden=!on;});if(focus)b.focus();}
+    bs.forEach(function(b,i){
+      b.addEventListener('click',function(){pick(b);});
+      b.addEventListener('keydown',function(e){var k=e.key,j=-1;if(k==='ArrowRight'||k==='ArrowDown')j=(i+1)%bs.length;if(k==='ArrowLeft'||k==='ArrowUp')j=(i-1+bs.length)%bs.length;if(j+1){e.preventDefault();pick(bs[j],true);}});
+    });
+    var first=null;bs.forEach(function(x){if(x.getAttribute('aria-selected')==='true'&&!first)first=x;});pick(first||bs[0]);
+    return pick;
+  }
+  var byId=function(b){return document.getElementById(b.getAttribute('aria-controls'));};
+  var pickPath=tabs('.hm-tab',byId);
+  tabs('.hm-stop',byId);
+  tabs('.hm-tl button',byId);
+  /* "ฉันอยาก…" chips open the right path tab */
+  root.querySelectorAll('.hm-chip[data-tab]').forEach(function(a){a.addEventListener('click',function(e){
+    var b=document.getElementById('hm-t-'+a.getAttribute('data-tab'));if(!b)return;
+    e.preventDefault();pickPath(b);var p=byId(b);if(p)p.scrollIntoView({behavior:still?'auto':'smooth',block:'start'});
+  });});
+  /* hero: load slides 2-3 after the page, then crossfade every 7s */
+  var slides=root.querySelectorAll('.hm-slide');
+  window.addEventListener('load',function(){
+    slides.forEach(function(s){var u=s.getAttribute('data-bg');if(u)s.style.backgroundImage="url('"+u+"')";});
+    if(still||slides.length==1)return;
+    var i=0;setInterval(function(){slides[i].classList.remove('hm-on');i=(i+1)%slides.length;slides[i].classList.add('hm-on');},7000);
+  });
+  /* early bird countdown */
+  var cd=root.querySelector('.hm-cd');
+  if(cd){var end=Date.parse(cd.getAttribute('data-end'));
+    var tick=function(){var s=Math.floor((end-Date.now())/1000);if(0>=s){cd.parentNode.style.display='none';return;}
+      var d=Math.floor(s/86400),h=Math.floor(s%86400/3600),m=Math.floor(s%3600/60);cd.textContent='⏳ เหลือ '+d+' วัน '+h+' ชม. '+m+' นาที';};
+    tick();setInterval(tick,30000);}
+  /* video: load YouTube only on click */
+  var v=root.querySelector('.hm-video');
+  if(v)v.addEventListener('click',function(e){e.preventDefault();var f=document.createElement('iframe');
+    f.src='https://www.youtube-nocookie.com/embed/'+v.getAttribute('data-yt')+'?autoplay=1&rel=0';f.title='Chinese Chiwchiw video';
+    f.allow='autoplay; encrypted-media; picture-in-picture';f.allowFullscreen=true;v.textContent='';v.appendChild(f);},{once:true});
+  /* reveal */
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('hm-in');io.unobserve(e.target);}});},{threshold:.1});
+    root.querySelectorAll('.hm-rv').forEach(function(el){io.observe(el);});
+  }else{root.querySelectorAll('.hm-rv').forEach(function(el){el.classList.add('hm-in');});}
+})();
+</script>
+<script type="application/ld+json">
+{{FAQLD}}
+</script>
+<!-- FAQ JSON-LD: keep in sync with the visible FAQ above -->
