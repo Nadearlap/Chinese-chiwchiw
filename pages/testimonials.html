@@ -1,6 +1,7 @@
 <!-- Chinese Chiwchiw · Testimonials page (/testimonials/) · paste ALL of this into ONE Custom HTML block · reviews are real student reviews from the old testimonials page -->
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700;800;900&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700;800;900&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap');
 #tm-page{width:100vw!important;max-width:none!important;position:relative;left:50%;right:50%;margin-left:-50vw!important;margin-right:-50vw!important;margin-top:0!important;overflow-x:clip;background:#FFFBF7;color:#5C4A3E;font-family:'Noto Sans Thai',sans-serif;font-size:17px;line-height:1.8}
 #tm-page *,#tm-page *::before,#tm-page *::after{box-sizing:border-box}
 #tm-page a{text-decoration:none!important}
@@ -14,9 +15,10 @@
 .tm-lead{font-size:clamp(1rem,1.8vw,1.08rem);line-height:1.85;max-width:680px;margin:10px 0 0}
 .tm-center{text-align:center}.tm-center .tm-lead{margin-left:auto;margin-right:auto}
 /* hero */
-.tm-hero{--tm-img:url('https://chinesechiwchiw.com/wp-content/uploads/2026/10/chiwchiw-family-hero.webp');position:relative;isolation:isolate;overflow:hidden;background:#1A0A00 var(--tm-img) center 72%/cover no-repeat;color:#F5E9DD;padding:92px 0 0;text-align:center}
+.tm-hero{position:relative;isolation:isolate;overflow:hidden;background:#1A0A00;color:#F5E9DD;padding:92px 0 0;text-align:center}
 .tm-hero::before{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(26,10,0,.94) 0%,rgba(26,10,0,.86) 34%,rgba(26,10,0,.45) 58%,rgba(26,10,0,.12) 74%,rgba(26,10,0,.55) 88%,rgba(26,10,0,.92) 100%)}
 .tm-hero-gap{height:clamp(220px,30vw,380px)}
+#tm-page .tm-hero-img{position:absolute;inset:0;z-index:-2;width:100%!important;height:100%!important;max-width:none;object-fit:cover;object-position:50% 72%;margin:0;display:block}
 .tm-hero-foot{padding:0 0 34px}
 .tm-hero-cap{display:inline-flex;align-items:center;gap:8px;font-family:'Kanit',sans-serif;font-weight:600;font-size:.82rem;color:#fff;background:rgba(26,10,0,.55);border:1px solid rgba(255,255,255,.22);padding:6px 14px;border-radius:50px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
 .tm-hero .tm-stats{margin-top:22px}
@@ -123,7 +125,7 @@
 .tm-js .tm-rv{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
 .tm-js .tm-rv.tm-in{opacity:1;transform:none}
 @media (max-width:900px){.tm-scores,.tm-yts{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media (max-width:600px){.tm-yts{grid-template-columns:1fr}.tm-wrap{padding:0 16px}.tm-sec{padding:60px 0}.tm-hero{background-image:none}.tm-hero::before{background:radial-gradient(ellipse at 80% 10%,rgba(255,179,71,.22),rgba(255,179,71,0) 55%),linear-gradient(180deg,#1A0A00 0%,#1A0A00 40%,#2E1405 75%,#3A1A06 100%)}.tm-hero{display:flex;flex-direction:column;padding:68px 0 0}.tm-hero>.tm-wrap{position:relative;z-index:1}.tm-hero-gap{order:-1;position:relative;height:auto;aspect-ratio:1/1;margin:0 0 -30px;background:var(--tm-img) 50% 100%/cover no-repeat}.tm-hero-gap::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(26,10,0,0) 0%,rgba(26,10,0,0) 82%,rgba(26,10,0,.75) 93%,#1A0A00 100%)}.tm-hero-foot{padding-top:34px}.tm-hero-cap{display:none}.tm-hero .tm-stats{margin-top:0}.tm-stats{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:22px}.tm-stats div{padding:2px 6px}.tm-stats div+div{border-left:0}.tm-stats div:nth-child(even){border-left:1px solid rgba(255,179,71,.28)}.tm-scores{grid-template-columns:1fr}#tm-page .tm-btn{width:100%}.tm-socials{grid-template-columns:1fr;gap:12px}#tm-page .tm-soc{display:grid;grid-template-columns:48px 1fr;column-gap:14px;row-gap:0;align-items:center;padding:16px 16px 16px}.tm-soc-ico{grid-row:span 2;width:48px;height:48px;margin:0}.tm-soc-desc,.tm-soc-btn{grid-column:1/-1}.tm-soc-desc{margin-top:10px;font-size:.88rem}.tm-soc-meta{display:none}.tm-soc-btn{margin-top:12px;padding:10px 14px}.tm-stats b{font-size:2.1rem}.tm-stats span{font-size:.8rem;line-height:1.4}}
+@media (max-width:600px){.tm-yts{grid-template-columns:1fr}.tm-wrap{padding:0 16px}.tm-sec{padding:60px 0}.tm-hero::before{background:radial-gradient(ellipse at 80% 10%,rgba(255,179,71,.22),rgba(255,179,71,0) 55%),linear-gradient(180deg,#1A0A00 0%,#1A0A00 40%,#2E1405 75%,#3A1A06 100%)}.tm-hero{display:flex;flex-direction:column;padding:68px 0 0}.tm-hero>.tm-wrap{position:relative;z-index:1}.tm-hero-gap{order:-1;position:relative;height:auto;aspect-ratio:1/1;margin:0 0 -30px}#tm-page .tm-hero-img{z-index:0;object-position:50% 100%}.tm-hero-gap::after{content:'';position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(26,10,0,0) 0%,rgba(26,10,0,0) 82%,rgba(26,10,0,.75) 93%,#1A0A00 100%)}.tm-hero-foot{padding-top:34px}.tm-hero-cap{display:none}.tm-hero .tm-stats{margin-top:0}.tm-stats{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:22px}.tm-stats div{padding:2px 6px}.tm-stats div+div{border-left:0}.tm-stats div:nth-child(even){border-left:1px solid rgba(255,179,71,.28)}.tm-scores{grid-template-columns:1fr}#tm-page .tm-btn{width:100%}.tm-socials{grid-template-columns:1fr;gap:12px}#tm-page .tm-soc{display:grid;grid-template-columns:48px 1fr;column-gap:14px;row-gap:0;align-items:center;padding:16px 16px 16px}.tm-soc-ico{grid-row:span 2;width:48px;height:48px;margin:0}.tm-soc-desc,.tm-soc-btn{grid-column:1/-1}.tm-soc-desc{margin-top:10px;font-size:.88rem}.tm-soc-meta{display:none}.tm-soc-btn{margin-top:12px;padding:10px 14px}.tm-stats b{font-size:2.1rem}.tm-stats span{font-size:.8rem;line-height:1.4}}
 @media (prefers-reduced-motion:reduce){.tm-js .tm-rv{opacity:1;transform:none;transition:none}#tm-page .tm-btn{transition:none}}
 </style>
 
@@ -141,7 +143,7 @@
       <a class="tm-btn tm-btn-fb" href="https://www.facebook.com/Chinesechiwchiw/reviews" target="_blank" rel="noopener">⭐ รีวิวบน Facebook</a>
     </div>
   </div>
-  <div class="tm-hero-gap" role="img" aria-label="ภาพน้อง ๆ ครอบครัว Chinese Chiwchiw ในงาน Pre-Departure Event"></div>
+  <div class="tm-hero-gap"><img class="tm-hero-img" src="https://chinesechiwchiw.com/wp-content/uploads/2026/10/chiwchiw-family-hero-1280.webp" srcset="https://chinesechiwchiw.com/wp-content/uploads/2026/10/chiwchiw-family-hero-1280.webp 1280w, https://chinesechiwchiw.com/wp-content/uploads/2026/10/chiwchiw-family-hero.webp 1920w" sizes="(max-width:600px) 134vw, 100vw" width="1280" height="960" alt="ภาพน้อง ๆ ครอบครัว Chinese Chiwchiw ในงาน Pre-Departure Event" fetchpriority="high" decoding="async"></div>
   <div class="tm-wrap tm-hero-foot">
     <span class="tm-hero-cap">📸 Pre-Departure Event · ครอบครัว Chiwchiw</span>
     <div class="tm-stats">
