@@ -207,8 +207,7 @@ var top=function(){if(!moved&&window.scrollY)window.scrollTo(0,0);};top();docume
 .hm-dark{background:linear-gradient(135deg,#1A0A00 0%,#2E1405 60%,#3A1A06 100%);color:#EBD9C8}
 .hm-dark .hm-eyebrow{color:#FFB347;background:rgba(255,179,71,.12);border-color:rgba(255,179,71,.3)}
 #hm-page .hm-dark .hm-h2{color:#fff!important}#hm-page .hm-dark .hm-h2 span{color:#FFB347!important}
-.hm-founder{display:grid;grid-template-columns:.8fr 1.2fr;gap:44px;align-items:start}
-.hm-f-photo{position:sticky;top:100px}
+.hm-founder{display:grid;grid-template-columns:.8fr 1.2fr;gap:44px;align-items:center}
 .hm-f-photo{position:relative;border-radius:22px;overflow:hidden;aspect-ratio:4/5;box-shadow:0 18px 50px rgba(0,0,0,.35)}
 #hm-page .hm-f-photo img{width:100%;height:100%;object-fit:cover;margin:0}
 .hm-f-name{position:absolute;left:0;right:0;bottom:0;padding:40px 18px 16px;background:linear-gradient(0deg,rgba(26,10,0,.9),rgba(26,10,0,0));color:#fff;font-family:'Kanit',sans-serif;font-weight:700;line-height:1.35}
@@ -223,9 +222,9 @@ var top=function(){if(!moved&&window.scrollY)window.scrollTo(0,0);};top();docume
 .hm-map-y{display:inline-block;font-family:'Kanit',sans-serif;font-weight:800;font-size:.78rem;color:#1A0A00;background:#FFB347;border-radius:50px;padding:1px 10px;margin-right:8px;vertical-align:2px}
 .hm-map b{font-family:'Kanit',sans-serif;color:#fff;font-size:1.02rem}
 .hm-map p{margin:2px 0 0;font-size:.92rem;line-height:1.65}
-.hm-letter{margin-top:22px;background:rgba(255,255,255,.06);border:1px solid rgba(255,179,71,.25);border-radius:18px;padding:20px 22px}
+.hm-letter{margin-top:34px;padding:26px 30px!important;background:rgba(255,255,255,.06);border:1px solid rgba(255,179,71,.25);border-radius:18px;padding:20px 22px}
 .hm-letter-t{display:block;font-family:'Kanit',sans-serif;font-weight:800;color:#FFB347;margin-bottom:8px}
-.hm-letter p{margin:0 0 10px;font-size:.97rem;line-height:1.9;color:#F1E3D6}
+.hm-letter p{margin:0 0 12px;font-size:1.02rem;line-height:1.9;color:#F1E3D6}
 .hm-letter-s{display:block;text-align:right;font-family:'Kanit',sans-serif;font-weight:700;color:#FFB347}
 .hm-quote{margin:22px 0 0;padding-left:16px;border-left:3px solid #FFB347;font-size:1.02rem;color:#fff;font-style:italic}
 .hm-quote small{display:block;font-style:normal;color:#C8B4A2;font-size:.85rem;margin-top:4px}
@@ -248,7 +247,7 @@ var top=function(){if(!moved&&window.scrollY)window.scrollTo(0,0);};top();docume
 .hm-js .hm-rv{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
 .hm-js .hm-rv.hm-in{opacity:1;transform:none}
 @media (max-width:1000px){.hm-route{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:18px}.hm-route::before{display:none}.hm-steps{grid-template-columns:repeat(2,minmax(0,1fr))}.hm-gal{grid-auto-rows:160px}}
-@media (max-width:900px){.hm-four{grid-template-columns:repeat(2,minmax(0,1fr))}.hm-schol{grid-template-columns:1fr}.hm-schol-img{min-height:240px}.hm-panel,.hm-care,.hm-ai,.hm-founder{grid-template-columns:1fr}.hm-panel-img{min-height:220px}.hm-care-img{min-height:210px}.hm-revs{grid-template-columns:1fr}.hm-ai{padding:34px 26px}.hm-f-photo{max-width:380px;margin:0 auto;width:100%;position:relative;top:auto}}
+@media (max-width:900px){.hm-four{grid-template-columns:repeat(2,minmax(0,1fr))}.hm-schol{grid-template-columns:1fr}.hm-schol-img{min-height:240px}.hm-panel,.hm-care,.hm-ai,.hm-founder{grid-template-columns:1fr}.hm-panel-img{min-height:220px}.hm-care-img{min-height:210px}.hm-revs{grid-template-columns:1fr}.hm-ai{padding:34px 26px}.hm-f-photo{max-width:380px;margin:0 auto;width:100%}.hm-letter{padding:20px 18px!important}}
 @media (max-width:600px){.hm-wrap{padding:0 16px}.hm-sec{padding:64px 0}.hm-hero-in{padding:170px 16px 96px}.hm-hero::before{background:linear-gradient(180deg,rgba(26,10,0,.55) 0%,rgba(26,10,0,.82) 45%,rgba(26,10,0,.95) 100%)}
  #hm-page .hm-btn{width:100%}.hm-trust{gap:6px 16px;font-size:.88rem}.hm-quick-card{padding:16px}.hm-chips{gap:8px}#hm-page .hm-chip{font-size:.88rem;padding:8px 13px}
  .hm-promo{border-radius:18px;font-size:.88rem}.hm-tabs{gap:8px}#hm-page .hm-tab{font-size:.9rem;padding:8px 14px}.hm-panel-body{padding:22px 18px}.hm-care-body{padding:22px 18px}
@@ -527,16 +526,16 @@ var top=function(){if(!moved&&window.scrollY)window.scrollTo(0,0);};top();docume
           <li><span class="hm-map-y">LSE</span><b>🎓 LLM เกียรตินิยม</b><p>International Business Law, London School of Economics</p></li>
           <li><span class="hm-map-y">วันนี้</span><b>🧡 ทำ Chinese Chiwchiw เต็มเวลา</b><p>ดูแลน้อง ๆ มาแล้ว 600+ คน</p></li>
         </ol>
-        <p class="hm-quote">“Make education easy and easily accessible.”<small>ทำให้การศึกษาง่ายขึ้น และเด็กไทยทุกคนเข้าถึงได้ — เดียร์, Founder & CEO</small></p>
-        <div class="hm-letter">
-          <span class="hm-letter-t">💌 จากใจเดียร์</span>
-          <p>เดียร์ไม่ได้แค่ต้องการสร้างบริษัทเอเจนซี่ส่งนักเรียนไปประเทศจีน แต่เดียร์อยาก build community ที่ให้ความสำคัญกับการศึกษา และนำพานักเรียนไทยไปสู่โลกกว้าง ตัวเดียร์เองได้รับ opportunity หลายอย่าง และอยากส่งต่อโอกาสนี้ให้ทุก ๆ ท่าน</p>
-          <p>แต่เดียร์เข้าใจว่าโอกาสต้องมาพร้อมสิ่งอื่น ๆ ด้วย ทั้ง support, access to information และ guidance — การไปเรียนต่อต่างประเทศคนเดียวไม่ใช่เรื่องง่าย โดยเฉพาะตอนยังเด็ก ทั้งตัวน้องและผู้ปกครอง ตอนเดียร์อายุยังน้อย เดียร์เองก็กลัวและเป็นห่วงมาก</p>
-          <p>วันนี้เดียร์นำความสามารถ ความรู้ และโอกาสที่ได้รับ มาเป็นส่วนเล็ก ๆ ในการผลักดันการศึกษาและมอบโอกาส ตลอด 1 ปีกว่าที่เดียร์ dedicate ตัวเองให้กับโปรเจกต์นี้ เดียร์ได้สร้าง community และมอบทุนการศึกษามาแล้ว เดียร์หวังว่าจะได้เป็นส่วนหนึ่งใน journey การศึกษาของน้อง ๆ และเพื่อน ๆ และได้ร่วมสร้างโอกาส for the betterment of our society 🧡</p>
-          <span class="hm-letter-s">— เดียร์</span>
-        </div>
+        <p class="hm-quote">“Make education easy and easily accessible.”<small>ทำให้การศึกษาง่ายขึ้น และเด็กไทยทุกคนเข้าถึงได้ — นาเดียร์ (Nadear), Founder & CEO</small></p>
         <div class="hm-cta"><a class="hm-btn hm-ghost" href="https://chinesechiwchiw.com/เกี่ยวกับนาเดียร์/">อ่านเรื่องราวของเดียร์ →</a><a class="hm-btn hm-ghost" href="https://www.youtube.com/watch?v=m7MUU4qMkCg" target="_blank" rel="noopener">▶ ดูคลิปเรื่องราวของเดียร์</a></div>
       </div>
+    </div>
+    <div class="hm-letter hm-rv">
+          <span class="hm-letter-t">💌 จากใจเดียร์</span>
+          <p>เดียร์ไม่ได้แค่ต้องการสร้างบริษัทเอเจนซี่ส่งนักเรียนไปประเทศจีน แต่เดียร์อยาก build community ที่ให้ความสำคัญกับการศึกษา และนำพานักเรียนไทยไปสู่โลกกว้าง ตัวเดียร์เองได้รับ opportunity หลายอย่าง และอยากส่งต่อโอกาสนี้ให้ทุก ๆ ท่าน</p>
+          <p>แต่เดียร์เข้าใจว่าโอกาสต้องมาพร้อมสิ่งอื่น ๆ ด้วย ทั้ง support, access to information และ guidance — การไปเรียนต่อต่างประเทศคนเดียวไม่ใช่เรื่องง่าย โดยเฉพาะตอนยังเด็ก ทั้งตัวน้องและผู้ปกครอง ตอนเดียร์อายุยังน้อย เดียร์เองก็กลัว และคุณพ่อคุณแม่ก็เป็นห่วงมาก</p>
+          <p>วันนี้เดียร์จึงอยากนำความสามารถ ความรู้ และโอกาสที่ได้รับ มาเป็นส่วนเล็ก ๆ ในการผลักดันการศึกษาและมอบโอกาสให้ทุก ๆ คน ตลอด 1 ปีกว่าที่เดียร์ dedicate ตัวเองให้กับโปรเจกต์นี้ เดียร์ได้สร้าง community กว่า 150,000+ คน และมอบทุนการศึกษามาแล้ว 2 ท่าน เดียร์หวังว่าจะได้เป็นส่วนหนึ่งใน journey การศึกษาของน้อง ๆ และเพื่อน ๆ และได้ร่วมสร้างโอกาส for the betterment of our society 🧡</p>
+          <span class="hm-letter-s">— นาเดียร์ (Nadear)</span>
     </div>
 
   </div>
