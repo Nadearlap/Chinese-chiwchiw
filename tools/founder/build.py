@@ -25,11 +25,19 @@ HI={'yt':'<path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3
  'fb':'<path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>'}
 hero=''.join('<a class="nd-sbtn %s" href="%s" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true">%s</svg>%s</a>'%(k,u,HI[k],n) for k,n,h,u,c,d in S)
 cards=''.join('\n      <a class="nd-sc nd-rv" href="%s" target="_blank" rel="noopener" style="--c:%s"><i style="color:#fff">%s</i><span><b>%s</b><small>%s</small><em>%s</em></span></a>'%(u,c,ic(k,c),n,h,d) for k,n,h,u,c,d in S)
-SL=[('2026/03/IMG_2337.jpg','บนเวทีงาน ไปจีนกับ Chinese Chiwchiw'),('2026/03/IMG_2269-1.jpg','กับน้อง ๆ ในงานแนะแนว'),('2026/03/IMG_6007.jpg','กับน้อง ๆ ค่ายจีน'),
-    ('2026/03/6C210327-B2EE-40C5-B56F-0914123DD681_1_102_o.jpg','รับปริญญาที่ลอนดอน'),('2026/03/Nadear-grad-pic-edited.jpg','LSE graduation'),('2026/03/IMG_7712.jpg','ตีกอล์ฟ'),
-    ('2026/03/548925591_18053538578538044_6332023643666926458_n.jpg','มอบทุน Chinese Chiwchiw'),('2026/03/IMG_1963.png','วาดรูป'),('2026/03/DSC_4029.jpg','วันรับปริญญากับคนสำคัญ'),
-    ('2026/03/IMG_8543-1-e1773578097737.jpg','New York'),('2026/03/IMG_9523.jpg','London'),('2026/03/IMG_5057.jpg','Los Angeles'),('2026/03/IMG_1274.jpg','Harvard')]
-slides=''.join('<div class="nd-slide"><img src="%s" alt="%s" width="480" height="356" fetchpriority="low" decoding="async"></div>'%(ph(p,480,356),a) for p,a in SL)
+# MY LIFE slider: (path, alt, orientation p=portrait / l=landscape). Dear's new photos (nadearlap*) mixed with the originals.
+N='2026/10/nadearlap'
+SL=[(N+'.webp','ปาร์ตี้คริสต์มาสกับเพื่อน ๆ','l'),(N+'5.jpg','ช่อดอกไม้','p'),('2026/03/IMG_2337.jpg','บนเวทีงาน ไปจีนกับ Chinese Chiwchiw','p'),
+    (N+'2.webp','ตีเทนนิส','p'),(N+'11.jpg','กับทีมและพาร์ทเนอร์','l'),(N+'1.webp','งานวาดรูป','p'),('2026/03/Nadear-grad-pic-edited.jpg','LSE graduation','p'),
+    (N+'8.jpg','บนเวที Study Abroad Fair','p'),(N+'6.jpg','เที่ยวที่จีน','l'),(N+'3.jpg','ถ่าย vlog','p'),('2026/03/548925591_18053538578538044_6332023643666926458_n.jpg','มอบทุน Chinese Chiwchiw','l'),
+    (N+'14.jpg','รับปริญญาริมแม่น้ำเทมส์','p'),(N+'12.jpg','กับน้อง ๆ ในงาน','l'),(N+'7.jpg','กับเพื่อน','p'),(N+'10.jpg','กับน้อง ๆ งาน ไปจีนกับ Chinese Chiwchiw','p'),
+    ('2026/03/IMG_8543-1-e1773578097737.jpg','New York','p'),(N+'9.jpg','เจอพาร์ทเนอร์','p'),(N+'16.jpg','กินข้าวกับน้อง ๆ','p'),('2026/03/IMG_7712.jpg','ตีกอล์ฟ','p'),
+    (N+'13.jpg','วันรับปริญญา','p'),(N+'15.jpg','ให้คำปรึกษาผู้ปกครองและน้อง ๆ','l'),('2026/03/IMG_5057.jpg','Los Angeles','l'),('2026/03/IMG_2269-1.jpg','กับน้อง ๆ ในงานแนะแนว','p'),
+    ('2026/03/6C210327-B2EE-40C5-B56F-0914123DD681_1_102_o.jpg','รับปริญญาที่ลอนดอน','p'),('2026/03/IMG_1274.jpg','Harvard','p'),('2026/03/IMG_6007.jpg','กับน้อง ๆ ค่ายจีน','p')]
+def slide(p,a,o):
+    w,h=(460,340) if o=='l' else (290,380)
+    return '<div class="nd-slide nd-s%s"><img src="%s" alt="%s" width="%d" height="%d" loading="lazy" decoding="async"></div>'%(o,ph(p,w,h),a,w,h)
+slides=''.join(slide(*x) for x in SL)
 t=t.replace('{{HERO_SOCIAL}}',hero).replace('{{SOCIAL_CARDS}}',cards).replace('{{SLIDES}}',slides)
 assert '{{' not in t
 t=t.replace(' ๆ',' ๆ')
