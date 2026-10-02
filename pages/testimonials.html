@@ -53,12 +53,24 @@
 .tm-card header b{display:block;font-family:'Kanit',sans-serif;color:#1A0A00;font-size:1.02rem;line-height:1.3}
 .tm-pill{display:inline-block;font-size:.75rem;font-weight:700;border-radius:50px;padding:1px 10px;margin-top:3px}
 .tm-basic{background:#FFF0E2;color:#C2410C}.tm-hsk12{background:#E8F7F4;color:#0F766E}.tm-hsk3{background:#EEF2FF;color:#4338CA}.tm-hsk45{background:#F3E8FF;color:#6B21A8}
+.tm-cstars{color:#FFB300;font-size:.95rem;letter-spacing:2px;line-height:1;margin:0 0 8px}
 .tm-q{margin:0;font-size:.95rem;line-height:1.8}
 .tm-q::before{content:"“";font-family:'Kanit',sans-serif;color:#FFB347;font-size:1.6rem;line-height:0;vertical-align:-6px;margin-right:2px}
 .tm-js .tm-long .tm-q{display:-webkit-box;-webkit-line-clamp:6;-webkit-box-orient:vertical;overflow:hidden}
 .tm-js .tm-long.tm-open .tm-q{display:block}
 #tm-page .tm-more{align-self:flex-start;background:none;border:0;padding:6px 0 0;color:#FF6B00;font-family:'Kanit',sans-serif;font-weight:600;font-size:.9rem;cursor:pointer}
 .tm-card[hidden]{display:none!important}
+/* youtube */
+.tm-yts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin-top:32px}
+#tm-page .tm-yt{display:flex;flex-direction:column;gap:8px;color:#1A0A00!important}
+.tm-yt-thumb{position:relative;display:block;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#1A0A00;box-shadow:0 6px 20px rgba(0,0,0,.12)}
+#tm-page .tm-yt-thumb img,#tm-page .tm-yt-thumb iframe{position:absolute;inset:0;width:100%!important;height:100%!important;object-fit:cover;margin:0;border:0;max-width:none}
+.tm-yt-play{position:absolute;left:50%;top:50%;width:62px;height:44px;margin:-22px 0 0 -31px;border-radius:12px;background:rgba(255,0,0,.92);transition:transform .2s}
+.tm-yt-play::after{content:"";position:absolute;left:25px;top:13px;border-style:solid;border-width:9px 0 9px 15px;border-color:transparent transparent transparent #fff}
+#tm-page .tm-yt:hover .tm-yt-play{transform:scale(1.08)}
+.tm-yt-tag{font-family:'Kanit',sans-serif;font-weight:700;font-size:.78rem;color:#FF6B00}
+.tm-yt-title{font-family:'Kanit',sans-serif;font-weight:600;font-size:1rem;line-height:1.45}
+#tm-page .tm-btn-yt{background:#FF0000;color:#fff!important}
 /* facebook */
 .tm-fb{display:grid;grid-template-columns:1.2fr 1fr;gap:30px;align-items:center;background:#fff;border:1px solid #DCE6F7;border-radius:22px;padding:36px;box-shadow:0 6px 28px rgba(24,119,242,.08)}
 .tm-fb-badge{display:inline-flex;align-items:center;gap:8px;font-family:'Kanit',sans-serif;font-weight:700;color:#1877F2;font-size:.9rem;margin-bottom:8px}
@@ -77,8 +89,8 @@
 .tm-ticks{margin-top:22px;font-size:.92rem;color:#E6CDB4}
 .tm-js .tm-rv{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
 .tm-js .tm-rv.tm-in{opacity:1;transform:none}
-@media (max-width:900px){.tm-scores{grid-template-columns:repeat(2,minmax(0,1fr))}.tm-fb{grid-template-columns:1fr}}
-@media (max-width:600px){.tm-wrap{padding:0 16px}.tm-sec{padding:60px 0}.tm-hero{padding:72px 0 80px}.tm-scores{grid-template-columns:1fr}#tm-page .tm-btn{width:100%}.tm-fb{padding:24px 20px}.tm-stats b{font-size:1.6rem}}
+@media (max-width:900px){.tm-scores,.tm-yts{grid-template-columns:repeat(2,minmax(0,1fr))}.tm-fb{grid-template-columns:1fr}}
+@media (max-width:600px){.tm-yts{grid-template-columns:1fr}.tm-wrap{padding:0 16px}.tm-sec{padding:60px 0}.tm-hero{padding:72px 0 80px}.tm-scores{grid-template-columns:1fr}#tm-page .tm-btn{width:100%}.tm-fb{padding:24px 20px}.tm-stats b{font-size:1.6rem}}
 @media (prefers-reduced-motion:reduce){.tm-js .tm-rv{opacity:1;transform:none;transition:none}#tm-page .tm-btn{transition:none}}
 </style>
 
@@ -170,206 +182,299 @@
     <div class="tm-grid">
       <article class="tm-card" data-g="basic">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/Screenshot-2025-01-03-at-10.06.30-pm.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>จิว</b><span class="tm-pill tm-basic">พื้นฐาน</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">ลงเรียนพื้นฐานภาษาจีนกับเหล่าซือแชร์ แรกๆรู้สึกเกรงนิดนึงค่ะ เพราะหนูไม่ค่อยมีพื้นฐาน เรียนไปได้สักพักเริ่มคุ้นชินกับภาษาแล้วค่ะ เหล่าซือสอนดีมากๆๆๆ ดูตั้งใจสอนมากๆค่ะ ไม่เร็วไปหรือช้าไป เรียนไปไม่รู้สึกเครียดหรือกดดันเลยค่ะ</p>
       </article>
       <article class="tm-card" data-g="hsk45">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/Screenshot-2025-01-03-at-10.05.40-pm.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>ต้นอ้อ</b><span class="tm-pill tm-hsk45">HSK 4</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">ก็คือเดียร์สอนดีมากจากที่แบบปิดเทอมไม่ได้ทวนภาษาจีนเลยก็แบบอยากจะหาเวลามาทบทวน ตอนได้เริ่มเรียนกับเดียร์ตอนแรกก็แอบกังวลกลัวจะเกร็งๆไรงี้แต่แบบจริงๆคือเรียนสนุกไม่เครียดเลย ความรู้เรื่องมาก คำศัพท์ เทคนิคในการทำข้อสอบ ครบทุกเรื่องเอาจริง แถมได้แลกเปลี่ยนความรู้ประสบการณ์การเรื่องต่างๆด้วย คิดไม่ผิดเลยที่เลือกมาลงเรียน💖💖💖</p>
       </article>
       <article class="tm-card" data-g="basic">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/Screenshot-2025-01-03-at-10.03.22-pm.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>บิว</b><span class="tm-pill tm-basic">พื้นฐาน</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">รู้สึกสนุกดีค่ะ ได้ศัพท์ใหม่ๆ กับประโยคสื่อสารพื้นฐาน น้องเป็นกันเองมาก เหมือนเรียนกับเพื่อนค่ะ</p>
       </article>
       <article class="tm-card" data-g="basic">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/Screenshot-2025-01-03-at-9.34.20-pm.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>นุ่น</b><span class="tm-pill tm-basic">คอร์สพื้นฐาน</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">สวัสดีค่ะ 😆 พอดีมารีวิวเรียนครั้งแรกกับครูเฟรชชี่ค่ะ คือโดยส่วนตัวเป็นคนที่ไม่มีพื้นฐานภาษาจีนเลยค่ะ แล้วเคยเจอประสบการณ์ไม่ดีเกี่ยวกับภาษาจีนมาเมื่อก่อนด้วย แต่ว่าพอได้มาเรียนกับครูเฟรชชี่รู้สึกสบายใจมากเลยค่ะ เรียนสบายๆ ไม่เครียดเลยค่ะ สนุกด้วย ครูถามตลอดเลยว่าเข้าใจมั้ย เอาใจใส่มากๆ ค่อยเป็นค่อยไป คุยแนะนำทริคต่างๆ ความรู้รอบตัวเกี่ยวกับจีนต่างๆ เรียนแล้วรู้สึกมีกำลังใจในการเรียนภาษาจีนมากเลยๆค่ะ 🥺👍🏻</p>
       </article>
       <article class="tm-card" data-g="basic">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/Screenshot-2025-01-04-at-1.05.39-pm.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>น้ำ</b><span class="tm-pill tm-basic">พื้นฐาน – HSK 2</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">พี่เดียร์สอนดีมากค่ะ เป็นกันเอง สอนเข้าใจ น่ารักมากๆเหมือนได้พี่สาวคนสวยมาเพิ่ม ตั้งแต่เรียนมาก็ไม่เครียด สบายใจและก็เข้าใจมากขึ้นค่ะ</p>
       </article>
       <article class="tm-card" data-g="basic">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/student-1.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>พราว</b><span class="tm-pill tm-basic">คอร์สพื้นฐาน</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">เรียนกับพี่โฟร์สนุกมากๆเลยค่ะไม่เกร็งไม่เครียดเป็นกันเองมากๆเลยค่ะตอนแรกนึกว่ามาเรียนแบบคนเดียวจะเครียดแต่พอได้มาเรียนจริงๆคือไม่เครียดเลยค่ะ ได้คำศัพท์เพิ่มได้รู้พื้นฐานหลายๆอย่างมากกว่าเดิมด้วยค่ะ😻💞</p>
       </article>
       <article class="tm-card" data-g="basic">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/student-2.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>หยก</b><span class="tm-pill tm-basic">คลาสพื้นฐาน</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">ในตอนแรกค่อนข้างกังวลค่ะ ว่าจะเรียนได้รึเปล่า เพราะปกติเป็นคนหัวช้า แต่พอได้เรียนจริง ๆ ไม่ได้เป็นอย่างที่คิดค่ะ ครูใจเย็นมาก ค่อย ๆ อธิบาย เราผิดตรงไหน ก็บอกให้แก้ ข้อควรระวังต่าง ๆ ของเนื้อหาไวยกรณ์ ครูก็สอนตลอด ส่วนไหนที่สงสัยพอถาม ครูก็อธิบายเข้าใจค่ะ ระหว่างเรียนครูจะคอยถามตลอด เหมือนเป็นการ check ความเข้าใจตัวเราเองด้วย แต่บรรยากาศตอนเรียนไม่ได้กดดันหรือตึงเครียดค่ะ ค่อนข้างสบาย เป็นกันเองทำให้เวลาเรียนไม่ได้น่าเบื่อค่ะ</p>
       </article>
       <article class="tm-card" data-g="basic">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/student-3.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>หนึ่ง</b><span class="tm-pill tm-basic">คอร์สพื้นฐาน</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">ได้คำแนะนำการเขียนตัวจีน ได้ความรู้รอบตัวเกี่ยวกับประเทศจีนที่ครูเอามาเล่าให้ฟัง และเรียนสนุกเป็นกันเอง เรียนแล้วชอบมากค่ะ</p>
       </article>
       <article class="tm-card" data-g="hsk12">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/student-4.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>กิ๊ง</b><span class="tm-pill tm-hsk12">HSK 1</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">ครูฝ้ายเป็นกันเองมากค่า เหมือนคุยกับเพื่อน เรียนกับครูฝ้ายเข้าใจมากขึ้น สอนศัพท์แล้วก็วิธีจำให้จำง่ายขึ้น แทรกไวยากรณ์ให้ตลอด ครูฝ้ายมีประสบการณ์ถามอะไรก็อธิบายได้หมดเลย</p>
       </article>
       <article class="tm-card" data-g="basic">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/student-5.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>ต้นหอม</b><span class="tm-pill tm-basic">พื้นฐาน</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">ได้เทคนิคการออกเสียงเยอะมากเลยค่ะ ครูธีมใจดีและใจเย็นมากๆ หนูเป็นคนที่ได้หน้าลืมหลังแต่ครูธีมก็กลับมาทวนให้ตลอดเลยอีกอย่างครูธีมสอนสนุกมากเลยค่ะ</p>
       </article>
       <article class="tm-card" data-g="basic">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/student-6.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>น้ำอุ่น</b><span class="tm-pill tm-basic">คอร์สพื้นฐาน</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">ตอนเริ่มเรียนเกร็งมาก เเต่พี่ที่สอนน่ารักมากเลยค่า เป็นกันเองมากๆ สอนละเอียด เข้าใจมากขึ้นเยอะเลยค่ะ ทำสื่อให้ สามารถถามคำถามได้ตลอดเลย ตอนเเรกไม่เข้าใจแกรมม่าเลย พี่ที่สอนอธิบายจนเข้าใจ ใจเย็นมาก น่ารักมากเลยค่ะ รวมๆเเล้วดีมากเลยค่ะ ถ้าจบคอร์สคิดว่าต่ออีกคอร์สเเน่นอนค่ะ</p>
       </article>
       <article class="tm-card" data-g="basic">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/student-7.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>ฟีย์</b><span class="tm-pill tm-basic">พื้นฐาน</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">ครูเฟรชชี่สอนดีมากค่ะ ส่วนตัวไม่มีพื้นฐานเลยนะคะ แต่ไม่กังวลเลยค่ะ เพราะครูคอยแนะนำเทคนิคการจำการอ่านให้อยู่เสมอ ไม่กดดันเลยค่ะ</p>
       </article>
       <article class="tm-card" data-g="basic">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/student-8.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>ขนมผิง</b><span class="tm-pill tm-basic">พื้นฐาน</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">พี่โฟสอนดีมากๆเบยคั้บ สอนเข้าใจมากกก เวลายกตัวอย่างก็ยกตัวอย่างได้เห็นภาพ น่ารักเป็นกันเองมากๆเบย เรียนสบายๆไม่เครียด ได้คำศัพท์กับแกรมม่ามาเยอะมากๆ หนูลืมคำไหนก็คอยบอกคอยทวนให้ตลอดเลย🥺💞</p>
       </article>
       <article class="tm-card" data-g="basic">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/student-9.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>ข้าวฟ่าง</b><span class="tm-pill tm-basic">พื้นฐาน</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">พี่เฟรชชี่สอนเข้าใจง่ายสนุก เป็นกันเองและก็จะคอยถามตลอดว่าเข้าใจไหม ยากไหม เวลาออกเสียงไม่ถูกก็จะช่วยสอนช่วยบอก มีเทคนิคต่างๆนำมาให้ใช้ สนุกมากค่าาไม่น่าเบื่อเลย✨🫀🤏🏻</p>
       </article>
       <article class="tm-card" data-g="basic">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/student-10.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>ผักกาด</b><span class="tm-pill tm-basic">พื้นฐาน</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">ตอนเเรกที่ยังไม่ได้เรียนรู้สึกกังวลมากค่ะ แต่พอได้เรียนกับครูเฟรชชี่แล้วรู้สึกหายกังวลไปเลยค่ะ สบายใจขึ้น ระหว่างสอนมีพูดคุยบ้างทำให้ไม่รู้สึกเครียดมากไปค่ะ</p>
       </article>
       <article class="tm-card" data-g="hsk12">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/student-11.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>ซินซิน</b><span class="tm-pill tm-hsk12">HSK 1</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">พี่ทีมสอนสนุก เป็นกันเองมากๆค่ะ ค่อยเป็นค่อยไป ค่อยๆปูพื้นฐาน อธิบายในส่วนที่ไม่เข้าใจ ไม่เครียดเลยค่ะ 😄</p>
       </article>
       <article class="tm-card" data-g="basic">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/student-12-e1735995242270.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>แพร</b><span class="tm-pill tm-basic">พื้นฐาน</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">วันนี้เรียนกับ ping ping เหล่าซือ สนุกมากเลยค่ะ สอนเข้าใจง่าย เป็นกันเอง แบบ ฟีลเพื่อนเลย อธิบาย เข้าใจง่ายมากๆเลยคะ ไม่เคลียดเลย 🥰🥰🥰🥰</p>
       </article>
       <article class="tm-card" data-g="basic">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/student-13.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>ปุ๊กปิ๊ก</b><span class="tm-pill tm-basic">พื้นฐาน</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">พี่ปิงสอนสนุกมากๆ เวลาเรียนคำศัพท์ก็มักจะสอนคำใหม่ๆอยู่เสมอ อธิบายละเอียด บางครั้งเจอคำคัพท์ที่น่าจนใสก็จะพูดคุยแลกเปลี่ยนกันบ้างทำให้คลาสไม่น่าเบื่อเลยย</p>
       </article>
       <article class="tm-card" data-g="basic">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/student-14.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>จิ๊กกี๋</b><span class="tm-pill tm-basic">พื้นฐาน</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">ส่วนตัวเรียนกับพี่ปิงปิงแล้วรู้สึกสนุกมากเลยค่ะ ไม่เกร็งเลย ละก็รู้สึกเป็นกันเองมากๆ เนื้อหาก็รู้สึกพี่ปิงปิงสอนละเอียดมากเลยค่ะแบบเน้นเพื่อให้นำไปใช้จริงได้ในชีวิตประจำวันด้วย ไม่ใช่แค่สอบhsk อย่างเดียว แถมยังใส่ใจมากๆเลยค่ะคอยถามตลอดว่าไหวไหม งงตรงไหนรึป่าว อยากพักสักแปปไหม อบอุ่นสุดๆเลยค่า;\\\</p>
       </article>
       <article class="tm-card" data-g="basic">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/student-15.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>ภีม</b><span class="tm-pill tm-basic">พื้นฐาน</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">สนุกครับ พี่ฟองแฟงสอนดีมากคับ ไม่กดดันจนเกินไป ไม่ง่ายไปไม่ยากไป พอดีคับ และพี่ฟองแฟงยังให้ทริคในการจำตัวจีนต่างๆด้วยคับ</p>
       </article>
       <article class="tm-card" data-g="basic">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/student-16.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>พลอย</b><span class="tm-pill tm-basic">พื้นฐาน</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">เรียนกับครูเฟรชชี่ ครูน่ารักมากค่ะสอนเน้นย้ำให้เราออกเสียงถูกตั้งเเต่เเรกๆเลยคุยสนุกเป็นกันเองมากเลยค่ะ</p>
       </article>
       <article class="tm-card" data-g="hsk12">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/student-17.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>จอย</b><span class="tm-pill tm-hsk12">HSK 1</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">เรียนกับครูธีมสนุกมากค่ะ ได้คำศัพท์ค่อนข้างเยอะ ครูธีมสอนเข้าใจง่ายค่ะและคอยถามตลอดว่าเราเรียนทันมั้ย เรียนไหวรึป่าวค่ะ</p>
       </article>
       <article class="tm-card" data-g="hsk45">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/Student-18.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>ซาร่า</b><span class="tm-pill tm-hsk45">HSK 4</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">เรียนกับเหล่าซือเเชร์ตื่นเต้นมากค่ะ ตอนเเรกๆนี่หนักเลยเหล่าซือไปเร็วอยู่พูดไวมากนะคะ55😂 เหล่าซือสอนละเอียดมากกบางทีรู้สึกกดดันตัวเองอยู่นะคะ ไม่ใช่เพราะเหล่าซือกดดันเรานะคะ เเต่เกรงใจเหล่าซือ ไม่อยากทำให้เหล่าซือเหนื่อยกับตัวเอง ข้อดีคือมันทำให้เราขยันเเล้วก็กระตือรือร้นขึ้น เเต่เหล่าซือใจดีนะคะ สงสัยอะไรถามเลย เรียนเสร็จจะมีสรุปมาให้ได้ทบทวนทีหลัง ตอนไหนไม่ได้เรียนก็คิดถึงเหล่าซือเลยค่ะ โดยรวมเรียนเเล้วชอบมากเลยค่ะ 😁😁</p>
       </article>
       <article class="tm-card" data-g="hsk45">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/student-19.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>เอ๋ย</b><span class="tm-pill tm-hsk45">HSK 3-4</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">พี่เฟิร์นสอนดีมากเรียนสนุกไม่เครียดเลยค่ะได้คำศัพท์ใหม่ๆตลอดเลยเป็นกันเองมากเลยแล้วก็ให้คำแนะนำดีมากกด้วยค่า</p>
       </article>
       <article class="tm-card" data-g="hsk3">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/student-20.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>ซ่า</b><span class="tm-pill tm-hsk3">HSK 3</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">ตอนแรกหนูแอบเกร็งไม่กล้าที่จะคุยกับเหล่า เพราะนี้คงอาจจะเป็นครั้งแรกที่เรียนเดี่ยว แต่ครูก็ทำให้หนูหายเกร็ง เพราะ สอนเป็นกันเองมาก ได้ไวยากรณ์และคำศัพท์เยอะเลย คำที่อ่านไม่ออกครูก็คอยบอก อธิบายตั้งแต่เริ่มทำข้อสอบมันพาร์ทนี้มันต้องทำยังไง มีเทคนิคยังไง ข้อไหนที่ผิดครูก็จะมาอธิบายเป็นทีละข้อ ซึ่งทำให้หนูเข้าใจขึ้นเยอะมาก เอนจอยเวอร์😁👍🏻</p>
       </article>
       <article class="tm-card" data-g="hsk3">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/student-21.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>มุก</b><span class="tm-pill tm-hsk3">HSK 3</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">เรียนกับพี่ปุยฝ้ายโอเคเลยค่า พี่ฝ้ายใจดี สอนเป็นกันเอง เวลาจำคำศัพท์ไม่ได้พี่ฝ้ายก็คอยบอกคอยแปลให้ตลอดเลยค่ะ ทำให้ได้รู้คำศัพท์เยอะมาก และทำให้รู้ว่าคำศัพท์สำคัญมากๆ เราต้องทบทวนบ่อยๆและคัดศัพท์เยอะๆ</p>
       </article>
       <article class="tm-card" data-g="hsk3">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/student-22-e1735996703700.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>ซีซ่า</b><span class="tm-pill tm-hsk3">HSK 3</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">สอนเข้าใจสอนสนุกชอบวิธีการสอนมากมีการให้ฝึกความมั่นใจด้วยเพราะหนูไม่ค่อยมั่นใจในการออกเสียงค่ะแล้วก็ชอบที่มีการสอดแทรกประวัติศาสตร์จีนในคลาสค่ะทำให้รู้สึกเข้าถึงประเทศจีนแล้วเข้าใจคำศัพท์ได้ลึกซึ่งขึ้นค่ะ</p>
       </article>
       <article class="tm-card" data-g="hsk45">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/student-23.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>ไข่มุก</b><span class="tm-pill tm-hsk45">HSK 4</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">ตอนแรกก็แอบกังวลนิดนึงค่ะ เพราะต้องเรียนตัวต่อตัว แต่พี่แชร์น่ารักมากๆๆ เป็นกันเองสุดๆ สอนเข้าใจ มีทริคในการทำข้อสอบให้ง่ายขึ้น เวลามีการบ้านที่ไม่เข้าใจพี่แชร์ก็คอยช่วย แนะนำให้ ตัดสินใจถูกมากๆๆที่เลือกเรียนภาษาจีนกับชิวชิว</p>
       </article>
       <article class="tm-card" data-g="hsk12">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/student-24.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>มิ้น</b><span class="tm-pill tm-hsk12">HSK 2</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">รีวิวเรียนกับพี่โฟร์หนูอ่านคล่องมากขึ้นเยอะเลยค่ะแล้วก็ใช้ไวยกรณ์คล่องขึ้นมากกว่าเมื่อก่อนด้วยค่ะ พี่โฟร์สอนเข้าใจง่ายแล้วก็แทรกคำศัพท์เพิ่มให้ด้วยได้คำศัพท์เยอะมากขึ้นด้วยค่ะ</p>
       </article>
       <article class="tm-card" data-g="hsk3">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/student-25.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>Ink</b><span class="tm-pill tm-hsk3">HSK 2-3</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">รีวิวคลาสแรกกับครูเฟรชชี่ค่ะ ครูเฟรชชี่สอนดีมากๆๆๆๆเวลาเรียนไม่รู้สึกเครียดหรือกดดันเลย ครูใส่ใจมากๆคอยถามตลอดว่าไม่เข้าใจหรือว่าเร็วไปมั้ย อธิบายเข้าใจง่ายมากค่ะ</p>
       </article>
       <article class="tm-card" data-g="hsk45">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/student-27.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>เนเน่</b><span class="tm-pill tm-hsk45">HSK 4</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">เเรียนกับชิวชิวดีมากเลยค่า คุณครูสอนดีมากมาก สอนเข้าใจละเอียดมาก เน้นแกร่มม่า เน้นคำศัพท์ ถามตลอดเลยว่าไม่เข้าใจตรงไหน คุณครูใจดีมากๆเลยค่า เป็นกันเองมาก เรียนแล้วสบายใจไม่เกร็งเลยค่า แฮปปี้สุดๆ💘💘</p>
       </article>
       <article class="tm-card" data-g="hsk3">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/student-28.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>มีมี่</b><span class="tm-pill tm-hsk3">HSK 3</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">เรียนสนุกมากค่ะ ได้คำศัพท์ใหม่เยอะมากๆเลย เข้าใจง่าย เป็นกันเองมากๆค่ะ รู้สึกว่าเรียนที่นี่เเล้วได้อะไรกลับมาเยอะมากเลยค่า🙇‍</p>
       </article>
       <article class="tm-card" data-g="hsk3">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/student-29.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>ตัส</b><span class="tm-pill tm-hsk3">HSK 3</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">เอาตรงๆตอนเเรกก็คิดมากอยู่นะคับ เพราะว่าเป็นการเปิดใจลองเรียนพิเศษแบบตัวต่อตัวครั้งเเรก กลัวว่าแบบ มันจะกดดันมั้ย จะเครียดหรือเปล่า แต่พอได้เริ่มเรียนจริงๆแล้วก็รู้สึกโอเคขึ้นมาเลยคับ เพราะเหล่าซรือสอนเป็นกันเองมาก ไม่เครียดเลย อีกอย่างเหล่าซรือสอนละเอียดมาก!!! ได้ความรู้แบบเต็มๆ ประทับใจมากเลยคับบ 💕☺️</p>
       </article>
       <article class="tm-card" data-g="hsk45">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/student-30.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>หยดฝน</b><span class="tm-pill tm-hsk45">HSK 4</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">ก่อนหน้านี้ตอนเรียนคอร์สติว HSK4 ชอบมากๆเลยค่ะ พี่อธิบายคำศัพท์แต่ละคำได้เข้าใจง่ายมากเลย ส่วนคอร์ส 汉语教程 ก็ชอบเหมือนกัน คอร์สนี้ได้เรียนแกรมม่าที่ละเอียดกว่าเยอะเลย เวลาอธิบายแกรมม่าแต่ละอันก็เข้าใจง่าย เวลาเฉลยแบบฝึกหัดก็อธิบายละเอียดมาก แล้วคอร์สนี้ก็มีได้อ่านออกเสียงด้วย(ทำให้ได้รู้ว่าหนูต้องไปฝึกด้วยตัวเองอีกเยอะอยู่5555) รวมๆแล้วประทับใจมากค่ะ 🥺</p>
       </article>
       <article class="tm-card" data-g="hsk45">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/student-31.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>ลูกหยี่</b><span class="tm-pill tm-hsk45">HSK 5</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">เริ่มแรกที่ได้มาเรียนกับพี่เดียร์คือไม่เคยสอบHSKมาก่อนเลยค่ะ แต่พอได้เรียนด้วย กลายเป็นว่าหนูจำศัพท์HSK4ได้หมดเลยยย แล้วก็ได้พื้นฐานภาษาจีนที่เเน่นขึ้นมากๆ แต่เสียดายที่ช่วงนั้นโควิดกำลังระบาด สนามสอบก็เลยยังไม่เปิด จนหนูได้มาเรียนhsk5ต่อ จนตอนนี้กลายเป็นว่าหนูข้ามมาสอบHSK5ผ่านได้เเล้วค่ะ เวลาเรียนกับพี่เดียร์คือรู้สึกสบายใจมาก แล้วก็สนุกมาก พี่เดียร์เป็นคนที่พอเรียนไปด้วยเรื่อยๆ แล้วเราได้แพชชั่นจากพี่เดียร์ไปด้วย เป็นคนที่เติมไฟให้กันและกันดีมากๆ รู้สึกดีใจมากๆที่ได้มาเรียนกับchinese chiwchiw</p>
       </article>
       <article class="tm-card" data-g="hsk3">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/student-32.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>นัสซี</b><span class="tm-pill tm-hsk3">HSK 3</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">พี่ปิงน่ารักมากเลยค่ะสอนเข้าใจง่ายค่อยๆเป็นค่อยๆไปเชียร์อัพตลอด ไม่ได้ทำให้รู้สึกว่ากดดันหรือเครียดค่ะ พี่ปิงคอยถามตลอดเลยว่าสอนเร็วไปมั้ยช้าไปหรือเปล่าใส่ใจกับการสอนมากที่1เลยค่ะ 🙆🏻‍♀️💗</p>
       </article>
       <article class="tm-card" data-g="hsk3">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/student-33.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>พลอย</b><span class="tm-pill tm-hsk3">HSK 3</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">ครูน่ารักมากค่าา น่ารักม๊ากกก ถามได้ทุกอย่างเลย ใจดี เป็นกันเอง สอนเข้าใจง่ายมากค่ะ</p>
       </article>
       <article class="tm-card" data-g="hsk45">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/student-34.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>หยดฝน</b><span class="tm-pill tm-hsk45">HSK 4</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">คุณครูน่ารักค่ะ ค่อนข้างเป็นกันเอง สอนเข้าใจง่ายด้วยค่ะ ตอนเรียนอธิบายวิธีใช้คำศัพท์กับความหมายชัดเจนมาก</p>
       </article>
       <article class="tm-card" data-g="hsk45">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/student-35.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>เนย</b><span class="tm-pill tm-hsk45">HSK 4</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">ดีมากค่า สอนเข้าใจง่าย ไปเรื่อยๆ ไม่เครียด แล้วก็อธิบายชัดเจน คอยถามว่าทันมั้ยเข้าใจมั้ยตลอดเลยค่า</p>
       </article>
       <article class="tm-card" data-g="hsk3">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/student-36.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>มะเหมี่ยว</b><span class="tm-pill tm-hsk3">HSK 3</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">รีวิวเรียนกับคุณครูเฟรชชี่วันแรกนะคะ ตอนคุยกันตอนแรกก็เกร็งๆนิดหน่อย ตอนนี้ขึ้นแล้วค่ะ ช่วงแรกพี่เขาสอนค่อนข้างเร็วแต่พอรู้ว่าหนูไม่ค่อยได้ตอนนี้ก็ปรับความเร็วลงมาแล้วล่ะค่ะ มีคุยเรื่องทุนไปต่อที่ประเทศจีนด้วยค่ะได้ความรู้ใหม่ๆมาด้วยค่ะ และก็วันนี้ได้เรียนศัพท์ใหม่จากพี่เขาเยอะมากเลยค่าาา 😊</p>
       </article>
       <article class="tm-card" data-g="hsk3">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/student-37.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>ใบหยก</b><span class="tm-pill tm-hsk3">HSK 3</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">เรียนสนุกนะคะได้อะไรใหม่ๆเยอะขึ้นค่ะ คอยถามตลอดว่าเข้าใจมั้ย มีหลายอย่างที่ไม่รู้พี่เขาก็จะบอกค่ะ เป็นกันเองมากๆค่ะแต่บางครั้งก็แอบเกร็งนะคะ55555เพราะเป็นคนไม่ชอบพูดเท่าไหร่ รวมๆแล้วดีมากเลยค่ะ(รับทราบ) เอาไปเลย1นิ้วโป้งและ2นิ้วโป้ง!เอาไปเลยยย</p>
       </article>
       <article class="tm-card" data-g="hsk45">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/student-38.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>ใบหยก</b><span class="tm-pill tm-hsk45">HSK 4</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">สวัสดีค่า มารีวิวเรียนกับพี่เฟรชชี่ค่า พี่เฟรชชี่เฟรนลี่มากๆ(น่ารักด้วย) เรียนเเบบค่อยๆไป เข้าใจง่าย มีปัญหาจุดไหนถามได้ตลอด เต็ม10คะเนนให้100เลยค่ะ</p>
       </article>
       <article class="tm-card" data-g="hsk45">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/student-39.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>Baiwan</b><span class="tm-pill tm-hsk45">จบ HSK 3/4 ภายใน 1 คอร์ส</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">พี่เดียร์สอนดีมากๆ ไปเรื่อยๆไม่เครียด เรียนแล้วรู้สึกว่าตัดสินใจถูกที่เรียนที่นี่ ได้ลองทำโจทย์แบบจริงจัง ข้อไหนผิดพี่เดียร์ก็ค่อยๆอธิบายจนกว่าเข้าใจ ชอบมากค่า👍🏻✨</p>
       </article>
       <article class="tm-card" data-g="hsk45">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/student-40.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>บุ๋มบิ๋ม</b><span class="tm-pill tm-hsk45">กลุ่ม HSK 4</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">แรกๆอาจจะมีเกร็งๆบ้างแต่คิดว่าต่อไปน่าจะชินค่ะ5555555แล้วก็สอนดีมากๆๆ เข้าใจง่ายด้วยตรงไหนที่ผิดก็มาสอนย้ำอีกรอบส่วนตัวเราคิดว่าดีมากๆเลยค่ะ</p>
       </article>
       <article class="tm-card" data-g="hsk3">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/student-41.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>แพรวา</b><span class="tm-pill tm-hsk3">กลุ่ม HSK 3</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">เหล่าซือแชสอนเป็นกันเองมากเลย มาเรียนวันเเรกก็เกรงนิดนึง(เป็นที่เราเองนะ😂)แต่พอเรียนไปซักชม.นึงก็สบายๆเลยกล้าถามมากขึ้น แล้วเหล่าซือก็อธิบายให้เข้าใจดีมาก มีให้ฝึกพูดฝึกอ่านด้วย เราอ่านไม่ถูกเหล่าซือก็ช่วยแก้ให้ แบบไม่ได้ว่าเราว่าทำไมเราอ่านไม่ได้นะ💖</p>
       </article>
       <article class="tm-card" data-g="hsk3">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/student-42.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>นุ่มนิ่ม</b><span class="tm-pill tm-hsk3">กลุ่ม HSK 3</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">เหล่าซือแชร์ สอนดีมากเลยค่า เข้าใจง่ายเป็นกันเอง ค่อยๆอธิบายผิดข้อไหนเหล่าซือก็ค่อยๆอธิบาย หนูเป็นคนที่ไม่ค่อยแน่นเกี่ยวกับคำศัพท์เหล่าซือก็ค่อยๆป้อนคำศัพท์ให้ ดีมากเลยค่า</p>
       </article>
       <article class="tm-card" data-g="basic">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/student-44.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>พิม-พรีม</b><span class="tm-pill tm-basic">คอร์สพื้นฐาน</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">สอนเข้าใจง่ายค่ะตอนพูดพี่ฝ้ายทำท่าทางให้ดูด้วยเลยเข้าใจง่ายขึ้นไม่เร็วเกินไป”(พรีม) “สอนสนุกค่ะ ไม่เครียด สอนไม่เร็วเกินไปด้วยค่ะ พี่ฝ้ายใจดีมั๊กๆ💓”(พิม)</p>
       </article>
       <article class="tm-card" data-g="hsk3">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/student-45.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>เฌอ</b><span class="tm-pill tm-hsk3">กลุ่ม HSK 3</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">เรียนกับครูพี่เเชร์ได้คำศัพท์และไวยากรณ์ต่างๆที่ยังไม่ค่อยรู้เเละไม่รู้จักเลยกลับมาเยอะมากๆค่ะ คำศัพท์เพิ่มเติมก็เยอะ ชอบมากเวลาครูพี่เเชร์เฉลย คืออธิบายเป็นคำๆมีคำที่เสริมมาด้วย หลักไวยากรณ์ต่างๆก็อธิบายได้เข้าใจมากๆเลยค่ะ หนูคิดว่าคลาสนี้ได้ความรู้มากมายเลยค่ะ ทั้งความรู้ที่นำไปสอบHSK 3 เเละความรู้ของคำศัพท์อื่นๆ</p>
       </article>
       <article class="tm-card" data-g="hsk45">
         <header><img src="https://chinesechiwchiw.com/wp-content/uploads/2025/01/student-46-e1735999998567.webp" alt="" loading="lazy" decoding="async" width="52" height="52"><div><b>วาวา เฟิร์น ฟิล์ม</b><span class="tm-pill tm-hsk45">กลุ่ม HSK 4</span></div></header>
+        <div class="tm-cstars" aria-hidden="true">★★★★★</div>
         <p class="tm-q">เรียนกับครูปิงสนุกมากกกกกกค่ะ ได้เทคนิคการสอบเยอะมากค่ะ พี่ปิงใจดีด้วยค่ะ เพราะว่าหนูแบบว่าไม่รู้เลยว่าต้องกาข้อสอบตรงไหนพอเรียนกับครูปิง ครูปิงสอนเทคนิคให้เยอะมากเลยค่ะ แบบพอรู้เทคนิคข้อสอบง่ายขึ้นมาอีกระดับเลยค่ะเลิฟๆเลยค่ะ555555 🫶🏻💖🥰</p>
       </article>
     </div>
   </div>
 </section>
 
-<!-- ═══ 4. FACEBOOK ═══ -->
+<!-- ═══ 4. YOUTUBE ═══ -->
 <section class="tm-sec">
+  <div class="tm-wrap">
+    <div class="tm-center">
+      <span class="tm-eyebrow">✦ วิดีโอจากน้อง ๆ ✦</span>
+      <h2 class="tm-h2">ดูชีวิตจริงของน้อง ๆ <span>บน YouTube</span></h2>
+      <p class="tm-lead">ค่ายภาษา ชีวิตในมหาวิทยาลัยจีน และบรรยากาศ Pre-Departure จากน้อง ๆ ที่ไปกับเราจริง</p>
+    </div>
+    <div class="tm-yts">
+      <a class="tm-yt" href="https://www.youtube.com/watch?v=ZyiHYO9Rp70" target="_blank" rel="noopener" data-yt="ZyiHYO9Rp70">
+        <span class="tm-yt-thumb"><img src="https://i.ytimg.com/vi/ZyiHYO9Rp70/hqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="tm-yt-play" aria-hidden="true"></span></span>
+        <span class="tm-yt-tag">สัมภาษณ์นักเรียน</span>
+        <span class="tm-yt-title">พูดคุยกับนักเรียน Chinese Chiwchiw · เรียนปริญญาตรีที่จีน ใช้ชีวิตยังไง แฮปปี้ไหม</span>
+      </a>
+      <a class="tm-yt" href="https://www.youtube.com/watch?v=aD8b2srUMfo" target="_blank" rel="noopener" data-yt="aD8b2srUMfo">
+        <span class="tm-yt-thumb"><img src="https://i.ytimg.com/vi/aD8b2srUMfo/hqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="tm-yt-play" aria-hidden="true"></span></span>
+        <span class="tm-yt-tag">ค่ายภาษา</span>
+        <span class="tm-yt-title">Chengdu Vlog · ค่ายภาษา 4 สัปดาห์ที่เฉิงตู</span>
+      </a>
+      <a class="tm-yt" href="https://www.youtube.com/watch?v=PeU-fiyxrAM" target="_blank" rel="noopener" data-yt="PeU-fiyxrAM">
+        <span class="tm-yt-thumb"><img src="https://i.ytimg.com/vi/PeU-fiyxrAM/hqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="tm-yt-play" aria-hidden="true"></span></span>
+        <span class="tm-yt-tag">ค่ายภาษา</span>
+        <span class="tm-yt-title">Guangzhou Vlog · ค่ายภาษา 2 สัปดาห์ที่กว่างโจว</span>
+      </a>
+      <a class="tm-yt" href="https://www.youtube.com/watch?v=8NyaOvaods0" target="_blank" rel="noopener" data-yt="8NyaOvaods0">
+        <span class="tm-yt-thumb"><img src="https://i.ytimg.com/vi/8NyaOvaods0/hqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="tm-yt-play" aria-hidden="true"></span></span>
+        <span class="tm-yt-tag">ชีวิตนักเรียน</span>
+        <span class="tm-yt-title">One day with น้องมิลค์ · พาดูมหาลัยและหอพักที่เฉิงตู</span>
+      </a>
+      <a class="tm-yt" href="https://www.youtube.com/watch?v=dISuknjyJQA" target="_blank" rel="noopener" data-yt="dISuknjyJQA">
+        <span class="tm-yt-thumb"><img src="https://i.ytimg.com/vi/dISuknjyJQA/hqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="tm-yt-play" aria-hidden="true"></span></span>
+        <span class="tm-yt-tag">ชีวิตนักเรียน</span>
+        <span class="tm-yt-title">One Day with น้องน้ำ · หนึ่งวันในชีวิตเด็กเรียนจีน @GDUFS</span>
+      </a>
+      <a class="tm-yt" href="https://www.youtube.com/watch?v=pK4tlIS4TGI" target="_blank" rel="noopener" data-yt="pK4tlIS4TGI">
+        <span class="tm-yt-thumb"><img src="https://i.ytimg.com/vi/pK4tlIS4TGI/hqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="tm-yt-play" aria-hidden="true"></span></span>
+        <span class="tm-yt-tag">ก่อนเดินทาง</span>
+        <span class="tm-yt-title">เตรียมตัวก่อนบินไปจีน · Pre-Departure Event ของ Chinese Chiwchiw</span>
+      </a>
+    </div>
+    <div class="tm-cta"><a class="tm-btn tm-btn-yt" href="https://www.youtube.com/@chinese_chiwchiw" target="_blank" rel="noopener">▶ ดูวิดีโอทั้งหมดบน YouTube</a></div>
+  </div>
+</section>
+
+<!-- ═══ 5. FACEBOOK ═══ -->
+<section class="tm-sec tm-white">
   <div class="tm-wrap">
     <div class="tm-fb tm-rv">
       <div>
@@ -388,7 +493,7 @@
   </div>
 </section>
 
-<!-- ═══ 5. FINAL CTA ═══ -->
+<!-- ═══ 6. FINAL CTA ═══ -->
 <section class="tm-final">
   <div class="tm-wrap">
     <h2>อยากเป็น <span>รีวิวถัดไป</span> ไหม?</h2>
@@ -416,6 +521,10 @@
       q.insertAdjacentElement('afterend',b);
     }
   });
+  root.querySelectorAll('.tm-yt').forEach(function(a){a.addEventListener('click',function(e){
+    e.preventDefault();var id=a.getAttribute('data-yt'),t=a.querySelector('.tm-yt-thumb');
+    t.innerHTML='<iframe src="https://www.youtube-nocookie.com/embed/'+id+'?autoplay=1&rel=0" title="YouTube video" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>';
+  },{once:true});});
   var btns=root.querySelectorAll('.tm-filters button');
   btns.forEach(function(b){b.addEventListener('click',function(){
     var f=b.getAttribute('data-f');
