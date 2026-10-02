@@ -79,17 +79,31 @@
 #csca-page .cs-final h2 span{color:#FFB347!important}
 .cs-final .cs-cta{justify-content:center}
 .cs-ticks{margin-top:22px;font-size:.92rem;color:#E6CDB4}
+.cs-strip{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;margin-top:26px;background:rgba(255,255,255,.07);border:1px solid rgba(255,179,71,.35);border-radius:50px;padding:10px 12px 10px 18px;max-width:760px}
+.cs-strip .cs-dot{width:9px;height:9px;border-radius:50%;background:#FF6B00;box-shadow:0 0 0 4px rgba(255,107,0,.25);animation:csBlink 1.6s ease-in-out infinite;flex:none}
+.cs-strip span{color:#F5E9DD;font-size:.95rem}.cs-strip b{color:#FFB347}
+#csca-page .cs-strip a{margin-left:auto;font-family:'Kanit',sans-serif;font-weight:700;font-size:.9rem;color:#1A0A00!important;background:#FFB347;border-radius:50px;padding:6px 16px}
+@keyframes csBlink{0%,100%{opacity:1}50%{opacity:.35}}
+.cs-class{background:linear-gradient(135deg,#1A0A00,#3A1A06);color:#F5E9DD;border-radius:22px;padding:34px 34px;display:grid;grid-template-columns:1.3fr 1fr;gap:28px;align-items:center;margin-top:8px}
+#csca-page .cs-class h3{font-size:clamp(1.4rem,2.8vw,1.9rem);font-weight:900;color:#fff!important;line-height:1.3}
+#csca-page .cs-class h3 span{color:#FFB347!important}
+.cs-class p{margin:10px 0 0;color:#EBD9C8}
+.cs-class ul{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.cs-class li{display:flex;gap:10px;align-items:flex-start;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:12px 14px;font-size:.97rem}
+.cs-class li b{color:#fff;display:block;font-family:'Kanit',sans-serif}
+.cs-class .cs-cta{margin-top:20px}
 .cs-rv{opacity:1}
 .cs-js .cs-rv{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
 .cs-js .cs-rv.cs-in{opacity:1;transform:none}
-@media (max-width:900px){.cs-grid3,.cs-steps{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:900px){.cs-grid3,.cs-steps{grid-template-columns:repeat(2,minmax(0,1fr))}.cs-class{grid-template-columns:1fr}}
 @media (max-width:600px){
   .cs-wrap{padding:0 16px}.cs-sec{padding:56px 0}.cs-hero{padding:72px 0 96px}
   .cs-grid2,.cs-grid3,.cs-steps,.cs-toc ol{grid-template-columns:1fr}
   #csca-page .cs-btn{width:100%}
   .cs-bar{grid-template-columns:90px 1fr 34px}
 }
-@media (prefers-reduced-motion:reduce){.cs-js .cs-rv{opacity:1;transform:none;transition:none}#csca-page .cs-btn{transition:none}}
+@media (max-width:600px){.cs-class{padding:26px 20px}#csca-page .cs-strip a{margin-left:0}.cs-strip{border-radius:18px}}
+@media (prefers-reduced-motion:reduce){.cs-strip .cs-dot{animation:none}.cs-js .cs-rv{opacity:1;transform:none;transition:none}#csca-page .cs-btn{transition:none}}
 </style>
 
 <div id="csca-page">
@@ -104,6 +118,7 @@
       <a class="cs-btn cs-btn-pri" href="https://chinesechiwchiw.com/university-match/">🧭 หามหาวิทยาลัยที่ใช่กับ Chiwchiw Match</a>
       <a class="cs-btn cs-btn-line" href="https://line.me/ti/p/~@chiwchiw" target="_blank" rel="noopener">💬 ปรึกษาฟรี LINE @chiwchiw</a>
     </div>
+    <div class="cs-strip"><i class="cs-dot" aria-hidden="true"></i><span>📚 <b>คลาสติว CSCA แบบกลุ่ม</b> สอนโดยติวเตอร์เฉพาะทาง เปิดทุกเดือน</span><a href="#cs-class">ดูรายละเอียด →</a></div>
     <div class="cs-trust">
       <span><b>72</b>จาก 100 มหาวิทยาลัยระบุว่าต้องสอบ</span>
       <span><b>ป.ตรี</b>เท่านั้น · ป.โท–เอก ไม่ต้องสอบ</span>
@@ -122,6 +137,7 @@
       <li><a href="#cs-subjects">สอบวิชาอะไรบ้าง</a></li>
       <li><a href="#cs-register">สมัครสอบ ค่าสอบ และรอบสอบ</a></li>
       <li><a href="#cs-prep">ต้องเตรียมตัวกี่เดือน</a></li>
+      <li><a href="#cs-class">คลาสติว CSCA กับ Chinese Chiwchiw</a></li>
       <li><a href="#cs-unis">ตัวอย่างมหาวิทยาลัยที่ต้องใช้ CSCA</a></li>
       <li><a href="#cs-help">พี่ ๆ ชิวชิวช่วยอะไรได้บ้าง</a></li>
       <li><a href="#cs-faq">คำถามที่พบบ่อย</a></li>
@@ -245,10 +261,32 @@
   </div>
 </section>
 
-<!-- ═══ 8. EXAMPLE UNIVERSITIES ═══ -->
-<section class="cs-sec cs-white" id="cs-unis">
+<!-- ═══ 7b. CSCA GROUP CLASS ═══ -->
+<section class="cs-sec cs-white" id="cs-class">
   <div class="cs-wrap">
-    <h2 class="cs-h2"><span class="cs-num">06</span><span>ตัวอย่าง <span class="cs-o">มหาวิทยาลัย</span> ที่ระบุว่าต้องใช้ CSCA</span></h2>
+    <h2 class="cs-h2"><span class="cs-num">06</span><span>คลาสติว <span class="cs-o">CSCA</span> กับ Chinese Chiwchiw</span></h2>
+    <div class="cs-class cs-rv" style="margin-top:26px">
+      <div>
+        <h3>ติว CSCA แบบกลุ่ม <span>เปิดใหม่ทุกเดือน</span></h3>
+        <p>เตรียมสอบ CSCA ให้ตรงจุดกับติวเตอร์เฉพาะทาง เรียนเป็นกลุ่มพร้อมเพื่อน ๆ ที่วางแผนเรียนต่อปริญญาตรีที่จีนเหมือนกัน ไม่ต้องเริ่มอ่านเองคนเดียว</p>
+        <div class="cs-cta">
+          <a class="cs-btn cs-btn-line" href="https://line.me/ti/p/~@chiwchiw" target="_blank" rel="noopener">💬 ทัก LINE @chiwchiw สอบถามรอบเรียน</a>
+        </div>
+      </div>
+      <ul>
+        <li>👩‍🏫<span><b>สอนโดยติวเตอร์เฉพาะทาง</b>เน้นเนื้อหาและรูปแบบข้อสอบ CSCA</span></li>
+        <li>🗓️<span><b>เปิดคลาสใหม่ทุกเดือน</b>เลือกรอบที่ทันกับรอบสอบและเดดไลน์สมัครของน้อง</span></li>
+        <li>👥<span><b>เรียนเป็นกลุ่ม</b>มีเพื่อนเรียนไปด้วยกัน ถามได้ระหว่างเรียน</span></li>
+        <li>💬<span><b>สอบถามตารางเรียนและราคา</b>ทาง LINE @chiwchiw</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 8. EXAMPLE UNIVERSITIES ═══ -->
+<section class="cs-sec" id="cs-unis">
+  <div class="cs-wrap">
+    <h2 class="cs-h2"><span class="cs-num">07</span><span>ตัวอย่าง <span class="cs-o">มหาวิทยาลัย</span> ที่ระบุว่าต้องใช้ CSCA</span></h2>
     <p class="cs-lead">ตัวอย่างจากฐานข้อมูลของเรา (ข้อมูล ณ ต.ค. 2026) HSK = ระดับที่หลักสูตร ป.ตรี สอนจีนของมหาวิทยาลัยนั้นใช้บ่อยที่สุด บางสาขาอาจสูงหรือต่ำกว่า</p>
     <div class="cs-tw">
       <table>
@@ -273,13 +311,13 @@
 </section>
 
 <!-- ═══ 9. HOW WE HELP ═══ -->
-<section class="cs-sec" id="cs-help">
+<section class="cs-sec cs-white" id="cs-help">
   <div class="cs-wrap">
-    <h2 class="cs-h2"><span class="cs-num">07</span><span>พี่ ๆ <span class="cs-o">ชิวชิว</span> ช่วยอะไรได้บ้าง</span></h2>
+    <h2 class="cs-h2"><span class="cs-num">08</span><span>พี่ ๆ <span class="cs-o">ชิวชิว</span> ช่วยอะไรได้บ้าง</span></h2>
     <p class="cs-lead">ไม่รู้จะเริ่มจากตรงไหน? ไม่เป็นไร พี่ ๆ ช่วยวางแผนให้ทีละขั้น 🧡</p>
     <div class="cs-grid3">
       <div class="cs-card cs-rv"><h3>🗓️ วางแผนสอบ</h3><p>ดูว่าน้องต้องใช้ HSK, CSCA หรือ IELTS วิชาอะไร และควรสอบรอบไหนให้ทันเดดไลน์มหาวิทยาลัยและทุน</p></div>
-      <div class="cs-card cs-rv"><h3>📚 เรียนภาษาจีนและติว HSK</h3><p>คอร์สเรียนภาษาจีนและติว HSK สำหรับน้อง ๆ ที่วางแผนเรียนต่อจีน ทั้งออนไลน์และเรียนเต็มเวลาที่จีน</p></div>
+      <div class="cs-card cs-rv"><h3>📚 ติว CSCA และ HSK</h3><p>คลาสติว CSCA แบบกลุ่มกับติวเตอร์เฉพาะทาง เปิดทุกเดือน รวมถึงคอร์สภาษาจีนและติว HSK สำหรับน้อง ๆ ที่วางแผนเรียนต่อจีน</p></div>
       <div class="cs-card cs-rv"><h3>🎓 เลือกมหาวิทยาลัยและสมัคร</h3><p>คัดมหาวิทยาลัยที่เหมาะกับคะแนนและงบ เตรียมเอกสาร และยื่นสมัครให้ ตั้งแต่สมัครจนถึงวันเดินทาง</p></div>
     </div>
     <div class="cs-note">ℹ️ <b>ผ่านเกณฑ์ ≠ ได้รับเลือกเสมอไป</b> คะแนน HSK และ CSCA เป็นเงื่อนไขขั้นต่ำ การพิจารณารับเข้าเรียนและทุนเป็นของมหาวิทยาลัย พี่ ๆ ช่วยวางแผนให้มีโอกาสมากที่สุด แต่ไม่สามารถรับประกันผลได้</div>
@@ -287,9 +325,9 @@
 </section>
 
 <!-- ═══ 10. FAQ ═══ -->
-<section class="cs-sec cs-white" id="cs-faq">
+<section class="cs-sec" id="cs-faq">
   <div class="cs-wrap">
-    <h2 class="cs-h2"><span class="cs-num">08</span><span>คำถาม <span class="cs-o">ที่พบบ่อย</span></span></h2>
+    <h2 class="cs-h2"><span class="cs-num">09</span><span>คำถาม <span class="cs-o">ที่พบบ่อย</span></span></h2>
     <div class="cs-faq">
       <details><summary>CSCA คืออะไร?</summary><p>CSCA (China Scholastic Competency Assessment) คือข้อสอบวัดความรู้พื้นฐานสำหรับนักเรียนต่างชาติที่จะสมัครเรียนปริญญาตรีที่จีน วัดภาษาจีนเชิงวิชาการ คณิตศาสตร์ และวิทยาศาสตร์ตามสายที่สมัคร</p></details>
       <details><summary>เรียนปริญญาโทหรือปริญญาเอกต้องสอบ CSCA ไหม?</summary><p>ไม่ต้องค่ะ CSCA ใช้สำหรับการสมัครปริญญาตรีเท่านั้น ปริญญาโทและเอกใช้ผล HSK หรือ IELTS/TOEFL ตามภาษาที่ใช้สอน</p></details>
@@ -298,6 +336,7 @@
       <details><summary>สมัครสอบ CSCA ได้ที่ไหน และค่าสอบเท่าไหร่?</summary><p>สมัครสอบออนไลน์ที่ www.csca.cn ค่าสอบ 450 หยวนสำหรับ 1 วิชา และ 700 หยวนสำหรับ 2 วิชาขึ้นไป ตามที่คู่มือของ CCOM และ ZZU อ้างอิง ตรวจสอบค่าสอบล่าสุดที่เว็บไซต์ทางการก่อนสมัคร</p></details>
       <details><summary>CSCA สอบเมื่อไหร่?</summary><p>สอบปีละหลายรอบ คู่มือหลายแห่งระบุเดือนมกราคม มีนาคม เมษายน มิถุนายน และธันวาคม ส่วนใหญ่สอบออนไลน์ ควรเลือกรอบที่ผลสอบออกทันก่อนปิดรับสมัครของมหาวิทยาลัย</p></details>
       <details><summary>ต้องเตรียมตัวสอบ CSCA นานแค่ไหน?</summary><p>อย่างน้อย 2–3 เดือน เพื่อทบทวนคณิตศาสตร์ (และฟิสิกส์หรือเคมีสำหรับสายวิทย์) และภาษาจีนเชิงวิชาการ ถ้ายังไม่มีพื้นฐานภาษาจีน ควรวางแผนเรียนภาษาจีนเพื่อสอบ HSK ราว 1 ปีควบคู่กัน</p></details>
+      <details><summary>มีคลาสติว CSCA ไหม?</summary><p>มีค่ะ Chinese Chiwchiw มีคลาสติว CSCA แบบกลุ่ม สอนโดยติวเตอร์เฉพาะทาง เปิดคลาสใหม่ทุกเดือน สอบถามตารางเรียนและรายละเอียดได้ทาง LINE @chiwchiw</p></details>
       <details><summary>ทุกมหาวิทยาลัยใช้ CSCA ไหม?</summary><p>ไม่ทั้งหมดค่ะ จากฐานข้อมูล 100 มหาวิทยาลัยของเรา 72 แห่งระบุว่าต้องสอบ 26 แห่งรอยืนยัน และ 2 แห่งไม่บังคับ (Tsinghua ไม่ใช้ผลสำหรับรอบ 2026 และ XJTLU ที่คู่มือไม่ได้กล่าวถึง) ข้อมูล ณ ตุลาคม 2026</p></details>
     </div>
   </div>
@@ -309,7 +348,7 @@
     <h2>พร้อมวางแผน <span>สอบ CSCA และเรียนต่อจีน</span> หรือยัง?</h2>
     <div class="cs-cta">
       <a class="cs-btn cs-btn-pri" href="https://chinesechiwchiw.com/university-match/">🧭 หามหาวิทยาลัยที่ใช่</a>
-      <a class="cs-btn cs-btn-line" href="https://line.me/ti/p/~@chiwchiw" target="_blank" rel="noopener">💬 ให้ทีมช่วยวาง Timeline ให้</a>
+      <a class="cs-btn cs-btn-line" href="https://line.me/ti/p/~@chiwchiw" target="_blank" rel="noopener">💬 สอบถามคลาสติว CSCA ทาง LINE</a>
     </div>
     <p class="cs-ticks">✓ ปรึกษาฟรี ไม่มีข้อผูกมัด · ✓ ผู้ปกครองคุยกับทีมได้โดยตรง · ✓ ดูแลตั้งแต่สมัครจนถึงจีน</p>
     <p class="cs-small" style="color:#B9A08A;margin-top:18px">ข้อมูลรวบรวมจากคู่มือรับสมัครและเว็บไซต์ทางการของแต่ละมหาวิทยาลัย ณ ต.ค. 2026 อาจเปลี่ยนแปลงได้ ตรวจสอบกับเว็บไซต์ทางการก่อนสมัคร · © 2026 Chinese Chiwchiw Co., Ltd.</p>
@@ -338,6 +377,7 @@
 {"@type":"Question","name":"สมัครสอบ CSCA ได้ที่ไหน และค่าสอบเท่าไหร่?","acceptedAnswer":{"@type":"Answer","text":"สมัครสอบออนไลน์ที่ www.csca.cn ค่าสอบ 450 หยวนสำหรับ 1 วิชา และ 700 หยวนสำหรับ 2 วิชาขึ้นไป ตามที่คู่มือของ CCOM และ ZZU อ้างอิง ตรวจสอบค่าสอบล่าสุดที่เว็บไซต์ทางการก่อนสมัคร"}},
 {"@type":"Question","name":"CSCA สอบเมื่อไหร่?","acceptedAnswer":{"@type":"Answer","text":"สอบปีละหลายรอบ คู่มือหลายแห่งระบุเดือนมกราคม มีนาคม เมษายน มิถุนายน และธันวาคม ส่วนใหญ่สอบออนไลน์ ควรเลือกรอบที่ผลสอบออกทันก่อนปิดรับสมัครของมหาวิทยาลัย"}},
 {"@type":"Question","name":"ต้องเตรียมตัวสอบ CSCA นานแค่ไหน?","acceptedAnswer":{"@type":"Answer","text":"อย่างน้อย 2–3 เดือน เพื่อทบทวนคณิตศาสตร์ (และฟิสิกส์หรือเคมีสำหรับสายวิทย์) และภาษาจีนเชิงวิชาการ ถ้ายังไม่มีพื้นฐานภาษาจีน ควรวางแผนเรียนภาษาจีนเพื่อสอบ HSK ราว 1 ปีควบคู่กัน"}},
+{"@type":"Question","name":"มีคลาสติว CSCA ไหม?","acceptedAnswer":{"@type":"Answer","text":"มีค่ะ Chinese Chiwchiw มีคลาสติว CSCA แบบกลุ่ม สอนโดยติวเตอร์เฉพาะทาง เปิดคลาสใหม่ทุกเดือน สอบถามตารางเรียนและรายละเอียดได้ทาง LINE @chiwchiw"}},
 {"@type":"Question","name":"ทุกมหาวิทยาลัยใช้ CSCA ไหม?","acceptedAnswer":{"@type":"Answer","text":"ไม่ทั้งหมดค่ะ จากฐานข้อมูล 100 มหาวิทยาลัยของเรา 72 แห่งระบุว่าต้องสอบ 26 แห่งรอยืนยัน และ 2 แห่งไม่บังคับ (Tsinghua ไม่ใช้ผลสำหรับรอบ 2026 และ XJTLU ที่คู่มือไม่ได้กล่าวถึง) ข้อมูล ณ ตุลาคม 2026"}}
 ]}
 </script>
