@@ -2,6 +2,11 @@
 <style>
 /* hide the theme's old footer rows (social row + auto page list); this block replaces them */
 .ct-footer [data-row="top"],.ct-footer [data-row="middle"]{display:none!important}
+/* header menu size (site-wide) */
+.ct-header [data-id="menu"]>ul>li>.ct-menu-link{font-size:15px!important}
+.ct-header [data-id="menu"] .sub-menu .ct-menu-link{font-size:14px!important}
+#offcanvas [data-id="mobile-menu"]>ul>li>.ct-menu-link{font-size:17px!important}
+#offcanvas [data-id="mobile-menu"] .sub-menu .ct-menu-link{font-size:15px!important}
 .ct-footer [data-row="bottom"]>.ct-container{padding-top:0!important;padding-bottom:0!important}
 .ccf{--ccf-fg:#1A1A1A;--ccf-muted:#6B6460;--ccf-line:#E8E2DC;--ccf-accent:#FF6B00;font-family:'Noto Sans Thai','Kanit',system-ui,sans-serif;color:var(--ccf-fg);width:100%;padding:56px 0 28px;text-align:left}
 .ccf a{text-decoration:none!important;color:inherit}
