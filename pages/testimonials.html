@@ -82,11 +82,10 @@
 .tm-tag{display:inline-block;align-self:flex-start;font-size:.75rem;font-weight:700;border-radius:50px;padding:1px 10px;margin:0 0 8px;background:#FFF0E2;color:#C2410C}
 .tm-go .tm-tag{background:#EEF2FF;color:#4338CA}
 .tm-fbc footer{margin-top:10px;font-size:.78rem;color:#A8907C}
-#tm-page .tm-foldbtn{display:none}
 #tm-page .tm-morebtn{display:flex;margin:14px auto 0;background:#fff;border:1px solid #F0C9A4;color:#C2410C;font-family:'Kanit',sans-serif;font-weight:700;font-size:1rem;border-radius:50px;padding:12px 26px;cursor:pointer;box-shadow:0 4px 14px rgba(255,107,0,.12)}
 #tm-page .tm-morebtn:hover{background:#FFF3E6}
 #tm-page .tm-morebtn[hidden]{display:none}
-@media (max-width:600px){.tm-folded:not(.tm-all) .tm-fbc:nth-child(n+7){display:none}#tm-page .tm-foldbtn{display:flex;margin:0 auto 6px;background:#fff;border:1px solid #F0C9A4;color:#C2410C;font-family:'Kanit',sans-serif;font-weight:700;font-size:.95rem;border-radius:50px;padding:10px 22px;cursor:pointer}}
+.tm-fbc[hidden]{display:none!important}
 /* youtube */
 .tm-yts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin-top:32px}
 #tm-page .tm-yt{display:flex;flex-direction:column;gap:8px;color:#1A0A00!important}
@@ -753,6 +752,15 @@
 <script>
 (function(){
   var root=document.getElementById('tm-page');if(!root)return;
+  if(!location.hash){
+    var nav=((performance.getEntriesByType&&performance.getEntriesByType('navigation')[0])||{}).type,moved=false;
+    if(nav!=='back_forward'){
+      var stop=function(){moved=true;};
+      ['touchstart','wheel','keydown','mousedown'].forEach(function(e){addEventListener(e,stop,{passive:true,once:true});});
+      var top=function(){if(!moved&&window.scrollY>0)window.scrollTo(0,0);};
+      top();addEventListener('load',function(){top();setTimeout(top,300);});
+    }
+  }
   root.classList.add('tm-js');
   var cards=root.querySelectorAll('.tm-card');
   root.querySelectorAll('.tm-card,.tm-score,.tm-fbc').forEach(function(c){
@@ -764,10 +772,12 @@
       q.insertAdjacentElement('afterend',b);
     }
   });
+  var small=window.matchMedia&&matchMedia('(max-width:600px)').matches;
   root.querySelectorAll('.tm-fold').forEach(function(g){
-    var n=g.querySelectorAll('.tm-fbc').length-6;if(n<3)return;g.classList.add('tm-folded');
-    var b=document.createElement('button');b.type='button';b.className='tm-foldbtn';b.textContent='ดูรีวิวเพิ่มอีก '+n+' รีวิว';
-    b.addEventListener('click',function(){g.classList.add('tm-all');b.remove();});
+    var fc=g.querySelectorAll('.tm-fbc'),lim=small?6:9,n=fc.length-lim;if(n<3)return;
+    for(var i=lim;i<fc.length;i++)fc[i].hidden=true;
+    var b=document.createElement('button');b.type='button';b.className='tm-morebtn';b.textContent='ดูรีวิวเพิ่มอีก '+n+' รีวิว';
+    b.addEventListener('click',function(){for(var i=lim;i<fc.length;i++)fc[i].hidden=false;b.remove();});
     g.insertAdjacentElement('afterend',b);
   });
   root.querySelectorAll('.tm-yt').forEach(function(a){a.addEventListener('click',function(e){
@@ -775,7 +785,7 @@
     t.innerHTML='<iframe src="https://www.youtube-nocookie.com/embed/'+id+'?autoplay=1&rel=0" title="YouTube video" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>';
   },{once:true});});
   var btns=root.querySelectorAll('.tm-filters button'),cur='all',open=false;
-  var lim=(window.matchMedia&&matchMedia('(max-width:600px)').matches)?6:9;
+  var lim=small?6:9;
   var grid=root.querySelector('#tm-reviews .tm-grid'),more=document.createElement('button');
   more.type='button';more.className='tm-morebtn';
   if(grid)grid.insertAdjacentElement('afterend',more);
