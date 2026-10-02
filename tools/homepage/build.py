@@ -17,7 +17,7 @@ for i,(ic,ti,sh,body,link,photo) in enumerate(CARE,1):
       <div class="hm-care-img"><img src="{ph(photo,720,520)}" alt="{esc(ti)}" loading="lazy" decoding="async" width="720" height="520"></div>
       <div class="hm-care-body"><span class="hm-care-n">ขั้นที่ {i:02d}</span><h3>{ic} {ti}</h3><p>{body}</p><a class="hm-link" href="https://chinesechiwchiw.com{"/บริการของเรา/" if link in PENDING else link}">ดูรายละเอียด{ti if i!=6 else "บริการทั้งหมด"} →</a></div>
     </div>'''
-gal=''.join(f'\n      <figure><img src="{ph(p,480,600)}" alt="{esc(c)}" loading="lazy" decoding="async" width="480" height="600"><figcaption>{c}</figcaption></figure>' for p,c in GALLERY)
+gal=''.join(f'\n      <figure class="{("hm-g"+z) if z else ""}"><img src="{ph(p,800 if z in ("b","w") else 520)}" alt="{esc(c)}" loading="lazy" decoding="async" width="{800 if z in ("b","w") else 520}" height="600"><figcaption>{c}</figcaption></figure>' for p,c,z in GALLERY)
 revs=''.join(f'''
       <article class="hm-rev hm-rv">
         <header><span class="hm-av" style="background-position:0 -{k*46}px" aria-hidden="true"></span><div><b>{esc(n)}</b><small>{esc(r)} · {esc(tg)}</small></div></header>
@@ -33,12 +33,12 @@ R={'{{ANN}}':ANN,'{{STOPS}}':stops,'{{CAREPANELS}}':panels,'{{GALLERY}}':gal,'{{
  '{{IMG_LANG}}':ph('2026/09/เรียนภาษาที่ฟู้ตั้นเซี้ยงไฮ้_ถ่ายรูปหน้าตึกกวงหัว_4.webp',720,600),
  '{{IMG_DEGREE}}':ph('2026/09/SCUT_guangzhou_ถ่ายรูปหมู่กับอาจารย์.webp',720,600),
  '{{IMG_ONLINE}}':ph('2026/09/SCUT_guangzhou_ห้องเรียน_2.jpg',720,600),
- '{{FOUNDER}}':ph('2026/10/opt-6C210327-B2EE-40C5-B56F-0914123DD681_1_102_o-6674.webp',560,700)}
+ '{{SCHOLAR}}':ph('2026/03/548925591_18053538578538044_6332023643666926458_n.webp',700),'{{ROADSHOW}}':ph('2026/03/539655399_1216883620453472_1988846568270268185_n.webp',560,420),'{{FOUNDER}}':ph('2026/10/opt-6C210327-B2EE-40C5-B56F-0914123DD681_1_102_o-6674.webp',560,700)}
 for k,v in R.items():
     assert k in t,k; t=t.replace(k,v)
 assert '{{' not in t
 t=t.replace(' ๆ',' ๆ')
-js=t[t.index('<script>')+8:t.index('</script>')]
-assert '<' not in js, [js[m.start()-30:m.start()+20] for m in re.finditer('<',js)]
+for js in re.findall(r'<script>(.*?)</script>',t,re.S):
+    assert '<' not in js, [js[m.start()-30:m.start()+20] for m in re.finditer('<',js)]
 open(__import__('os').path.join(__import__('os').path.dirname(__file__),'../../pages/homepage.html'),'w',encoding='utf-8').write(t)
 print('ok',len(t)//1024,'KB')

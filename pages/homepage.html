@@ -1,4 +1,9 @@
 <!-- Chinese Chiwchiw · Homepage 2027 (concise) · prefix hm- · one Elementor HTML widget · photos from the media library, resized by Jetpack -->
+<script>/* open the homepage at the top (phones otherwise restore the last scroll position). No less-than signs in this script. */
+(function(){if(location.hash)return;var n=((performance.getEntriesByType&&performance.getEntriesByType('navigation')[0])||{}).type;if(n==='back_forward')return;
+try{if('scrollRestoration' in history)history.scrollRestoration='manual';}catch(e){}
+var moved=false,stop=function(){moved=true;};['touchstart','wheel','keydown','mousedown'].forEach(function(e){addEventListener(e,stop,{passive:true,once:true});});
+var top=function(){if(!moved&&window.scrollY)window.scrollTo(0,0);};top();document.addEventListener('DOMContentLoaded',top);addEventListener('load',function(){top();setTimeout(top,350);});})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700;800;900&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap">
 <link rel="preload" as="image" href="https://i0.wp.com/chinesechiwchiw.com/wp-content/uploads/2026/10/opt-_-_4-745.webp?w=800&ssl=1" imagesrcset="https://i0.wp.com/chinesechiwchiw.com/wp-content/uploads/2026/10/opt-_-_4-745.webp?w=800&ssl=1 800w, https://chinesechiwchiw.com/wp-content/uploads/2026/10/opt-_-_4-745.webp 1600w" imagesizes="100vw" fetchpriority="high">
@@ -138,8 +143,9 @@
 .hm-play::after{content:'';position:absolute;left:34px;top:18px;border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff}
 .hm-video:hover .hm-play{transform:scale(1.08)}
 /* gallery */
-.hm-gal{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-top:32px}
-.hm-gal figure{margin:0;position:relative;border-radius:16px;overflow:hidden;aspect-ratio:4/5;background:#F1E6DA}
+.hm-gal{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:190px;grid-auto-flow:dense;gap:12px;margin-top:32px}
+.hm-gal figure{margin:0;position:relative;border-radius:16px;overflow:hidden;background:#F1E6DA}
+.hm-gal .hm-gw{grid-column:span 2}.hm-gal .hm-gt{grid-row:span 2}.hm-gal .hm-gb{grid-column:span 2;grid-row:span 2}
 #hm-page .hm-gal img{width:100%;height:100%;object-fit:cover;margin:0;filter:saturate(.9) contrast(.97);transition:transform .5s ease}
 .hm-gal figure:hover img{transform:scale(1.04)}
 .hm-gal figcaption{position:absolute;left:0;right:0;bottom:0;padding:26px 12px 10px;background:linear-gradient(0deg,rgba(26,10,0,.7),rgba(26,10,0,0));color:#fff;font-family:'Kanit',sans-serif;font-weight:600;font-size:.85rem;line-height:1.35}
@@ -155,6 +161,38 @@
 .hm-rev footer{margin-top:12px;font-size:.78rem;color:#A8907C}
 .hm-rev-top{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:10px;font-family:'Kanit',sans-serif;font-weight:700;color:#1A0A00}
 .hm-rev-top span{color:#FFB300;letter-spacing:2px}
+/* community: more than an agency */
+.hm-door{max-width:860px;margin:26px auto 0;text-align:center;font-size:clamp(1.05rem,2vw,1.25rem);line-height:1.85;color:#1A0A00;font-weight:500;position:relative;padding:0 10px}
+.hm-door b{color:#FF6B00;font-family:'Kanit',sans-serif;font-weight:800}
+.hm-door::before{content:'“';display:block;font-family:Georgia,serif;font-size:4rem;line-height:.6;color:#FFB347;margin-bottom:6px}
+.hm-four{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:34px}
+.hm-four article{position:relative;background:#FFFBF7;border:1px solid #EDE5DC;border-radius:18px;padding:22px 20px;transition:transform .2s,box-shadow .2s,border-color .2s}
+.hm-four article:hover{transform:translateY(-3px);box-shadow:0 10px 26px rgba(26,10,0,.08);border-color:#F6C9A0}
+.hm-four .hm-n{display:inline-flex;align-items:center;justify-content:center;min-width:42px;height:28px;border-radius:50px;border:2px solid #FF6B00;color:#FF6B00;background:#fff;font-family:'Kanit',sans-serif;font-weight:800;font-size:.9rem}
+.hm-four i{position:absolute;right:18px;top:18px;font-style:normal;font-size:1.7rem}
+#hm-page .hm-four h3{font-size:1.15rem;font-weight:800;color:#1A0A00!important;line-height:1.35;margin:12px 0 2px}
+.hm-four small{display:block;font-family:'Kanit',sans-serif;font-weight:600;color:#C2410C;font-size:.8rem;letter-spacing:.5px}
+.hm-four p{margin:8px 0 0;font-size:.93rem;line-height:1.75}
+.hm-schol{margin-top:34px;display:grid;grid-template-columns:.95fr 1.05fr;border-radius:24px;overflow:hidden;background:linear-gradient(135deg,#FFF3E6,#FFE3C7);border:2px solid #FFC58F;box-shadow:0 12px 34px rgba(255,107,0,.14);scroll-margin-top:100px}
+.hm-schol-img{position:relative;min-height:320px;background:#F1E6DA}
+#hm-page .hm-schol-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 40%;margin:0}
+.hm-schol-body{padding:32px 34px}
+.hm-schol-tag{display:inline-block;background:#FF6B00;color:#fff;font-family:'Kanit',sans-serif;font-weight:800;font-size:.85rem;border-radius:50px;padding:5px 14px}
+#hm-page .hm-schol h3{font-size:clamp(1.5rem,3vw,2rem);font-weight:900;color:#1A0A00!important;line-height:1.25;margin:12px 0 8px}
+#hm-page .hm-schol h3 span{color:#FF6B00!important}
+.hm-schol-body p{margin:0;font-size:1rem;line-height:1.8}
+.hm-schol-facts{display:grid;gap:8px;margin-top:16px}
+.hm-fact{display:flex;gap:10px;align-items:flex-start;background:rgba(255,255,255,.72);border-radius:12px;padding:9px 12px;font-size:.93rem;line-height:1.6}
+.hm-fact i{font-style:normal;flex:none}
+.hm-fact b{font-family:'Kanit',sans-serif;color:#1A0A00}
+.hm-road{margin-top:18px;display:grid;grid-template-columns:200px 1fr;gap:18px;align-items:center;background:#fff;border:1px solid #EDE5DC;border-radius:18px;padding:14px}
+#hm-page .hm-road img{width:100%;height:140px;object-fit:cover;border-radius:12px;margin:0}
+.hm-road b{display:block;font-family:'Kanit',sans-serif;color:#1A0A00;font-size:1.05rem}
+.hm-road p{margin:4px 0 0;font-size:.92rem;line-height:1.7}
+.hm-partners2{margin-top:30px;display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;justify-content:center;font-size:.9rem}
+.hm-partners2 strong{font-family:'Kanit',sans-serif;color:#C2410C;font-weight:700}
+.hm-partners2 span{background:#FFFBF7;border:1px solid #EDE5DC;color:#1A0A00;border-radius:50px;padding:5px 14px;font-family:'Kanit',sans-serif;font-weight:700;font-size:.85rem}
+.hm-legal2{text-align:center;margin-top:12px;font-size:.82rem;color:#9A7A60}
 /* founder (dark) */
 .hm-dark{background:linear-gradient(135deg,#1A0A00 0%,#2E1405 60%,#3A1A06 100%);color:#EBD9C8}
 .hm-dark .hm-eyebrow{color:#FFB347;background:rgba(255,179,71,.12);border-color:rgba(255,179,71,.3)}
@@ -175,14 +213,6 @@
 .hm-js .hm-tl-item[hidden]{display:none}
 .hm-quote{margin:22px 0 0;padding-left:16px;border-left:3px solid #FFB347;font-size:1.02rem;color:#fff;font-style:italic}
 .hm-quote small{display:block;font-style:normal;color:#C8B4A2;font-size:.85rem;margin-top:4px}
-.hm-pillars{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:52px}
-.hm-pillar{background:rgba(255,255,255,.05);border:1px solid rgba(255,179,71,.18);border-radius:18px;padding:18px}
-.hm-pillar b{display:block;font-family:'Kanit',sans-serif;color:#fff;font-size:1.05rem;margin-bottom:4px}
-.hm-pillar span{font-size:.9rem;line-height:1.65}
-.hm-partners{margin-top:28px;display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;justify-content:center;font-size:.9rem}
-.hm-partners strong{font-family:'Kanit',sans-serif;color:#FFB347;font-weight:700}
-.hm-partners span{background:#fff;color:#1A0A00;border-radius:50px;padding:5px 14px;font-family:'Kanit',sans-serif;font-weight:700;font-size:.85rem}
-.hm-legal{text-align:center;margin-top:14px;font-size:.82rem;color:#B8A090}
 /* faq */
 .hm-faq{max-width:860px;margin:30px auto 0;display:grid;gap:10px}
 .hm-faq details{background:#fff;border:1px solid #EDE5DC;border-radius:16px;padding:0 20px;transition:box-shadow .2s}
@@ -201,14 +231,14 @@
 /* reveal */
 .hm-js .hm-rv{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
 .hm-js .hm-rv.hm-in{opacity:1;transform:none}
-@media (max-width:1000px){.hm-route{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:18px}.hm-route::before{display:none}.hm-steps{grid-template-columns:repeat(2,minmax(0,1fr))}.hm-gal{grid-template-columns:repeat(4,minmax(0,1fr))}.hm-gal figure:nth-child(n+9){display:none}.hm-pillars{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media (max-width:900px){.hm-panel,.hm-care,.hm-ai,.hm-founder{grid-template-columns:1fr}.hm-panel-img{min-height:220px}.hm-care-img{min-height:210px}.hm-revs{grid-template-columns:1fr}.hm-ai{padding:34px 26px}.hm-f-photo{max-width:380px;margin:0 auto;width:100%}}
+@media (max-width:1000px){.hm-route{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:18px}.hm-route::before{display:none}.hm-steps{grid-template-columns:repeat(2,minmax(0,1fr))}.hm-gal{grid-auto-rows:160px}}
+@media (max-width:900px){.hm-four{grid-template-columns:repeat(2,minmax(0,1fr))}.hm-schol{grid-template-columns:1fr}.hm-schol-img{min-height:240px}.hm-panel,.hm-care,.hm-ai,.hm-founder{grid-template-columns:1fr}.hm-panel-img{min-height:220px}.hm-care-img{min-height:210px}.hm-revs{grid-template-columns:1fr}.hm-ai{padding:34px 26px}.hm-f-photo{max-width:380px;margin:0 auto;width:100%}}
 @media (max-width:600px){.hm-wrap{padding:0 16px}.hm-sec{padding:64px 0}.hm-hero-in{padding:170px 16px 96px}.hm-hero::before{background:linear-gradient(180deg,rgba(26,10,0,.55) 0%,rgba(26,10,0,.82) 45%,rgba(26,10,0,.95) 100%)}
  #hm-page .hm-btn{width:100%}.hm-trust{gap:6px 16px;font-size:.88rem}.hm-quick-card{padding:16px}.hm-chips{gap:8px}#hm-page .hm-chip{font-size:.88rem;padding:8px 13px}
  .hm-promo{border-radius:18px;font-size:.88rem}.hm-tabs{gap:8px}#hm-page .hm-tab{font-size:.9rem;padding:8px 14px}.hm-panel-body{padding:22px 18px}.hm-care-body{padding:22px 18px}
  .hm-route{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 6px}.hm-stop i{width:52px;height:52px;font-size:1.3rem}.hm-stop b{font-size:.82rem}
- .hm-steps{grid-template-columns:1fr}.hm-gal{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:10px;padding-bottom:6px;margin-left:-16px;margin-right:-16px;padding-left:16px;padding-right:16px}.hm-gal figure{flex:0 0 62%;scroll-snap-align:start}.hm-gal figure:nth-child(n+9){display:block}
- .hm-pillars{grid-template-columns:1fr}.hm-ai{padding:28px 18px;border-radius:20px}.hm-cities{grid-template-columns:repeat(2,minmax(0,1fr))} .hm-chips{display:grid;grid-template-columns:1fr 1fr}#hm-page .hm-chip{font-size:.82rem;padding:8px 10px;line-height:1.35;border-radius:14px} .hm-promo{display:grid;justify-items:center;text-align:center;gap:4px;padding:12px 16px;width:100%}.hm-dot{display:none} .hm-steps{gap:10px}.hm-step{display:grid;grid-template-columns:auto 1fr;column-gap:12px;align-items:start;padding:14px 16px}.hm-step::before{grid-row:span 2;margin:0}.hm-step span{margin-top:0} .hm-ai-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.hm-ai-stats b{font-size:1.45rem}.hm-ai-stats span{font-size:.75rem;line-height:1.35;display:block}}
+ .hm-steps{grid-template-columns:1fr}.hm-gal{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:130px;gap:8px}.hm-gal figcaption{font-size:.75rem;padding:20px 9px 7px}
+ .hm-four{grid-template-columns:1fr;gap:10px}.hm-schol-body{padding:22px 18px}.hm-road{grid-template-columns:1fr}#hm-page .hm-road img{height:170px}.hm-ai{padding:28px 18px;border-radius:20px}.hm-cities{grid-template-columns:repeat(2,minmax(0,1fr))} .hm-chips{display:grid;grid-template-columns:1fr 1fr}#hm-page .hm-chip{font-size:.82rem;padding:8px 10px;line-height:1.35;border-radius:14px} .hm-promo{display:grid;justify-items:center;text-align:center;gap:4px;padding:12px 16px;width:100%}.hm-dot{display:none} .hm-steps{gap:10px}.hm-step{display:grid;grid-template-columns:auto 1fr;column-gap:12px;align-items:start;padding:14px 16px}.hm-step::before{grid-row:span 2;margin:0}.hm-step span{margin-top:0} .hm-ai-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.hm-ai-stats b{font-size:1.45rem}.hm-ai-stats span{font-size:.75rem;line-height:1.35;display:block}}
 @media (prefers-reduced-motion:reduce){.hm-ann-track,.hm-slide.hm-on,.hm-dot{animation:none}.hm-slide{transition:none}.hm-js .hm-rv{opacity:1;transform:none;transition:none}#hm-page .hm-btn,#hm-page .hm-chip,.hm-gal img{transition:none}}
 </style>
 
@@ -248,6 +278,7 @@
       <a class="hm-chip" href="#hm-p-online" data-tab="online">💻 เรียนจีนออนไลน์ก่อน</a>
       <a class="hm-chip" href="#hm-match">🔎 หามหาวิทยาลัยจีนด้วย AI</a>
       <a class="hm-chip" href="#hm-care">👨‍👩‍👧 ดูว่าพี่ ๆ ดูแลอะไรบ้าง</a>
+      <a class="hm-chip" href="#hm-scholar">🧡 ทุน Chiwchiw Scholarship</a>
     </nav>
   </div>
   <div class="hm-promo"><span class="hm-dot" aria-hidden="true"></span><span>🐼 ค่ายเฉิงตู 2027 · Early Bird <b>฿69,500</b> ถึง 30 ต.ค.</span><span class="hm-cd" data-end="2026-10-30T23:59:59+07:00" aria-live="off"></span><a href="https://chinesechiwchiw.com/chengdu-camp-april-2027/">ดูรายละเอียด →</a></div>
@@ -428,20 +459,24 @@
   <div class="hm-wrap">
     <div class="hm-center">
       <span class="hm-eyebrow">#chiwchiwfamily</span>
-      <h2 class="hm-h2">น้อง ๆ ของเรา <span>ที่จีน</span></h2>
-      <p class="hm-lead">ภาพจริงจากค่าย ห้องเรียน และชีวิตประจำวันของน้อง ๆ ที่ไปกับ Chinese Chiwchiw</p>
+      <h2 class="hm-h2">ชุมชนของเรา <span>ทั้งที่ไทยและที่จีน</span></h2>
+      <p class="hm-lead">ภาพจริงจากทีมพี่ ๆ งานแนะแนว กิจกรรม ค่าย และชีวิตของน้อง ๆ ที่ไปกับ Chinese Chiwchiw</p>
     </div>
     <div class="hm-gal">
-      <figure><img src="https://i0.wp.com/chinesechiwchiw.com/wp-content/uploads/2025/01/IMG_2114.webp?resize=480%2C600&ssl=1" alt="เพื่อนร่วมรุ่น Chiwchiw" loading="lazy" decoding="async" width="480" height="600"><figcaption>เพื่อนร่วมรุ่น Chiwchiw</figcaption></figure>
-      <figure><img src="https://i0.wp.com/chinesechiwchiw.com/wp-content/uploads/2026/09/SWUFE_Chengdu_Camp_%E0%B8%96%E0%B9%88%E0%B8%B2%E0%B8%A2%E0%B8%A3%E0%B8%B9%E0%B8%9B%E0%B8%9B%E0%B9%89%E0%B8%B2%E0%B8%A2%E0%B9%84%E0%B8%AD%E0%B9%80%E0%B8%A5%E0%B8%B4%E0%B8%9F%E0%B8%AA%E0%B8%A7%E0%B8%B9%E0%B8%9F2-rotated.webp?resize=480%2C600&ssl=1" alt="I ❤ SWUFE · เฉิงตู" loading="lazy" decoding="async" width="480" height="600"><figcaption>I ❤ SWUFE · เฉิงตู</figcaption></figure>
-      <figure><img src="https://i0.wp.com/chinesechiwchiw.com/wp-content/uploads/2026/09/%E0%B9%80%E0%B8%A3%E0%B8%B5%E0%B8%A2%E0%B8%99%E0%B8%A0%E0%B8%B2%E0%B8%A9%E0%B8%B2%E0%B8%97%E0%B8%B5%E0%B9%88%E0%B8%9F%E0%B8%B9%E0%B9%89%E0%B8%95%E0%B8%B1%E0%B9%89%E0%B8%99%E0%B9%80%E0%B8%8B%E0%B8%B5%E0%B9%89%E0%B8%A2%E0%B8%87%E0%B9%84%E0%B8%AE%E0%B9%89_%E0%B8%A3%E0%B8%B1%E0%B8%9A%E0%B9%80%E0%B8%AD%E0%B8%81%E0%B8%AA%E0%B8%B2%E0%B8%A3%E0%B8%A3%E0%B8%B2%E0%B8%A2%E0%B8%87%E0%B8%B2%E0%B8%99%E0%B8%95%E0%B8%B1%E0%B8%A7-rotated.webp?resize=480%2C600&ssl=1" alt="รายงานตัวที่ Fudan" loading="lazy" decoding="async" width="480" height="600"><figcaption>รายงานตัวที่ Fudan</figcaption></figure>
-      <figure><img src="https://i0.wp.com/chinesechiwchiw.com/wp-content/uploads/2026/03/IMG_6109-rotated-e1772766936161.webp?resize=480%2C600&ssl=1" alt="เที่ยวเมืองเก่ากับเพื่อน" loading="lazy" decoding="async" width="480" height="600"><figcaption>เที่ยวเมืองเก่ากับเพื่อน</figcaption></figure>
-      <figure><img src="https://i0.wp.com/chinesechiwchiw.com/wp-content/uploads/2026/09/SWUFE_Chengdu_Camp_%E0%B8%97%E0%B8%B3%E0%B8%82%E0%B8%99%E0%B8%A1%E0%B9%81%E0%B8%9E%E0%B8%99%E0%B8%94%E0%B9%89%E0%B8%B2%E0%B8%97%E0%B8%B5%E0%B9%88%E0%B8%9E%E0%B8%B4%E0%B8%9E%E0%B8%B4%E0%B8%98%E0%B8%A0%E0%B8%B1%E0%B8%93%E0%B8%91%E0%B9%8C%E0%B8%AD%E0%B8%B2%E0%B8%AB%E0%B8%B2%E0%B8%A3-rotated.webp?resize=480%2C600&ssl=1" alt="ทำขนมแพนด้า 🐼" loading="lazy" decoding="async" width="480" height="600"><figcaption>ทำขนมแพนด้า 🐼</figcaption></figure>
-      <figure><img src="https://i0.wp.com/chinesechiwchiw.com/wp-content/uploads/2026/09/%E0%B9%80%E0%B8%A3%E0%B8%B5%E0%B8%A2%E0%B8%99%E0%B8%A0%E0%B8%B2%E0%B8%A9%E0%B8%B2%E0%B8%97%E0%B8%B5%E0%B9%88%E0%B8%9F%E0%B8%B9%E0%B9%89%E0%B8%95%E0%B8%B1%E0%B9%89%E0%B8%99%E0%B9%80%E0%B8%8B%E0%B8%B5%E0%B9%89%E0%B8%A2%E0%B8%87%E0%B9%84%E0%B8%AE%E0%B9%89_%E0%B9%80%E0%B8%8B%E0%B8%A5%E0%B8%9F%E0%B8%B5%E0%B9%88%E0%B8%81%E0%B8%B1%E0%B8%9A%E0%B9%80%E0%B8%9E%E0%B8%B7%E0%B9%88%E0%B8%AD%E0%B8%99_2-rotated.webp?resize=480%2C600&ssl=1" alt="เซลฟี่กับเพื่อน · เซี่ยงไฮ้" loading="lazy" decoding="async" width="480" height="600"><figcaption>เซลฟี่กับเพื่อน · เซี่ยงไฮ้</figcaption></figure>
-      <figure><img src="https://i0.wp.com/chinesechiwchiw.com/wp-content/uploads/2026/07/IMG_6132.webp?resize=480%2C600&ssl=1" alt="ชีวิตในแคมปัส" loading="lazy" decoding="async" width="480" height="600"><figcaption>ชีวิตในแคมปัส</figcaption></figure>
-      <figure><img src="https://i0.wp.com/chinesechiwchiw.com/wp-content/uploads/2026/09/Closing-ceremony-%E0%B8%84%E0%B9%88%E0%B8%B2%E0%B8%A2%E0%B9%80%E0%B8%89%E0%B8%B4%E0%B8%87%E0%B8%95%E0%B8%B9%E0%B8%A3%E0%B8%AD%E0%B8%9A%E0%B9%80%E0%B8%A1%E0%B8%A9%E0%B8%B2-2026.webp?resize=480%2C600&ssl=1" alt="ปิดค่ายเฉิงตู เม.ย. 2026" loading="lazy" decoding="async" width="480" height="600"><figcaption>ปิดค่ายเฉิงตู เม.ย. 2026</figcaption></figure>
-      <figure><img src="https://i0.wp.com/chinesechiwchiw.com/wp-content/uploads/2026/03/IMG_6462-1.webp?resize=480%2C600&ssl=1" alt="ติ่มซำมื้อแรก 🥟" loading="lazy" decoding="async" width="480" height="600"><figcaption>ติ่มซำมื้อแรก 🥟</figcaption></figure>
-      <figure><img src="https://i0.wp.com/chinesechiwchiw.com/wp-content/uploads/2026/10/opt-_-_3-rotated-6722.webp?resize=480%2C600&ssl=1" alt="ซื้อของเข้าหอ" loading="lazy" decoding="async" width="480" height="600"><figcaption>ซื้อของเข้าหอ</figcaption></figure>
+      <figure class="hm-gw"><img src="https://i0.wp.com/chinesechiwchiw.com/wp-content/uploads/2025/01/IMG_2114.webp?w=800&ssl=1" alt="ทีมพี่ ๆ ชิวชิว" loading="lazy" decoding="async" width="800" height="600"><figcaption>ทีมพี่ ๆ ชิวชิว</figcaption></figure>
+      <figure class="hm-gb"><img src="https://i0.wp.com/chinesechiwchiw.com/wp-content/uploads/2026/03/IMG_8117.webp?w=800&ssl=1" alt="งานแนะแนวเรียนต่อจีน" loading="lazy" decoding="async" width="800" height="600"><figcaption>งานแนะแนวเรียนต่อจีน</figcaption></figure>
+      <figure class="hm-gt"><img src="https://i0.wp.com/chinesechiwchiw.com/wp-content/uploads/2026/09/%E0%B9%80%E0%B8%A3%E0%B8%B5%E0%B8%A2%E0%B8%99%E0%B8%A0%E0%B8%B2%E0%B8%A9%E0%B8%B2%E0%B8%97%E0%B8%B5%E0%B9%88%E0%B8%9F%E0%B8%B9%E0%B9%89%E0%B8%95%E0%B8%B1%E0%B9%89%E0%B8%99%E0%B9%80%E0%B8%8B%E0%B8%B5%E0%B9%89%E0%B8%A2%E0%B8%87%E0%B9%84%E0%B8%AE%E0%B9%89_%E0%B8%A3%E0%B8%B1%E0%B8%9A%E0%B9%80%E0%B8%AD%E0%B8%81%E0%B8%AA%E0%B8%B2%E0%B8%A3%E0%B8%A3%E0%B8%B2%E0%B8%A2%E0%B8%87%E0%B8%B2%E0%B8%99%E0%B8%95%E0%B8%B1%E0%B8%A7-rotated.webp?w=520&ssl=1" alt="รายงานตัวที่ Fudan" loading="lazy" decoding="async" width="520" height="600"><figcaption>รายงานตัวที่ Fudan</figcaption></figure>
+      <figure class=""><img src="https://i0.wp.com/chinesechiwchiw.com/wp-content/uploads/2026/09/SWUFE_Chengdu_Camp_%E0%B8%96%E0%B9%88%E0%B8%B2%E0%B8%A2%E0%B8%A3%E0%B8%B9%E0%B8%9B%E0%B8%9B%E0%B9%89%E0%B8%B2%E0%B8%A2%E0%B9%84%E0%B8%AD%E0%B9%80%E0%B8%A5%E0%B8%B4%E0%B8%9F%E0%B8%AA%E0%B8%A7%E0%B8%B9%E0%B8%9F2-rotated.webp?w=520&ssl=1" alt="ค่ายเฉิงตู · SWUFE" loading="lazy" decoding="async" width="520" height="600"><figcaption>ค่ายเฉิงตู · SWUFE</figcaption></figure>
+      <figure class=""><img src="https://i0.wp.com/chinesechiwchiw.com/wp-content/uploads/2026/09/SWUFE_Chengdu_Camp_%E0%B8%97%E0%B8%B3%E0%B8%82%E0%B8%99%E0%B8%A1%E0%B9%81%E0%B8%9E%E0%B8%99%E0%B8%94%E0%B9%89%E0%B8%B2%E0%B8%97%E0%B8%B5%E0%B9%88%E0%B8%9E%E0%B8%B4%E0%B8%9E%E0%B8%B4%E0%B8%98%E0%B8%A0%E0%B8%B1%E0%B8%93%E0%B8%91%E0%B9%8C%E0%B8%AD%E0%B8%B2%E0%B8%AB%E0%B8%B2%E0%B8%A3-rotated.webp?w=520&ssl=1" alt="ทำขนมแพนด้า 🐼" loading="lazy" decoding="async" width="520" height="600"><figcaption>ทำขนมแพนด้า 🐼</figcaption></figure>
+      <figure class="hm-gw"><img src="https://i0.wp.com/chinesechiwchiw.com/wp-content/uploads/2025/01/IMG_3955.webp?w=800&ssl=1" alt="บูธ Chinese Chiwchiw" loading="lazy" decoding="async" width="800" height="600"><figcaption>บูธ Chinese Chiwchiw</figcaption></figure>
+      <figure class="hm-gw"><img src="https://i0.wp.com/chinesechiwchiw.com/wp-content/uploads/2026/07/DSCF4251.webp?w=800&ssl=1" alt="งาน Pre-Departure" loading="lazy" decoding="async" width="800" height="600"><figcaption>งาน Pre-Departure</figcaption></figure>
+      <figure class=""><img src="https://i0.wp.com/chinesechiwchiw.com/wp-content/uploads/2025/01/IMG_5706.webp?w=520&ssl=1" alt="ส่งน้อง ๆ ที่สนามบิน ✈️" loading="lazy" decoding="async" width="520" height="600"><figcaption>ส่งน้อง ๆ ที่สนามบิน ✈️</figcaption></figure>
+      <figure class="hm-gt"><img src="https://i0.wp.com/chinesechiwchiw.com/wp-content/uploads/2026/03/534971303_18050604233538044_4990957841562362704_n.webp?w=520&ssl=1" alt="กิจกรรมกับน้อง ๆ" loading="lazy" decoding="async" width="520" height="600"><figcaption>กิจกรรมกับน้อง ๆ</figcaption></figure>
+      <figure class=""><img src="https://i0.wp.com/chinesechiwchiw.com/wp-content/uploads/2026/09/Closing-ceremony-%E0%B8%84%E0%B9%88%E0%B8%B2%E0%B8%A2%E0%B9%80%E0%B8%89%E0%B8%B4%E0%B8%87%E0%B8%95%E0%B8%B9%E0%B8%A3%E0%B8%AD%E0%B8%9A%E0%B9%80%E0%B8%A1%E0%B8%A9%E0%B8%B2-2026.webp?w=520&ssl=1" alt="ปิดค่ายเฉิงตู เม.ย. 2026" loading="lazy" decoding="async" width="520" height="600"><figcaption>ปิดค่ายเฉิงตู เม.ย. 2026</figcaption></figure>
+      <figure class=""><img src="https://i0.wp.com/chinesechiwchiw.com/wp-content/uploads/2026/03/IMG_6462-1.webp?w=520&ssl=1" alt="ติ่มซำมื้อแรก 🥟" loading="lazy" decoding="async" width="520" height="600"><figcaption>ติ่มซำมื้อแรก 🥟</figcaption></figure>
+      <figure class="hm-gw"><img src="https://i0.wp.com/chinesechiwchiw.com/wp-content/uploads/2026/03/IMG_6109-rotated-e1772766936161.webp?w=800&ssl=1" alt="เที่ยวกับเพื่อนที่จีน" loading="lazy" decoding="async" width="800" height="600"><figcaption>เที่ยวกับเพื่อนที่จีน</figcaption></figure>
+      <figure class="hm-gw"><img src="https://i0.wp.com/chinesechiwchiw.com/wp-content/uploads/2025/01/IMG_0668.webp?w=800&ssl=1" alt="น้อง ๆ ในงานแนะแนว" loading="lazy" decoding="async" width="800" height="600"><figcaption>น้อง ๆ ในงานแนะแนว</figcaption></figure>
+      <figure class=""><img src="https://i0.wp.com/chinesechiwchiw.com/wp-content/uploads/2026/03/IMG_8011.webp?w=520&ssl=1" alt="บูธแนะแนวเรียนต่อจีน" loading="lazy" decoding="async" width="520" height="600"><figcaption>บูธแนะแนวเรียนต่อจีน</figcaption></figure>
     </div>
     <div class="hm-cta" style="justify-content:center"><a class="hm-link" href="https://www.facebook.com/Chinesechiwchiw/photos" target="_blank" rel="noopener">📸 ดูรูปเพิ่มเติมบน Facebook →</a></div>
   </div>
@@ -479,7 +514,47 @@
   </div>
 </section>
 
-<!-- ═══ 10. FOUNDER + ABOUT (dark, interactive) ═══ -->
+<!-- ═══ 10. MORE THAN AN AGENCY — learning community + Chiwchiw Scholarship ═══ -->
+<section class="hm-sec hm-white" id="hm-community">
+  <div class="hm-wrap">
+    <div class="hm-center">
+      <span class="hm-eyebrow">✦ เกี่ยวกับเรา · ตั้งแต่ 2021 ✦</span>
+      <h2 class="hm-h2">มากกว่าเอเจนซี่ — เราคือ <span>Learning Community</span> จากไทยสู่ระดับโลก</h2>
+    </div>
+    <p class="hm-door">สำหรับเรา ภาษาจีนไม่ใช่แค่วิชาเรียน แต่คือ <b>“ประตูสู่โอกาส”</b> ที่พาไปได้ไกลขึ้น ทั้งเรื่องงาน การเรียน วัฒนธรรม และประสบการณ์ใหม่ ๆ ในระดับโลก</p>
+    <div class="hm-four">
+      <article class="hm-rv"><span class="hm-n">01</span><i aria-hidden="true">🏫</i><h3>ชุมชนการเรียนรู้</h3><small>LEARNING COMMUNITY</small><p>นักเรียน ผู้ปกครอง ครู และรุ่นพี่ที่เรียนรู้และช่วยกัน — ทั้งในห้องเรียน งาน Pre-Departure และชุมชนออนไลน์ 150,000+ คน</p></article>
+      <article class="hm-rv"><span class="hm-n">02</span><i aria-hidden="true">🌱</i><h3>ปั้นศักยภาพ</h3><small>FOSTER TALENT</small><p>สอนภาษาจีนเองตั้งแต่ Beginner ถึง HSK 6, HSKK และติว CSCA โดยครูคนไทยที่เคยเรียนและได้ทุนที่จีน</p></article>
+      <article class="hm-rv"><span class="hm-n">03</span><i aria-hidden="true">🧭</i><h3>แนะแนวนักเรียน & ผู้ปกครอง</h3><small>GUIDE STUDENTS & PARENTS</small><p>วางแผนเรียนต่อด้วยข้อมูลจริงและราคาเปิดเผย ผู้ปกครองคุยกับทีมได้โดยตรง และเราเข้าไปแนะแนวถึงโรงเรียน</p></article>
+      <article class="hm-rv"><span class="hm-n">04</span><i aria-hidden="true">🎁</i><h3>ส่งต่อโอกาส</h3><small>OFFER OPPORTUNITIES</small><p>ทุน Chiwchiw Scholarship, Roadshow แนะแนว และเส้นทางสู่การเรียน การทำงาน และชีวิตในระดับนานาชาติ</p></article>
+    </div>
+
+    <div class="hm-schol hm-rv" id="hm-scholar">
+      <div class="hm-schol-img"><img src="https://i0.wp.com/chinesechiwchiw.com/wp-content/uploads/2026/03/548925591_18053538578538044_6332023643666926458_n.webp?w=700&ssl=1" alt="มอบทุน Chiwchiw Scholarship สำหรับค่ายภาษาจีนที่จีน" loading="lazy" decoding="async" width="700" height="580"></div>
+      <div class="hm-schol-body">
+        <span class="hm-schol-tag">🧡 ทุนของ Chinese Chiwchiw เอง</span>
+        <h3>ทุน <span>Chiwchiw Scholarship</span></h3>
+        <p>ทุนการศึกษาจากกำไรบริษัทและเงินออมส่วนตัวของผู้ก่อตั้ง เพื่อให้น้องที่ขาดโอกาสทางการเงินได้ไปเปิดโลกที่ค่ายภาษาจีนในจีน — เพราะเราเชื่อว่าการศึกษาคือประตูที่ทำให้คนหนึ่งคนมีทางเลือกในชีวิตมากขึ้น</p>
+        <div class="hm-schol-facts">
+          <div class="hm-fact"><i aria-hidden="true">🎓</i><span><b>มีทั้งทุน 100% และ 50%</b> — ประกาศรายละเอียดเป็นรอบ ๆ</span></div>
+          <div class="hm-fact"><i aria-hidden="true">🐼</i><span><b>ปี 2026 มอบทุนค่ายระยะสั้นแล้ว 2 ทุน</b> และจะเปิดรับต่อไปทุกปี</span></div>
+          <div class="hm-fact"><i aria-hidden="true">📣</i><span><b>ติดตามประกาศรับสมัคร</b> ทาง LINE และ Facebook ของเรา</span></div>
+        </div>
+        <div class="hm-cta"><a class="hm-btn hm-line" href="https://line.me/ti/p/~@chiwchiw" target="_blank" rel="noopener">🔔 รับข่าวทุนรอบถัดไปทาง LINE</a><a class="hm-btn hm-out" href="https://www.facebook.com/Chinesechiwchiw" target="_blank" rel="noopener">ดูประกาศบน Facebook</a></div>
+      </div>
+    </div>
+
+    <div class="hm-road hm-rv">
+      <img src="https://i0.wp.com/chinesechiwchiw.com/wp-content/uploads/2026/03/539655399_1216883620453472_1988846568270268185_n.webp?resize=560%2C420&ssl=1" alt="Roadshow แนะแนวที่โรงเรียนอำนวยศิลป์" loading="lazy" decoding="async" width="560" height="420">
+      <div><b>🏫 Chiwchiw NEXT Roadshow</b><p>นำห้องแนะแนวเรียนต่อและทุนเข้าไปถึงโรงเรียน พร้อมรุ่นพี่มาเล่าประสบการณ์จริง — ปี 2568 ไปมาแล้วที่ วัดนวลนรดิศ · วัดนายโรง · อำนวยศิลป์ · วิทยาลัยอาชีวศึกษาศรีราชา · <a class="hm-link" href="https://line.me/ti/p/~@chiwchiw" target="_blank" rel="noopener">โรงเรียนที่สนใจ ติดต่อเรา →</a></p></div>
+    </div>
+
+    <div class="hm-partners2"><strong>🎓 พาร์ทเนอร์ในจีน</strong><span>SCUT · กว่างโจว</span><span>SWUFE · เฉิงตู</span><span>SILC · เซี่ยงไฮ้</span><span>Qingdao City University</span><span>SCedu · เฉิงตู</span></div>
+    <p class="hm-legal2">🏢 บริษัท ไชนีส ชิวชิว จำกัด · เลขทะเบียนนิติบุคคล 0205568033020 · จดทะเบียนภาษีมูลค่าเพิ่ม (ภ.พ.20) · <a class="hm-link" href="https://chinesechiwchiw.com/about/">เกี่ยวกับเรา →</a></p>
+  </div>
+</section>
+
+<!-- ═══ 11. FOUNDER (dark, interactive) ═══ -->
 <section class="hm-sec hm-dark" id="hm-about">
   <div class="hm-wrap">
     <div class="hm-founder">
@@ -506,18 +581,11 @@
         <div class="hm-cta"><a class="hm-btn hm-ghost" href="https://chinesechiwchiw.com/เกี่ยวกับนาเดียร์/">อ่านเรื่องราวของเดียร์ →</a><a class="hm-btn hm-ghost" href="https://www.youtube.com/watch?v=m7MUU4qMkCg" target="_blank" rel="noopener">▶ ดูคลิปเรื่องราวของเดียร์</a></div>
       </div>
     </div>
-    <div class="hm-pillars">
-      <div class="hm-pillar hm-rv"><b>📚 เรียน</b><span>เริ่มจากการเป็นครู — สอนภาษาจีนเองตั้งแต่ Beginner ถึง HSK 6</span></div>
-      <div class="hm-pillar hm-rv"><b>✈️ ไป</b><span>ทำงานกับมหาวิทยาลัยในจีนโดยตรง ดูแลตั้งแต่สมัครจนถึงวันลงทะเบียน</span></div>
-      <div class="hm-pillar hm-rv"><b>💛 ชุมชน</b><span>Chiwchiw Family — มีเพื่อนร่วมรุ่นและรุ่นพี่ตั้งแต่ก่อนบินจนหลังเรียนจบ</span></div>
-      <div class="hm-pillar hm-rv"><b>🎁 ส่งต่อ</b><span>กำไรส่วนหนึ่งกลับมาเป็นทุน Chiwchiw Scholarship และ Roadshow แนะแนวในโรงเรียนไทย</span></div>
-    </div>
-    <div class="hm-partners"><strong>🎓 พาร์ทเนอร์ในจีน</strong><span>SCUT · กว่างโจว</span><span>SWUFE · เฉิงตู</span><span>SILC · เซี่ยงไฮ้</span><span>Qingdao City University</span><span>SCedu · เฉิงตู</span></div>
-    <p class="hm-legal">🏢 บริษัท ไชนีส ชิวชิว จำกัด · เลขทะเบียนนิติบุคคล 0205568033020 · จดทะเบียนภาษีมูลค่าเพิ่ม (ภ.พ.20) · <a class="hm-link" href="https://chinesechiwchiw.com/about/" style="color:#FFB347!important">เกี่ยวกับเรา →</a></p>
+
   </div>
 </section>
 
-<!-- ═══ 11. FAQ ═══ -->
+<!-- ═══ 12. FAQ ═══ -->
 <section class="hm-sec" id="hm-faq">
   <div class="hm-wrap">
     <div class="hm-center">
@@ -538,7 +606,7 @@
   </div>
 </section>
 
-<!-- ═══ 12. FINAL CTA ═══ -->
+<!-- ═══ 13. FINAL CTA ═══ -->
 <section class="hm-dark hm-final">
   <div class="hm-wrap">
     <h2>พร้อมเริ่ม <span>เส้นทางไปจีน</span> ของคุณหรือยัง?</h2>
