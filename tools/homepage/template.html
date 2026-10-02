@@ -6,7 +6,7 @@ var moved=false,stop=function(){moved=true;};['touchstart','wheel','keydown','mo
 var top=function(){if(!moved&&window.scrollY)window.scrollTo(0,0);};top();document.addEventListener('DOMContentLoaded',top);addEventListener('load',function(){top();setTimeout(top,350);});})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700;800;900&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap">
-<link rel="preload" as="image" href="{{HERO1_SM}}" imagesrcset="{{HERO1_SM}} 800w, {{HERO1_LG}} 1600w" imagesizes="100vw" fetchpriority="high">
+<link rel="preload" as="image" href="{{HERO1_XS}}" imagesrcset="{{HERO1_SRCSET}}" imagesizes="(max-width:600px) 55vw, 100vw" fetchpriority="high">
 <style>
 #hm-page{width:100vw!important;max-width:none!important;position:relative;left:50%;right:50%;margin-left:-50vw!important;margin-right:-50vw!important;display:flow-root;overflow-x:clip;background:#FFFBF7;color:#5C4A3E;font-family:'Noto Sans Thai',sans-serif;font-size:17px;line-height:1.8}
 #hm-page *,#hm-page *::before,#hm-page *::after{box-sizing:border-box}
@@ -67,6 +67,8 @@ var top=function(){if(!moved&&window.scrollY)window.scrollTo(0,0);};top();docume
 @keyframes hm-blink{0%{box-shadow:0 0 0 0 rgba(255,107,0,.6)}70%{box-shadow:0 0 0 9px rgba(255,107,0,0)}100%{box-shadow:0 0 0 0 rgba(255,107,0,0)}}
 .hm-promo b{color:#FFB347;font-family:'Kanit',sans-serif}
 .hm-cd{font-family:'Kanit',sans-serif;font-weight:700;color:#fff;font-variant-numeric:tabular-nums}
+#hm-page .hm-morebtn{display:flex;margin:16px auto 0;background:#fff;border:1px solid #F0C9A4;color:#C2410C;font-family:'Kanit',sans-serif;font-weight:700;font-size:1rem;border-radius:50px;padding:11px 24px;cursor:pointer}
+#hm-page .hm-morebtn:hover{background:#FFF3E6}
 #hm-page .hm-promo a{color:#FFB347!important;font-family:'Kanit',sans-serif;font-weight:700}
 /* paths (tabs) */
 .hm-tabs{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:30px}
@@ -148,6 +150,8 @@ var top=function(){if(!moved&&window.scrollY)window.scrollTo(0,0);};top();docume
 .hm-gal .hm-gw{grid-column:span 2}.hm-gal .hm-gt{grid-row:span 2}.hm-gal .hm-gb{grid-column:span 2;grid-row:span 2}
 #hm-page .hm-gal img{width:100%;height:100%;object-fit:cover;margin:0;filter:saturate(.9) contrast(.97);transition:transform .5s ease}
 .hm-gal figure:hover img{transform:scale(1.04)}
+.hm-gal time{position:absolute;top:8px;left:8px;z-index:1;background:rgba(255,255,255,.9);color:#1A0A00;font-family:'Kanit',sans-serif;font-weight:700;font-size:.72rem;line-height:1.4;padding:2px 9px;border-radius:50px;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.hm-js .hm-gal figure[hidden]{display:none}
 .hm-gal figcaption{position:absolute;left:0;right:0;bottom:0;padding:26px 12px 10px;background:linear-gradient(0deg,rgba(26,10,0,.7),rgba(26,10,0,0));color:#fff;font-family:'Kanit',sans-serif;font-weight:600;font-size:.85rem;line-height:1.35}
 /* reviews */
 .hm-revs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:32px}
@@ -249,7 +253,7 @@ var top=function(){if(!moved&&window.scrollY)window.scrollTo(0,0);};top();docume
 
 <!-- ═══ 1. HERO ═══ -->
 <section class="hm-hero" aria-label="Chinese Chiwchiw">
-  <div class="hm-slide hm-on"><img src="{{HERO1_SM}}" srcset="{{HERO1_SM}} 800w, {{HERO1_LG}} 1600w" sizes="100vw" width="1600" height="1067" alt="" fetchpriority="high" decoding="async"></div>
+  <div class="hm-slide hm-on"><img src="{{HERO1_XS}}" srcset="{{HERO1_SRCSET}}" sizes="(max-width:600px) 55vw, 100vw" width="1600" height="1067" alt="" fetchpriority="high" decoding="async"></div>
   <div class="hm-slide" data-bg="{{HERO2}}"></div>
   <div class="hm-slide" data-bg="{{HERO3}}"></div>
   <div class="hm-hero-in"><div class="hm-hero-box">
@@ -429,8 +433,8 @@ var top=function(){if(!moved&&window.scrollY)window.scrollTo(0,0);};top();docume
   <div class="hm-wrap">
     <div class="hm-center">
       <span class="hm-eyebrow">#chiwchiwfamily</span>
-      <h2 class="hm-h2">ชุมชนของเรา <span>ทั้งที่ไทยและที่จีน</span></h2>
-      <p class="hm-lead">ภาพจริงจากทีมพี่ ๆ งานแนะแนว กิจกรรม ค่าย และชีวิตของน้อง ๆ ที่ไปกับ Chinese Chiwchiw</p>
+      <h2 class="hm-h2">ชุมชนของเรา <span>ทั้ง<i style="font-style:normal;white-space:nowrap">ที่ไทย</i>และ<i style="font-style:normal;white-space:nowrap">ที่จีน</i></span></h2>
+      <p class="hm-lead">ภาพจริงจากงานแนะแนว ค่าย กิจกรรม และชีวิตของน้อง ๆ ที่ไปกับ Chinese Chiwchiw </p>
     </div>
     <div class="hm-gal">{{GALLERY}}
     </div>
@@ -579,7 +583,8 @@ var top=function(){if(!moved&&window.scrollY)window.scrollTo(0,0);};top();docume
   /* hero: load slides 2-3 after the page, then crossfade every 7s */
   var slides=root.querySelectorAll('.hm-slide');
   window.addEventListener('load',function(){
-    slides.forEach(function(s){var u=s.getAttribute('data-bg');if(u)s.style.backgroundImage="url('"+u+"')";});
+    var phone=601>window.innerWidth;
+    slides.forEach(function(s){var u=s.getAttribute('data-bg');if(!u)return;if(phone)u=u.replace('w=1600','w=800').replace('&ssl=1','&ssl=1&quality=60');s.style.backgroundImage="url('"+u+"')";});
     if(still||slides.length==1)return;
     var i=0;setInterval(function(){slides[i].classList.remove('hm-on');i=(i+1)%slides.length;slides[i].classList.add('hm-on');},7000);
   });
@@ -598,6 +603,12 @@ var top=function(){if(!moved&&window.scrollY)window.scrollTo(0,0);};top();docume
     v.addEventListener('click',function(e){e.preventDefault();load(false);});
     if(!still&&'IntersectionObserver' in window){var vo=new IntersectionObserver(function(es){if(es[0].isIntersecting){vo.disconnect();load(true);}},{threshold:.4});vo.observe(v);}
   }
+  /* gallery: show the newest photos first, the rest behind a button */
+  var gal=root.querySelector('.hm-gal');
+  if(gal){var figs=gal.querySelectorAll('figure'),lim=14,more=figs.length-lim;
+    if(more>2){for(var gi=lim;gi!==figs.length;gi++)figs[gi].hidden=true;
+      var gb=document.createElement('button');gb.type='button';gb.className='hm-morebtn';gb.textContent='📸 ดูรูปเพิ่มอีก '+more+' รูป';
+      gb.addEventListener('click',function(){figs.forEach(function(f){f.hidden=false;});gb.remove();});gal.insertAdjacentElement('afterend',gb);}}
   /* reveal */
   if('IntersectionObserver' in window){
     var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('hm-in');io.unobserve(e.target);}});},{threshold:.1});

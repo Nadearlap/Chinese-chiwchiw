@@ -17,7 +17,7 @@ for i,(ic,ti,sh,body,link,photo) in enumerate(CARE,1):
       <div class="hm-care-img"><img src="{ph(photo,720,520)}" alt="{esc(ti)}" loading="lazy" decoding="async" width="720" height="520"></div>
       <div class="hm-care-body"><span class="hm-care-n">ขั้นที่ {i:02d}</span><h3>{ic} {ti}</h3><p>{body}</p><a class="hm-link" href="https://chinesechiwchiw.com{"/บริการของเรา/" if link in PENDING else link}">ดูรายละเอียด{ti if i!=6 else "บริการทั้งหมด"} →</a></div>
     </div>'''
-gal=''.join(f'\n      <figure class="{("hm-g"+z) if z else ""}"><img src="{ph(p,800 if z in ("b","w") else 520)}" alt="{esc(c)}" loading="lazy" decoding="async" width="{800 if z in ("b","w") else 520}" height="600"><figcaption>{c}</figcaption></figure>' for p,c,z in GALLERY)
+gal=''.join(f'\n      <figure class="{("hm-g"+z) if z else ""}"><img src="{ph(p,800 if z in ("b","w") else 520)}" alt="{esc(c)}" loading="lazy" decoding="async" width="{800 if z in ("b","w") else 520}" height="600">{("<time>"+d+"</time>") if d else ""}<figcaption>{c}</figcaption></figure>' for p,c,z,d in GALLERY)
 revs=''.join(f'''
       <article class="hm-rev hm-rv">
         <header><span class="hm-av" style="background-position:0 -{k*46}px" aria-hidden="true"></span><div><b>{esc(n)}</b><small>{esc(r)} · {esc(tg)}</small></div></header>
@@ -28,7 +28,7 @@ revs=''.join(f'''
 faq=''.join(f'\n      <details><summary>{esc(q)}</summary><p>{esc(a)}</p></details>' for q,a in FAQ)
 ld=json.dumps({"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":q,"acceptedAnswer":{"@type":"Answer","text":a}} for q,a in FAQ]},ensure_ascii=False,indent=1)
 R={'{{ANN}}':ANN,'{{STOPS}}':stops,'{{CAREPANELS}}':panels,'{{GALLERY}}':gal,'{{REVIEWS}}':revs,'{{FAQ}}':faq,'{{FAQLD}}':ld,
- '{{HERO1_SM}}':ph(HERO[0],800),'{{HERO1_LG}}':U+HERO[0],'{{HERO2}}':ph(HERO[1],1600),'{{HERO3}}':ph(HERO[2],1600),
+ '{{HERO1_XS}}':ph(HERO[0],640)+'&quality=70','{{HERO1_SRCSET}}':ph(HERO[0],640)+'&quality=70 640w, '+ph(HERO[0],800)+'&quality=60 800w, '+U+HERO[0]+' 1600w','{{HERO2}}':ph(HERO[1],1600),'{{HERO3}}':ph(HERO[2],1600),
  '{{IMG_CAMP}}':ph('2026/09/SWUFE_Chengdu_Camp_ถ่ายรูปป้ายไอเลิฟสวูฟ2-rotated.webp',720,600),
  '{{IMG_LANG}}':ph('2026/09/เรียนภาษาที่ฟู้ตั้นเซี้ยงไฮ้_ถ่ายรูปหน้าตึกกวงหัว_4.webp',720,600),
  '{{IMG_DEGREE}}':ph('2026/09/SCUT_guangzhou_ถ่ายรูปหมู่กับอาจารย์.webp',720,600),
