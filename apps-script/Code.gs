@@ -458,7 +458,7 @@ function saveLead_(b) {
   return {ok: true};
 }
 
-function clean_(v, max) { return String(v == null ? '' : v).replace(/[\u0000-\u001f]/g, ' ').trim().slice(0, max); }
+function clean_(v, max) { return String(v == null ? '' : v).replace(/[\u0000-\u001f]/g, ' ').replace(/[\u200c\u200d\u2060]/g, '').trim().slice(0, max); }
 // Stops a submitted value from being run as a spreadsheet formula.
 function safe_(v) { return /^[=+\-@]/.test(v) ? "'" + v : v; }
 
@@ -605,8 +605,40 @@ function profileOf_(profiles, name) {
 }
 
 // The ONLY programme fields that are ever sent to the website.
+// Invisible copy-tracing marks. A small share of records (chosen with a private seed, so the
+// selection can't be guessed from this code) carry a zero-width code inside one text field.
+// It doesn't show on screen or change any fact, but it survives copy-paste and scraping,
+// so the "Copy Checker" can prove a copied dataset came from Chinese Chiwchiw.
+var WM_SEED_ = null;
+function wmSeed_() {
+  if (WM_SEED_ !== null) return WM_SEED_;
+  try {
+    var props = PropertiesService.getScriptProperties();
+    WM_SEED_ = props.getProperty('wmSeed');
+    if (!WM_SEED_) { WM_SEED_ = Utilities.getUuid(); props.setProperty('wmSeed', WM_SEED_); }
+  } catch (err) { WM_SEED_ = 'preview'; }
+  return WM_SEED_;
+}
+function wmHash_(key) {
+  var h = 2166136261, str = wmSeed_() + '|' + key;
+  for (var i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = (h * 16777619) >>> 0; }
+  return h;
+}
+function wmTag_(key) {
+  var h = wmHash_(key), code = 'CCW' + ('000' + (h % 46656).toString(36).toUpperCase()).slice(-3), bits = '';
+  for (var i = 0; i < code.length; i++) bits += ('0000000' + code.charCodeAt(i).toString(2)).slice(-8);
+  return '\u2060' + bits.replace(/0/g, '\u200c').replace(/1/g, '\u200d') + '\u2060';
+}
+// Puts the mark after the first space (or at the end) of text, for about 1 in `every` keys.
+function wm_(text, key, every) {
+  text = String(text || '');
+  if (!text || wmHash_(key) % every !== 7 % every) return text;
+  var i = text.indexOf(' ');
+  return i > 0 ? text.slice(0, i + 1) + wmTag_(key) + text.slice(i + 1) : text + wmTag_(key);
+}
+
 function pub_(r) {
-  return {id: r.id, u: r.u, cn: r.cn, city: r.city, lv: r.lv, prog: r.prog, track: r.track, school: r.school, lang: r.lang,
+  return {id: r.id, u: r.u, cn: r.cn, city: r.city, lv: r.lv, prog: wm_(r.prog, 'p:' + r.u + '|' + r.lv + '|' + r.prog + '|' + r.lang, 25), track: r.track, school: r.school, lang: r.lang,
     dur: r.dur, tu: r.tu, tot: r.tot, hsk: r.hsk, hskTxt: r.hskTxt, hskk: r.hskk, hskkLv: r.hskkLv, ielts: r.ielts, toefl: r.toefl,
     eng: r.eng, csca: r.csca, cscaSub: r.cscaSub, sch: r.sch, dl: r.dl, cyc: r.cyc, open: r.open, past: r.past,
     campus: r.campus, f: r.f, s: r.s, req: r.req || []};
@@ -620,7 +652,7 @@ function uniSummary_(name, list, profiles, fullDesc) {
     if (r.open) open = true; if (r.sch) sch = true; if (r.lang !== 'zh') en++;
   });
   return {name: name, short: shortName_(name), cn: r0.cn, city: r0.city, prov: r0.prov, code: r0.code, tiers: TIERS[r0.code] || [],
-    desc: fullDesc ? prof.desc || '' : cardDesc_(prof.desc), photo: prof.photo || '', logo: prof.logo || '', credit: prof.credit || '', src: prof.src || '', n: list.length,
+    desc: wm_(fullDesc ? prof.desc || '' : cardDesc_(prof.desc), 'u:' + name, 8), photo: prof.photo || '', logo: prof.logo || '', credit: prof.credit || '', src: prof.src || '', n: list.length,
     feeMin: fees.length ? Math.min.apply(null, fees) : 0, feeMax: fees.length ? Math.max.apply(null, fees) : 0,
     levels: ['UG', 'PG', 'PHD', 'LANG'].filter(function (k) { return lv[k]; }),
     top: Object.keys(fc).sort(function (a, b) { return fc[b] - fc[a]; }).slice(0, 2), open: open, sch: sch, en: en};
