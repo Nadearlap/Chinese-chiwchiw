@@ -187,7 +187,14 @@
 .um-formmsg{margin:12px 0 0;font-size:.9rem;color:#A12C2C;min-height:1px}
 .um-qerr{margin:14px 0 0;padding:10px 12px;border-radius:12px;background:#FDECEC;color:#A12C2C;font-size:.85rem;line-height:1.5;word-break:break-word}
 .um-leadbox .um-btn{margin-top:18px}
-.um-contact .um-fgrid{margin-top:4px}
+.um-contact.um-on{animation:none}
+.um-cfields .um-field{margin-top:12px}
+.um-ccheck{display:block;position:relative;margin:16px 0 0;padding-left:30px;font-size:.88rem;line-height:1.65}
+#uni-matcher .um-ccheck input{position:absolute;left:0;top:2px;width:20px;height:20px;margin:0}
+.um-ccheck label{cursor:pointer}
+.um-ccheck i{font-style:normal;color:#FF6B00}
+.um-cpolicy{margin:4px 0 0 30px;font-size:.85rem}
+.um-cpolicy a{color:#C24E00!important;font-weight:700;text-decoration:underline!important}
 .um-leadst{text-align:center}
 .um-leadst p{margin:6px 0 0!important}
 .um-thanks{text-align:center;padding:10px 0}
@@ -557,15 +564,17 @@
           <fieldset class="um-step um-contact" data-step="contact">
             <legend class="um-q">📩 ข้อสุดท้าย! จะให้ส่งผลจับคู่ไปที่ไหนดี?</legend>
             <p class="um-qhint">กรอกชื่อและอีเมล แล้วดูผลได้ทันที เราจะส่ง<b>รายงานฉบับเต็ม</b>พร้อม Timeline เตรียมตัวไปให้ทางอีเมลด้วย ฟรี ไม่มีค่าใช้จ่าย</p>
-            <div class="um-fgrid">
-              <div class="um-field"><label for="um-c-name">ชื่อเล่น / ชื่อ <i>*</i></label><input id="um-c-name" type="text" autocomplete="name" maxlength="100"></div>
-              <div class="um-field"><label for="um-c-email">อีเมล <i>*</i></label><input id="um-c-email" type="email" autocomplete="email" maxlength="150" placeholder="name@gmail.com"></div>
-              <div class="um-field"><label for="um-c-line">LINE ID</label><input id="um-c-line" type="text" maxlength="60" autocomplete="off"></div>
-              <div class="um-field"><label for="um-c-phone">เบอร์โทรศัพท์</label><input id="um-c-phone" type="tel" autocomplete="tel" maxlength="30"></div>
+            <!-- Kept deliberately plain (text inputs, no autofill hints, no hidden fields, no links inside labels):
+                 iPhones froze on this step with the richer version. -->
+            <div class="um-cfields">
+              <div class="um-field"><label for="um-c-n">ชื่อเล่น / ชื่อ <i>*</i></label><input id="um-c-n" type="text" maxlength="100" autocomplete="off" autocorrect="off"></div>
+              <div class="um-field"><label for="um-c-e">อีเมล <i>*</i></label><input id="um-c-e" type="text" inputmode="email" maxlength="150" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="name@gmail.com"></div>
+              <div class="um-field"><label for="um-c-l">LINE ID</label><input id="um-c-l" type="text" maxlength="60" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"></div>
+              <div class="um-field"><label for="um-c-p">เบอร์โทรศัพท์</label><input id="um-c-p" type="text" inputmode="tel" maxlength="30" autocomplete="off"></div>
             </div>
-            <div class="um-hp" aria-hidden="true"><label for="um-c-web">Website</label><input id="um-c-web" type="text" tabindex="-1" autocomplete="off"></div>
-            <label class="um-consent"><input type="checkbox" id="um-c-consent"><span>ฉันได้อ่านและยอมรับ <a href="https://chinesechiwchiw.com/privacy-policy/" target="_blank" rel="noopener">นโยบายความเป็นส่วนตัว</a> และยินยอมให้ Chinese Chiwchiw ใช้ข้อมูลนี้เพื่อส่งรายงานผลจับคู่ ติดต่อกลับเรื่องการเรียนต่อ และวิเคราะห์เพื่อพัฒนาบริการ <i>*</i></span></label>
-            <label class="um-consent"><input type="checkbox" id="um-c-marketing"><span>ฉันต้องการรับข่าวสาร โปรโมชัน และเคล็ดลับเรียนต่อจีนทางอีเมล (ยกเลิกได้ทุกเมื่อ)</span></label>
+            <div class="um-ccheck"><input type="checkbox" id="um-c-ok"><label for="um-c-ok">ฉันยอมรับนโยบายความเป็นส่วนตัว และยินยอมให้ Chinese Chiwchiw ใช้ข้อมูลนี้เพื่อส่งรายงานผลจับคู่ ติดต่อกลับเรื่องการเรียนต่อ และวิเคราะห์เพื่อพัฒนาบริการ <i>*</i></label></div>
+            <p class="um-cpolicy"><a href="https://chinesechiwchiw.com/privacy-policy/" target="_blank" rel="noopener">อ่านนโยบายความเป็นส่วนตัว →</a></p>
+            <div class="um-ccheck"><input type="checkbox" id="um-c-mk"><label for="um-c-mk">ฉันต้องการรับข่าวสาร โปรโมชัน และเคล็ดลับเรียนต่อจีนทางอีเมล (ยกเลิกได้ทุกเมื่อ)</label></div>
             <p class="um-formmsg um-cmsg" role="alert"></p>
           </fieldset>
 
@@ -931,8 +940,8 @@
   });
   var EMAIL_RE=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/,PHONE_RE=/^[0-9+\-\s()]{6,30}$/;
   function contact(){
-    return {name:$('#um-c-name').value.trim(),email:$('#um-c-email').value.trim(),line:$('#um-c-line').value.trim(),phone:$('#um-c-phone').value.trim(),
-      hp:$('#um-c-web').value,consent:$('#um-c-consent').checked,marketing:$('#um-c-marketing').checked};
+    return {name:$('#um-c-n').value.trim(),email:$('#um-c-e').value.trim(),line:$('#um-c-l').value.trim(),phone:$('#um-c-p').value.trim(),
+      hp:'',consent:$('#um-c-ok').checked,marketing:$('#um-c-mk').checked};
   }
   // [message, field] for the first problem, or null when the contact details are complete.
   function leadErr(d){
@@ -1002,7 +1011,7 @@
     e.preventDefault();
     if(!stepValid(cur)){
       var er=steps[cur].getAttribute('data-step')==='contact'&&leadErr(contact());
-      if(er){$('.um-cmsg').textContent=er[0];$('#um-c-'+er[1]).focus();}
+      if(er){$('.um-cmsg').textContent=er[0];var fe=$('#um-c-'+{name:'n',email:'e',phone:'p',consent:'ok'}[er[1]]);if(fe&&er[1]!=='consent')fe.focus();}
       return;
     }
     try{if(cur<steps.length-1)show(cur+1);else runMatch();}catch(err){qErr(err);}
@@ -1149,14 +1158,14 @@
       '<h3>📩 รับรายงานผลจับคู่ฉบับเต็มทางอีเมล</h3>'+
       '<p>ทิ้งข้อมูลไว้ แล้วทีม Chinese Chiwchiw จะส่งรายงานพร้อมตัวเลือกอื่นที่เหมาะกับนักเรียนไปให้ทางอีเมล</p>'+
       '<div class="um-fgrid">'+
-        '<div class="um-field"><label for="um-l-name">ชื่อ <i>*</i></label><input id="um-l-name" name="name" type="text" autocomplete="name" maxlength="100" required></div>'+
-        '<div class="um-field"><label for="um-l-email">อีเมล <i>*</i></label><input id="um-l-email" name="email" type="email" autocomplete="email" maxlength="150" required></div>'+
-        '<div class="um-field"><label for="um-l-line">LINE ID</label><input id="um-l-line" name="line" type="text" maxlength="60" autocomplete="off"></div>'+
-        '<div class="um-field"><label for="um-l-phone">เบอร์โทรศัพท์</label><input id="um-l-phone" name="phone" type="tel" autocomplete="tel" maxlength="30"></div>'+
+        '<div class="um-field"><label for="um-l-n">ชื่อ <i>*</i></label><input id="um-l-n" name="name" type="text" maxlength="100" autocomplete="off" autocorrect="off"></div>'+
+        '<div class="um-field"><label for="um-l-e">อีเมล <i>*</i></label><input id="um-l-e" name="email" type="text" inputmode="email" maxlength="150" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"></div>'+
+        '<div class="um-field"><label for="um-l-l">LINE ID</label><input id="um-l-l" name="line" type="text" maxlength="60" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"></div>'+
+        '<div class="um-field"><label for="um-l-p">เบอร์โทรศัพท์</label><input id="um-l-p" name="phone" type="text" inputmode="tel" maxlength="30" autocomplete="off"></div>'+
       '</div>'+
-      '<div class="um-hp" aria-hidden="true"><label for="um-l-web">Website</label><input id="um-l-web" name="website" type="text" tabindex="-1" autocomplete="off"></div>'+
-      '<label class="um-consent"><input type="checkbox" name="consent" id="um-l-consent"><span>ฉันได้อ่านและยอมรับ <a href="'+SITE+'/privacy-policy/" target="_blank" rel="noopener">นโยบายความเป็นส่วนตัว</a> และยินยอมให้ Chinese Chiwchiw ใช้ข้อมูลนี้เพื่อส่งรายงานผลจับคู่ ติดต่อกลับเรื่องการเรียนต่อ และวิเคราะห์เพื่อพัฒนาบริการ <i>*</i></span></label>'+
-      '<label class="um-consent"><input type="checkbox" name="marketing" id="um-l-marketing"><span>ฉันต้องการรับข่าวสาร โปรโมชัน และเคล็ดลับเรียนต่อจีนทางอีเมล (ยกเลิกได้ทุกเมื่อ)</span></label>'+
+      '<div class="um-ccheck"><input type="checkbox" name="consent" id="um-l-ok"><label for="um-l-ok">ฉันยอมรับนโยบายความเป็นส่วนตัว และยินยอมให้ Chinese Chiwchiw ใช้ข้อมูลนี้เพื่อส่งรายงานผลจับคู่ ติดต่อกลับเรื่องการเรียนต่อ และวิเคราะห์เพื่อพัฒนาบริการ <i>*</i></label></div>'+
+      '<p class="um-cpolicy"><a href="'+SITE+'/privacy-policy/" target="_blank" rel="noopener">อ่านนโยบายความเป็นส่วนตัว →</a></p>'+
+      '<div class="um-ccheck"><input type="checkbox" name="marketing" id="um-l-mk"><label for="um-l-mk">ฉันต้องการรับข่าวสาร โปรโมชัน และเคล็ดลับเรียนต่อจีนทางอีเมล (ยกเลิกได้ทุกเมื่อ)</label></div>'+
       '<p class="um-formmsg" role="alert"></p>'+
       '<button type="submit" class="um-btn um-btn-pri">📩 ส่งรายงานให้ฉัน</button>'+
       '</form></div>';
@@ -1196,7 +1205,7 @@
     f.addEventListener('submit',function(e){
       e.preventDefault();
       var msg=$('.um-formmsg',f),btn=$('button[type=submit]',f);
-      var d={name:f.name.value.trim(),email:f.email.value.trim(),line:f.line.value.trim(),phone:f.phone.value.trim(),hp:f.website.value,consent:f.consent.checked,marketing:f.marketing.checked};
+      var d={name:f.name.value.trim(),email:f.email.value.trim(),line:f.line.value.trim(),phone:f.phone.value.trim(),hp:'',consent:f.consent.checked,marketing:f.marketing.checked};
       var er=leadErr(d);
       if(er){msg.textContent=er[0].replace('ก่อนดูผล','ก่อนส่งข้อมูล');if(f[er[1]])f[er[1]].focus();return;}
       msg.textContent='';btn.disabled=true;btn.textContent='กำลังส่ง…';
