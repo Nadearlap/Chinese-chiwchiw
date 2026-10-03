@@ -912,18 +912,21 @@
   (function(){var d=new Date(),ny=d.getFullYear()+(d.getMonth()>=6?1:0);$$('.um-y1').forEach(function(e){e.textContent=ny;});$$('.um-y2').forEach(function(e){e.textContent=ny+1;});$$('.um-sc').forEach(function(e){e.textContent=steps.length;});})();
   show(0,true);
 
-  function profileText(a){
-    var parts=[{next:'ยื่นรอบหน้า',later:'วางแผนล่วงหน้า',explore:'หาข้อมูลก่อน'}[a.when],{ug:'ปริญญาตรี',ma:'ปริญญาโท',phd:'ปริญญาเอก'}[a.deg]];
+  // Quiz answers as Thai labels: one line for the sheet, and one field per column of the Website leads sheet.
+  function quizLabels(a){
     var majors=$$('input[name="major"]:checked',form).map(function(i){return i.nextElementSibling.textContent.replace(/^\S+\s/,'');});
     if(a.text)majors.push(a.text);
-    parts.push(majors.join(', ')||'ทุกสาขา');
-    parts.push(a.lang==='zh'?'สอนจีน':a.lang==='en'?'สอนอังกฤษ':'สอนจีน/อังกฤษ');
-    if(a.lang!=='en')parts.push(a.hsk?'HSK '+(a.hsk===2?'1–2':a.hsk===6?'6+':a.hsk):'ยังไม่มี HSK');
-    if(a.lang!=='zh')parts.push(a.ielts?'IELTS '+a.ielts:'ยังไม่มี IELTS');
-    parts.push(a.budget?'งบ ≤ '+baht(a.budget)+'/ปี':'งบไม่จำกัด');
-    parts.push(a.cities.length?a.cities.map(cityTH).join(', '):'ทุกเมือง');
-    parts.push({must:'อยากได้ทุนมาก',nice:'ทุนมีก็ดี',no:'ไม่จำเป็นต้องมีทุน'}[a.schol]);
-    return parts.join(' · ');
+    var tests=[];
+    if(a.lang!=='en')tests.push(a.hsk?'HSK '+(a.hsk===2?'1–2':a.hsk===6?'6+':a.hsk):'ยังไม่มี HSK');
+    if(a.lang!=='zh')tests.push(a.ielts?'IELTS '+a.ielts:'ยังไม่มี IELTS');
+    return {intake:{next:'ยื่นรอบหน้า',later:'วางแผนล่วงหน้า',explore:'หาข้อมูลก่อน'}[a.when]||'',level:{ug:'ปริญญาตรี',ma:'ปริญญาโท',phd:'ปริญญาเอก'}[a.deg]||'',
+      field:majors.join(', ')||'ทุกสาขา',lang:a.lang==='zh'?'สอนจีน':a.lang==='en'?'สอนอังกฤษ':'สอนจีน/อังกฤษ',tests:tests.join(', '),
+      budget:a.budget?'งบ ≤ '+baht(a.budget)+'/ปี':'งบไม่จำกัด',cities:a.cities.length?a.cities.map(cityTH).join(', '):'ทุกเมือง',
+      schol:{must:'อยากได้ทุนมาก',nice:'ทุนมีก็ดี',no:'ไม่จำเป็นต้องมีทุน'}[a.schol]||''};
+  }
+  function profileText(a){
+    var q=quizLabels(a);
+    return [q.intake,q.level,q.field,q.lang,q.tests,q.budget,q.cities,q.schol].filter(Boolean).join(' · ');
   }
 
   var FACTS=['มหาวิทยาลัยกลุ่ม 985 ของจีนมีทั้งหมด 39 แห่ง และเป็นกลุ่มมหาวิทยาลัยชั้นนำของประเทศ',
@@ -1068,8 +1071,9 @@
       var m=lastMatch||{},p=m.res&&m.res.item;
       d.answers=m.a?profileText(m.a):'';
       d.matchId=p?p.id:'';d.matchUni=p?p.u:'';d.matchProg=p?p.prog:'';d.exact=!!(m.res&&m.res.exact);
+      d.rid=m.res&&m.res.rid||'';d.q=m.a?quizLabels(m.a):{};d.page=location.href.split('#')[0];
       apiPost(d).then(function(){
-        f.parentNode.innerHTML='<div class="um-thanks"><div class="um-ico">✅</div><h3>ได้รับข้อมูลแล้ว ขอบคุณค่ะ</h3><p>ทีม Chinese Chiwchiw จะส่งรายงานผลจับคู่ไปที่ <b>'+esc(d.email)+'</b></p></div>';
+        f.parentNode.innerHTML='<div class="um-thanks"><div class="um-ico">✅</div><h3>ได้รับข้อมูลแล้ว ขอบคุณค่ะ</h3><p>เราจะส่งรายงานผลจับคู่ไปที่ <b>'+esc(d.email)+'</b> ภายในไม่กี่นาที (ถ้าไม่เห็น ลองเช็กในโฟลเดอร์ Spam / Promotions นะคะ)</p></div>';
       },function(){
         btn.disabled=false;btn.textContent='📩 ส่งรายงานให้ฉัน';
         msg.textContent='ส่งไม่สำเร็จ ลองใหม่อีกครั้งในอีกสักครู่';

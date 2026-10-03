@@ -29,8 +29,16 @@
  *   Portfolio Required? | Entrance Exam Required? | Interview Required? | Study Plan Required?
  *   Without them, the script looks for these words in "Academic Prerequisites".
  *
- * Leads from the email form are appended to the "Matcher Leads" tab (created
- * automatically). Sending the report email is not set up yet.
+ * LEADS from the email form go to three places:
+ *   1. the "Matcher Leads" tab here (created automatically),
+ *   2. the "UG/PG" tab of the Website leads sheet (CONFIG.webLeadsId), source "Chiwchiw Match",
+ *   3. two emails: an alert to CONFIG.alertTo and the match report to the student
+ *      ("Report sent?" turns Yes). The report is built from the match saved on
+ *      Google's side when the quiz ran, never from text the browser sends, so the
+ *      form can't be used to send someone else's words from your Gmail.
+ * The first deploy after this change asks for two new permissions (open another
+ * spreadsheet, send email as you). Gmail allows ~100 emails/day on a free account,
+ * ~1,500 on Google Workspace; when the quota runs out the lead is still saved.
  *
  * AI MATCHING (Claude by Anthropic)
  * The rules below shortlist ~15 programmes; Claude picks the best one from that
@@ -57,7 +65,13 @@ var CONFIG = {
   aiShortlist: 15,
   aiDailyLimit: 300,       // AI calls per day; after that the rule-based plan is used
   aiCacheSeconds: 21600,   // same answers within 6 hours reuse the saved AI result
-  leadsPerHour: 60         // spam guard: at most this many new leads are saved per hour
+  leadsPerHour: 60,        // spam guard: at most this many new leads are saved per hour
+  webLeadsId: '1JsmK4E5_GQb3IZP4h7tMGi3dyiNCZHgnVOj3plTly4o',   // "Website leads" sheet ('' = off)
+  webLeadsTab: 'UG/PG',
+  alertTo: 'admin@chinesechiwchiw.com',   // new-lead alert ('' = off)
+  sendReport: true,        // email the match report to the student
+  lineUrl: 'https://line.me/ti/p/~@chiwchiw',
+  siteUrl: 'https://chinesechiwchiw.com/'
 };
 
 /* ───────────── reference tables ───────────── */
@@ -125,6 +139,7 @@ function doGet(e) {
     data = getData_();
     var t1 = Date.now();
     out = handle_(action, p, data, {ai: aiPlan_, today: Utilities.formatDate(new Date(), 'Asia/Bangkok', 'yyyy-MM-dd')});
+    if (action === 'match' && out && out.item) { try { out.rid = keepReport_(out, p.a); } catch (err) {} }
     if (Date.now() - t0 > 4000) logSlow_({a: action, path: LOAD_PATH_, load: t1 - t0, work: Date.now() - t1});
   } catch (err) {
     out = {error: 'unavailable'};
@@ -439,23 +454,168 @@ function saveLead_(b) {
   var hourKey = 'leads:' + Utilities.formatDate(new Date(), 'Asia/Bangkok', 'yyyyMMddHH'), n = +(cache.get(hourKey) || 0);
   if (n >= CONFIG.leadsPerHour) return {error: 'busy'};
   cache.put(hourKey, String(n + 1), 3700);
-  var lock = LockService.getScriptLock();
+  // The match this student saw, as saved on Google's side by doGet (see keepReport_).
+  var rid = clean_(b.rid, 40), rep = null;
+  if (/^[0-9a-f-]{36}$/.test(rid)) { try { rep = JSON.parse(cache.get('rep:' + rid) || 'null'); } catch (err) {} }
+  var lead = {name: name, email: email, line: line, phone: phone, answers: clean_(b.answers, 600), marketing: b.marketing === true,
+    matchId: rep ? rep.id : clean_(b.matchId, 40), matchUni: rep ? rep.u : clean_(b.matchUni, 150),
+    matchProg: rep ? rep.prog : clean_(b.matchProg, 200), exact: rep ? rep.exact : !!b.exact, q: b.q && typeof b.q === 'object' ? b.q : {},
+    page: /^https:\/\/chinesechiwchiw\.com\//.test(String(b.page || '')) ? clean_(b.page, 300) : ''};
+  var sh, row, lock = LockService.getScriptLock();
   lock.waitLock(5000);
   try {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
-    var sh = ss.getSheetByName(CONFIG.leadsSheet);
+    sh = ss.getSheetByName(CONFIG.leadsSheet);
     if (!sh) {
       sh = ss.insertSheet(CONFIG.leadsSheet);
       sh.appendRow(['Timestamp', 'Name', 'Email', 'LINE ID', 'Phone', 'Quiz answers', 'Matched Programme ID', 'Matched University', 'Matched Programme', 'Exact match?', 'Privacy consent', 'Email list opt-in', 'Report sent?']);
     }
-    sh.appendRow([new Date(), safe_(name), safe_(email), safe_(line), safe_(phone), safe_(clean_(b.answers, 600)),
-      safe_(clean_(b.matchId, 40)), safe_(clean_(b.matchUni, 150)), safe_(clean_(b.matchProg, 200)), b.exact ? 'Yes' : 'Closest',
-      'Yes', b.marketing === true ? 'Yes' : 'No', '']);
+    sh.appendRow([new Date(), safe_(name), safe_(email), safe_(line), safe_(phone), safe_(lead.answers),
+      safe_(lead.matchId), safe_(lead.matchUni), safe_(lead.matchProg), lead.exact ? 'Yes' : 'Closest',
+      'Yes', lead.marketing ? 'Yes' : 'No', '']);
+    row = sh.getLastRow();
   } finally {
     lock.releaseLock();
   }
   cache.put(key, '1', 60);
+  // Everything below is extra: if one step fails, the lead above is already saved.
+  try { webLead_(lead, rep); } catch (err) { console.error('Website leads: ' + err); }
+  var sent = 'No';
+  try { sent = sendReport_(lead, rep); } catch (err) { sent = 'Failed'; console.error('Report email: ' + err); }
+  try { sh.getRange(row, 13).setValue(sent); } catch (err) {}
+  try { sendAlert_(lead, rep, sent); } catch (err) { console.error('Alert email: ' + err); }
   return {ok: true};
+}
+
+// Saves the student-facing part of a match for 6 hours, so the report email shows
+// exactly what the student saw. Returns the id the page sends back with the lead form.
+function keepReport_(out, rawAnswers) {
+  var it = out.item, u = out.uni || {}, pl = out.plan || {}, rid = Utilities.getUuid();
+  var rep = {id: it.id, u: it.u, short: u.short || shortName_(it.u), cn: u.cn || it.cn, city: it.city, prog: clean_(it.prog, 200), track: clean_(it.track, 150),
+    lv: it.lv, lang: it.lang, dur: it.dur, tu: it.tu, tot: it.tot, hsk: it.hsk, hskTxt: it.hskTxt, ielts: it.ielts, dl: it.dl, past: it.past, sch: it.sch,
+    exact: !!out.exact, ai: !!out.ai,
+    others: (out.others || []).map(function (o) { return {short: o.short || o.name, cn: o.cn, city: o.city}; }),
+    plan: {headline: pl.headline || '', why_fit: pl.why_fit || [], watch_out: pl.watch_out || [], prepare: pl.prepare || [], timeline: pl.timeline || []}};
+  CacheService.getScriptCache().put('rep:' + rid, JSON.stringify(rep), 21600);
+  return rid;
+}
+
+// Adds the lead to the "UG/PG" tab of the Website leads sheet, matching its header row by name.
+function webLead_(L, rep) {
+  if (!CONFIG.webLeadsId) return;
+  var sh = SpreadsheetApp.openById(CONFIG.webLeadsId).getSheetByName(CONFIG.webLeadsTab);
+  if (!sh) return;
+  var q = L.q, t = function (k, max) { return clean_(q[k], max || 150); };
+  var val = {
+    timestamp: new Date().toISOString(), nickname: L.name, who: '', grade: '',
+    line_or_phone: [L.line, L.phone].filter(String).join(' / '), email: L.email,
+    intake: t('intake'), level: t('level'), field: t('field', 300), teach_lang: t('lang'), budget: t('budget'),
+    city_vibe: t('cities', 300), test_scores: t('tests'),
+    result_city: rep ? cityTh_(rep.city) : '',
+    recommended_1: L.matchUni ? L.matchUni + (L.matchProg ? ' — ' + L.matchProg : '') : '',
+    recommended_2: rep ? rep.others.map(function (o) { return o.short; }).join(', ') : '',
+    province_interest: '', contact_consent: 'yes', marketing_consent: L.marketing ? 'yes' : 'no',
+    source: 'Chiwchiw Match', page: L.page || CONFIG.siteUrl + 'university-match/'
+  };
+  var head = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0];
+  sh.appendRow(head.map(function (h) { var v = val[String(h).trim()]; return v == null ? '' : safe_(String(v)); }));
+}
+
+/* ───────────── emails ───────────── */
+
+var LV_TH_ = {UG: 'ปริญญาตรี', PG: 'ปริญญาโท', PHD: 'ปริญญาเอก', LANG: 'คอร์สภาษาจีน'};
+function h_(v) { return String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+function commas_(n) { return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+function cityTh_(c) { return CITY_TH[c] ? CITY_TH[c] + ' (' + c + ')' : String(c || ''); }
+function langTh_(l) { return l === 'zh' ? 'ภาษาจีน' : l === 'en' ? 'ภาษาอังกฤษ' : 'จีน / อังกฤษ'; }
+function mailLeft_() { try { return MailApp.getRemainingDailyQuota(); } catch (err) { return 0; } }
+
+// The student's report. Returns the value for the "Report sent?" column.
+function sendReport_(L, rep) {
+  if (!CONFIG.sendReport) return 'Off';
+  if (!rep) return 'No (match expired)';
+  var cache = CacheService.getScriptCache(), mk = 'mail:' + L.email;
+  if (cache.get(mk)) return 'No (sent earlier today)';   // one report per address every 6 hours
+  if (mailLeft_() < 2) return 'No (daily email limit)';
+  var cost = rep.tot || rep.tu, pl = rep.plan, url = CONFIG.siteUrl + 'university-match/';
+  var facts = [
+    ['ระดับ', LV_TH_[rep.lv] || rep.lv],
+    ['สอนเป็น', langTh_(rep.lang)],
+    rep.dur ? ['ระยะเวลา', rep.dur + ' ปี'] : null,
+    cost ? ['ค่าใช้จ่าย', '≈ ' + commas_(cost * CONFIG.thbPerRmb) + ' บาท/ปี' + (rep.tot ? ' (รวมค่าเรียน ที่พัก และค่าครองชีพโดยประมาณ)' : ' (เฉพาะค่าเรียน)')] : null,
+    rep.lang !== 'en' && rep.hsk ? ['เกณฑ์ภาษาจีน', String(rep.hskTxt || 'HSK ' + rep.hsk).replace(/\s*\+\s*HSKK.*$/i, '')] : null,
+    rep.lang !== 'zh' && rep.ielts ? ['เกณฑ์ภาษาอังกฤษ', 'IELTS ' + rep.ielts] : null,
+    rep.dl ? ['ปิดรับสมัคร', rep.dl + (rep.past ? ' (อ้างอิงรอบที่ผ่านมา ทีมจะยืนยันวันของรอบใหม่)' : '')] : null,
+    rep.sch ? ['ทุนการศึกษา', 'มีทุนให้ยื่นสมัคร'] : null
+  ].filter(Boolean);
+  var O = '#FF6B00', D = '#1A0A00', font = "font-family:'Noto Sans Thai',Tahoma,Arial,sans-serif;";
+  var list = function (title, items) {
+    items = (items || []).filter(Boolean);
+    if (!items.length) return '';
+    return '<h3 style="margin:24px 0 8px;font-size:17px;color:' + D + '">' + title + '</h3><ul style="margin:0;padding-left:20px;line-height:1.7">' +
+      items.map(function (x) { return '<li>' + h_(x) + '</li>'; }).join('') + '</ul>';
+  };
+  var tl = (pl.timeline || []).filter(function (x) { return x && x.task; });
+  var html = '<div style="background:#FFFBF7;padding:24px 12px;' + font + 'color:' + D + '">' +
+    '<div style="max-width:600px;margin:0 auto;background:#fff;border:1px solid #EDE5DC;border-radius:16px;overflow:hidden">' +
+    '<div style="background:' + O + ';color:#fff;padding:22px 24px"><div style="font-size:13px;letter-spacing:1px">CHIWCHIW MATCH · CHINESE CHIWCHIW</div>' +
+    '<div style="font-size:22px;font-weight:bold;margin-top:4px">รายงานผลจับคู่มหาวิทยาลัยจีนของคุณ</div></div>' +
+    '<div style="padding:24px;font-size:15px;line-height:1.7">' +
+    '<p style="margin:0 0 12px">สวัสดีค่ะ คุณ' + h_(L.name.slice(0, 60)) + '</p>' +
+    '<p style="margin:0 0 18px">ขอบคุณที่ลองใช้ CHIWCHIW MATCH ค่ะ นี่คือหลักสูตรที่เหมาะกับคุณที่สุดจากคำตอบของคุณ พร้อมแผนเตรียมตัว</p>' +
+    '<div style="border:1px solid #EDE5DC;border-radius:16px;padding:18px;background:#FFFBF7">' +
+    '<div style="font-size:12px;color:' + O + ';font-weight:bold">' + (rep.exact ? '⭐ BEST MATCH' : '⭐ ใกล้เคียงที่สุด') + '</div>' +
+    '<div style="font-size:20px;font-weight:bold;margin:4px 0 2px">' + h_(rep.short) + (rep.cn ? ' <span style="font-weight:normal;color:#7A6A5E">' + h_(rep.cn) + '</span>' : '') + '</div>' +
+    '<div style="color:#7A6A5E">📍 ' + h_(cityTh_(rep.city)) + '</div>' +
+    '<div style="font-size:16px;font-weight:bold;margin-top:10px">' + h_(rep.prog) + (rep.track ? ' <span style="font-weight:normal">· ' + h_(rep.track) + '</span>' : '') + '</div>' +
+    '<table style="width:100%;border-collapse:collapse;margin-top:10px;font-size:14px">' +
+    facts.map(function (f) { return '<tr><td style="padding:5px 0;color:#7A6A5E;width:38%;vertical-align:top">' + h_(f[0]) + '</td><td style="padding:5px 0;vertical-align:top">' + h_(f[1]) + '</td></tr>'; }).join('') +
+    '</table></div>' +
+    (pl.headline ? '<p style="margin:20px 0 0;font-size:16px;font-weight:bold;color:' + O + '">' + h_(pl.headline) + '</p>' : '') +
+    list('✅ ทำไมถึงเหมาะกับคุณ', pl.why_fit) +
+    list('⚠️ สิ่งที่ควรรู้', pl.watch_out) +
+    list('📝 สิ่งที่ต้องเตรียม', pl.prepare) +
+    (tl.length ? '<h3 style="margin:24px 0 8px;font-size:17px">🗓️ Timeline เตรียมตัว</h3><table style="width:100%;border-collapse:collapse;font-size:14px">' +
+      tl.map(function (x) { return '<tr><td style="padding:7px 10px 7px 0;color:' + O + ';font-weight:bold;width:32%;vertical-align:top;border-top:1px solid #EDE5DC">' + h_(x.when) + '</td><td style="padding:7px 0;vertical-align:top;border-top:1px solid #EDE5DC">' + h_(x.task) + '</td></tr>'; }).join('') + '</table>' : '') +
+    (rep.others.length ? '<h3 style="margin:24px 0 8px;font-size:17px">🏫 มหาวิทยาลัยอื่นที่น่าดู</h3><ul style="margin:0;padding-left:20px;line-height:1.7">' +
+      rep.others.map(function (o) { return '<li>' + h_(o.short) + (o.cn ? ' ' + h_(o.cn) : '') + ' · ' + h_(cityTh_(o.city)) + '</li>'; }).join('') + '</ul>' : '') +
+    '<div style="text-align:center;margin:28px 0 8px">' +
+    '<a href="' + h_(CONFIG.lineUrl) + '" style="display:inline-block;background:#06C755;color:#fff;text-decoration:none;font-weight:bold;padding:13px 26px;border-radius:999px;margin:4px">💬 ปรึกษาฟรีทาง LINE @chiwchiw</a>' +
+    '<a href="' + h_(url) + '" style="display:inline-block;background:#fff;color:' + O + ';border:1px solid ' + O + ';text-decoration:none;font-weight:bold;padding:12px 24px;border-radius:999px;margin:4px">🔎 ดูหลักสูตรอื่น</a></div>' +
+    '<p style="margin:18px 0 0;font-size:13px;color:#7A6A5E">ทีม Chinese Chiwchiw จะช่วยเช็กเกณฑ์ ค่าใช้จ่าย และวันปิดรับสมัครล่าสุดกับมหาวิทยาลัยให้อีกครั้งก่อนยื่นจริง ' +
+    'ตอบกลับอีเมลนี้ได้เลยหากมีคำถามค่ะ 🧡</p></div>' +
+    '<div style="background:#FFFBF7;border-top:1px solid #EDE5DC;padding:14px 24px;font-size:12px;color:#9A8A7E;line-height:1.6">' +
+    'ข้อมูลในรายงานนี้อ้างอิงจากฐานข้อมูลของ Chinese Chiwchiw ณ วันที่ส่ง เกณฑ์และค่าใช้จ่ายอาจเปลี่ยนแปลงตามประกาศของมหาวิทยาลัย' +
+    (rep.ai ? ' · คำแนะนำเขียนโดย CHIWCHIW AI' : '') +
+    '<br>คุณได้รับอีเมลนี้เพราะขอรายงานผลจาก ' + h_(url) + '</div></div></div>';
+  var text = 'สวัสดีค่ะ คุณ' + L.name.slice(0, 60) + '\n\nผล CHIWCHIW MATCH ของคุณ: ' + rep.short + ' (' + cityTh_(rep.city) + ')\n' + rep.prog + '\n\n' +
+    facts.map(function (f) { return f[0] + ': ' + f[1]; }).join('\n') +
+    (pl.headline ? '\n\n' + pl.headline : '') +
+    (tl.length ? '\n\nTimeline:\n' + tl.map(function (x) { return '• ' + x.when + ' — ' + x.task; }).join('\n') : '') +
+    '\n\nปรึกษาฟรีทาง LINE: ' + CONFIG.lineUrl + '\nดูหลักสูตรอื่น: ' + url + '\n\nทีม Chinese Chiwchiw';
+  MailApp.sendEmail({to: L.email, subject: 'รายงานผล CHIWCHIW MATCH ของคุณ: ' + rep.short + ' 🎓', body: text, htmlBody: html,
+    name: 'Chinese Chiwchiw', replyTo: CONFIG.alertTo || undefined});
+  cache.put(mk, '1', 21600);
+  return 'Yes';
+}
+
+// Short alert to the team. Reply goes straight to the student.
+function sendAlert_(L, rep, sent) {
+  if (!CONFIG.alertTo || mailLeft_() < 1) return;
+  var rows = [
+    ['ชื่อ', L.name], ['อีเมล', L.email], ['LINE', L.line || '-'], ['โทร', L.phone || '-'],
+    ['คำตอบ', L.answers || '-'],
+    ['Best match', (L.matchUni || '-') + (L.matchProg ? ' — ' + L.matchProg : '') + (L.exact ? '' : ' (ใกล้เคียงที่สุด)')],
+    ['มหาลัยอื่น', rep && rep.others.length ? rep.others.map(function (o) { return o.short; }).join(', ') : '-'],
+    ['รับข่าวสาร', L.marketing ? 'Yes' : 'No'], ['ส่งรายงานให้น้องแล้ว?', sent]
+  ];
+  var sheetUrl = SpreadsheetApp.getActiveSpreadsheet().getUrl();
+  var html = '<div style="font-family:Tahoma,Arial,sans-serif;font-size:14px;color:#1A0A00">' +
+    '<p style="margin:0 0 10px"><b style="color:#FF6B00">🎓 Lead ใหม่จาก Chiwchiw Match</b></p><table style="border-collapse:collapse">' +
+    rows.map(function (r) { return '<tr><td style="padding:4px 14px 4px 0;color:#7A6A5E;vertical-align:top">' + h_(r[0]) + '</td><td style="padding:4px 0;vertical-align:top">' + h_(r[1]) + '</td></tr>'; }).join('') +
+    '</table><p style="margin:14px 0 0;font-size:12px;color:#7A6A5E">กด Reply เพื่อตอบน้องได้เลย · <a href="' + h_(sheetUrl) + '">เปิด Matcher Leads</a></p></div>';
+  MailApp.sendEmail({to: CONFIG.alertTo, subject: '🎓 Lead ใหม่: ' + L.name.slice(0, 60) + ' → ' + (rep ? rep.short : L.matchUni || 'Chiwchiw Match'),
+    body: rows.map(function (r) { return r[0] + ': ' + r[1]; }).join('\n') + '\n\n' + sheetUrl, htmlBody: html, name: 'Chiwchiw Match', replyTo: L.email});
 }
 
 function clean_(v, max) { return String(v == null ? '' : v).replace(/[\u0000-\u001f]/g, ' ').replace(/[\u200c\u200d\u2060]/g, '').trim().slice(0, max); }
