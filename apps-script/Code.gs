@@ -80,7 +80,8 @@ var CONFIG = {
   alertTo: 'admin@chinesechiwchiw.com',   // new-lead alert ('' = off)
   sendReport: true,        // email the match report to the student
   lineUrl: 'https://lin.ee/C0CmZGa',   // official LINE OA link (opens the LINE app on phones)
-  siteUrl: 'https://chinesechiwchiw.com/'
+  siteUrl: 'https://chinesechiwchiw.com/',
+  logoBase: 'https://chinesechiwchiw.com/wp-content/uploads/2026/10/'   // same folder as data-logo-base on the page
 };
 
 /* ───────────── reference tables ───────────── */
@@ -500,7 +501,7 @@ function saveLead_(b) {
 // exactly what the student saw. Returns the id the page sends back with the lead form.
 function keepReport_(out, rawAnswers) {
   var it = out.item, u = out.uni || {}, pl = out.plan || {}, rid = Utilities.getUuid();
-  var rep = {id: it.id, u: it.u, short: u.short || shortName_(it.u), cn: u.cn || it.cn, city: it.city, prog: clean_(it.prog, 200), track: clean_(it.track, 150),
+  var rep = {id: it.id, u: it.u, short: u.short || shortName_(it.u), cn: u.cn || it.cn, city: it.city, photo: u.photo || '', logo: u.logo || '', toefl: it.toefl, prog: clean_(it.prog, 200), track: clean_(it.track, 150),
     lv: it.lv, lang: it.lang, dur: it.dur, tu: it.tu, tot: it.tot, hsk: it.hsk, hskTxt: it.hskTxt, ielts: it.ielts, dl: it.dl, past: it.past, sch: it.sch,
     exact: !!out.exact, ai: !!out.ai,
     others: (out.others || []).map(function (o) { return {short: o.short || o.name, cn: o.cn, city: o.city}; }),
@@ -674,51 +675,78 @@ function sendReport_(L, rep) {
     ['ปิดรับสมัคร', 'ทีม Chinese Chiwchiw จะเช็กวันปิดรับสมัครล่าสุดให้ค่ะ'],   // sheet dates are often last year's round
     rep.sch ? ['ทุนการศึกษา', 'มีทุนให้ยื่นสมัคร'] : null
   ].filter(Boolean);
-  var O = '#FF6B00', D = '#1A0A00', font = "font-family:'Noto Sans Thai',Tahoma,Arial,sans-serif;";
-  var list = function (title, items) {
-    items = (items || []).filter(Boolean);
-    if (!items.length) return '';
-    return '<h3 style="margin:24px 0 8px;font-size:17px;color:' + D + '">' + title + '</h3><ul style="margin:0;padding-left:20px;line-height:1.7">' +
-      items.map(function (x) { return '<li>' + h_(x) + '</li>'; }).join('') + '</ul>';
-  };
+  var O = '#FF6B00', D = '#1A0A00';
   // Timeline labels without years (e.g. "ต.ค. 2026" → "ต.ค."); the team confirms the real dates.
   var noYear = function (t) {
     return String(t || '').replace(/(ต้น|กลาง|ปลาย)?\s*(?:ภายใน|ใน)?ปี\s*(?:พ\.ศ\.|ค\.ศ\.)?\s*(?:20|25)\d{2}\b/g, function (m, part) { return part ? ' ' + part + 'ปี' : ''; })
       .replace(/\s*(?:พ\.ศ\.|ค\.ศ\.)?\s*(?:20|25)\d{2}\b/g, '').replace(/\s{2,}/g, ' ').trim();
   };
   var tl = (pl.timeline || []).filter(function (x) { return x && x.task; }).map(function (x) { return {when: noYear(x.when) || '•', task: noYear(x.task)}; });
-  var html = '<div style="background:#FFFBF7;padding:24px 12px;' + font + 'color:' + D + '">' +
-    '<div style="max-width:600px;margin:0 auto;background:#fff;border:1px solid #EDE5DC;border-radius:16px;overflow:hidden">' +
-    '<div style="background:' + O + ';color:#fff;padding:22px 24px"><div style="font-size:13px;letter-spacing:1px">CHIWCHIW MATCH · CHINESE CHIWCHIW</div>' +
-    '<div style="font-size:22px;font-weight:bold;margin-top:4px">รายงานผลจับคู่มหาวิทยาลัยจีนของคุณ</div></div>' +
-    '<div style="padding:24px;font-size:15px;line-height:1.7">' +
-    '<p style="margin:0 0 12px">สวัสดีค่ะ คุณ' + h_(L.name.slice(0, 60)) + '</p>' +
-    '<p style="margin:0 0 18px">ขอบคุณที่ลองใช้ CHIWCHIW MATCH ค่ะ นี่คือหลักสูตรที่เหมาะกับคุณที่สุดจากคำตอบของคุณ พร้อมแผนเตรียมตัว</p>' +
-    '<div style="border:1px solid #EDE5DC;border-radius:16px;padding:18px;background:#FFFBF7">' +
-    '<div style="font-size:12px;color:' + O + ';font-weight:bold">' + (rep.exact ? '⭐ BEST MATCH' : '⭐ ใกล้เคียงที่สุด') + '</div>' +
-    '<div style="font-size:20px;font-weight:bold;margin:4px 0 2px">' + h_(rep.short) + (rep.cn ? ' <span style="font-weight:normal;color:#7A6A5E">' + h_(rep.cn) + '</span>' : '') + '</div>' +
-    '<div style="color:#7A6A5E">📍 ' + h_(cityTh_(rep.city)) + '</div>' +
-    '<div style="font-size:16px;font-weight:bold;margin-top:10px">' + h_(rep.prog) + (rep.track ? ' <span style="font-weight:normal">· ' + h_(rep.track) + '</span>' : '') + '</div>' +
-    '<table style="width:100%;border-collapse:collapse;margin-top:10px;font-size:14px">' +
-    facts.map(function (f) { return '<tr><td style="padding:5px 0;color:#7A6A5E;width:38%;vertical-align:top">' + h_(f[0]) + '</td><td style="padding:5px 0;vertical-align:top">' + h_(f[1]) + '</td></tr>'; }).join('') +
-    '</table></div>' +
-    (pl.headline ? '<p style="margin:20px 0 0;font-size:16px;font-weight:bold;color:' + O + '">' + h_(pl.headline) + '</p>' : '') +
-    list('✅ ทำไมถึงเหมาะกับคุณ', pl.why_fit) +
-    list('⚠️ สิ่งที่ควรรู้', pl.watch_out) +
-    list('📝 สิ่งที่ต้องเตรียม', pl.prepare) +
-    (tl.length ? '<h3 style="margin:24px 0 8px;font-size:17px">🗓️ Timeline เตรียมตัว</h3><table style="width:100%;border-collapse:collapse;font-size:14px">' +
-      tl.map(function (x) { return '<tr><td style="padding:7px 10px 7px 0;color:' + O + ';font-weight:bold;width:32%;vertical-align:top;border-top:1px solid #EDE5DC">' + h_(x.when) + '</td><td style="padding:7px 0;vertical-align:top;border-top:1px solid #EDE5DC">' + h_(x.task) + '</td></tr>'; }).join('') + '</table>' : '') +
-    (rep.others.length ? '<h3 style="margin:24px 0 8px;font-size:17px">🏫 มหาวิทยาลัยอื่นที่น่าดู</h3><ul style="margin:0;padding-left:20px;line-height:1.7">' +
-      rep.others.map(function (o) { return '<li>' + h_(o.short) + (o.cn ? ' ' + h_(o.cn) : '') + ' · ' + h_(cityTh_(o.city)) + '</li>'; }).join('') + '</ul>' : '') +
-    '<div style="text-align:center;margin:28px 0 8px">' +
-    '<a href="' + h_(CONFIG.lineUrl) + '" style="display:inline-block;background:#06C755;color:#fff;text-decoration:none;font-weight:bold;padding:13px 26px;border-radius:999px;margin:4px">💬 ปรึกษาฟรีทาง LINE @chiwchiw</a>' +
-    '<a href="' + h_(url) + '" style="display:inline-block;background:#fff;color:' + O + ';border:1px solid ' + O + ';text-decoration:none;font-weight:bold;padding:12px 24px;border-radius:999px;margin:4px">🔎 ดูหลักสูตรอื่น</a></div>' +
-    '<p style="margin:18px 0 0;font-size:13px;color:#7A6A5E">ทีม Chinese Chiwchiw จะช่วยเช็กเกณฑ์ ค่าใช้จ่าย และวันปิดรับสมัครล่าสุดกับมหาวิทยาลัยให้อีกครั้งก่อนยื่นจริง ' +
-    'ตอบกลับอีเมลนี้ได้เลยหากมีคำถามค่ะ 🧡</p></div>' +
-    '<div style="background:#FFFBF7;border-top:1px solid #EDE5DC;padding:14px 24px;font-size:12px;color:#9A8A7E;line-height:1.6">' +
-    'ข้อมูลในรายงานนี้อ้างอิงจากฐานข้อมูลของ Chinese Chiwchiw ณ วันที่ส่ง เกณฑ์และค่าใช้จ่ายอาจเปลี่ยนแปลงตามประกาศของมหาวิทยาลัย' +
-    (rep.ai ? ' · คำแนะนำเขียนโดย CHIWCHIW AI' : '') +
-    '<br>คุณได้รับอีเมลนี้เพราะขอรายงานผลจาก ' + h_(url) + '</div></div></div>';
+  // Same look as the result card on the website: photo banner, logo, badge, fact boxes, plan boxes, numbered timeline.
+  var K = "font-family:'Kanit','Noto Sans Thai',Tahoma,Arial,sans-serif;", B = '#EDE5DC', M = '#7A6050', S = '#9A7A60';
+  var baht = function (n) { return '฿' + commas_(Math.round(n / 1000) * 1000); };
+  var photo = /^https:\/\//.test(rep.photo || '') ? rep.photo : '', logoUrl = findLogo_(rep);
+  var exact = !!rep.exact;
+  var fact = function (label, big, small) {
+    return '<tr><td style="padding:0 0 10px"><div style="background:#FFFBF7;border:1px solid #F1E6DA;border-radius:14px;padding:12px 14px">' +
+      '<div style="' + K + 'font-weight:600;font-size:12px;color:' + S + ';letter-spacing:.5px">' + h_(label) + '</div>' +
+      '<div style="' + K + 'font-weight:800;font-size:17px;color:' + D + ';line-height:1.35;margin-top:2px">' + h_(big) + '</div>' +
+      (small ? '<div style="font-size:12px;color:' + M + ';line-height:1.5;margin-top:2px">' + h_(small) + '</div>' : '') + '</div></td></tr>';
+  };
+  var useZh = rep.lang === 'zh' || (rep.lang !== 'en' && rep.hsk);
+  var facts2 = fact('ค่าใช้จ่ายต่อปี', cost ? '≈ ' + baht(cost * CONFIG.thbPerRmb) + '/ปี' : 'สอบถามทีม',
+      cost ? '¥' + commas_(cost) + (rep.tot ? ' รวมค่าเรียน ที่พัก และค่าครองชีพ (ค่าครองชีพเป็นค่าประมาณ)' : ' (เฉพาะค่าเรียน)') : 'ทีมจะแจ้งให้ทราบ') +
+    (useZh ? fact('เกณฑ์ HSK', rep.hsk ? String(rep.hskTxt || 'HSK ' + rep.hsk).replace(/\s*\+\s*HSKK.*$/i, '') : 'ไม่ระบุ', '')
+           : fact('เกณฑ์ภาษาอังกฤษ', rep.ielts ? 'IELTS ' + rep.ielts : 'ไม่ระบุ', rep.toefl ? 'หรือ TOEFL ' + rep.toefl : 'หลักสูตรสอนภาษาอังกฤษ')) +
+    fact('ปิดรับสมัคร', 'ทีมจะเช็กให้', 'วันปิดรับสมัครล่าสุด') +
+    (rep.dur ? fact('ระยะเวลาเรียน', rep.dur + ' ปี', langTh_(rep.lang) === 'ภาษาจีน' ? 'สอนเป็นภาษาจีน' : 'สอนเป็น' + langTh_(rep.lang)) : '');
+  var box = function (title, items, warn) {
+    items = (items || []).filter(Boolean);
+    if (!items.length) return '';
+    return '<div style="background:' + (warn ? '#FFFBF0' : '#fff') + ';border:1px solid ' + (warn ? '#F6DFC4' : B) + ';border-radius:16px;padding:16px 18px;margin-top:14px">' +
+      '<div style="' + K + 'font-weight:800;font-size:16px;color:' + D + ';margin-bottom:6px">' + title + '</div>' +
+      '<ul style="margin:0;padding-left:20px;font-size:15px;line-height:1.75;color:#3D2A1E">' + items.map(function (x) { return '<li style="margin-top:4px">' + h_(x) + '</li>'; }).join('') + '</ul></div>';
+  };
+  var steps = tl.length ? '<div style="background:#fff;border:1px solid ' + B + ';border-radius:16px;padding:16px 18px;margin-top:14px">' +
+    '<div style="' + K + 'font-weight:800;font-size:16px;color:' + D + ';margin-bottom:8px">🗓️ Timeline ของนักเรียน</div><table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse">' +
+    tl.map(function (x, i) {
+      return '<tr><td style="width:40px;vertical-align:top;padding:6px 0"><div style="width:30px;height:30px;line-height:30px;border-radius:50%;background:' + O + ';color:#fff;text-align:center;' + K + 'font-weight:800;font-size:12px">' + (i < 9 ? '0' : '') + (i + 1) + '</div></td>' +
+        '<td style="vertical-align:top;padding:6px 0;font-size:15px;line-height:1.6"><div style="' + K + 'font-weight:700;color:#C24E00">' + h_(x.when) + '</div><div style="color:#3D2A1E">' + h_(x.task) + '</div></td></tr>';
+    }).join('') + '</table></div>' : '';
+  var html = '<div style="background:#FFFBF7;padding:24px 10px;' + K + 'color:' + D + '"><div style="max-width:600px;margin:0 auto">' +
+    '<div style="text-align:center;margin-bottom:14px"><div style="' + K + 'font-weight:800;font-size:15px;color:' + O + ';letter-spacing:1px">CHINESE CHIWCHIW</div>' +
+    '<div style="display:inline-block;margin-top:10px;' + K + 'font-weight:700;font-size:12px;letter-spacing:2px;color:' + O + ';background:#FFF1E6;border:1px solid #FFD9BD;padding:6px 16px;border-radius:50px">' +
+    (exact ? '✦ มหาวิทยาลัยที่เหมาะกับนักเรียนที่สุด ✦' : '✦ ตัวเลือกที่ใกล้เคียงที่สุด ✦') + '</div>' +
+    (rep.ai ? '<div style="display:inline-block;margin:10px 0 0 6px;' + K + 'font-weight:800;font-size:12px;padding:6px 14px;border-radius:50px;background:#7C5CD6;color:#fff">✨ วิเคราะห์โดย AI</div>' : '') + '</div>' +
+    '<p style="margin:0 0 14px;font-size:15px;line-height:1.7">สวัสดีค่ะ คุณ' + h_(L.name.slice(0, 60)) + ' นี่คือหลักสูตรที่ CHIWCHIW MATCH เลือกให้จากคำตอบของคุณ พร้อมแผนเตรียมตัวค่ะ</p>' +
+    // the card
+    '<div style="border:1px solid ' + B + ';border-radius:20px;overflow:hidden;background:#fff">' +
+    (photo ? '<img src="' + h_(photo) + '" alt="' + h_(rep.short) + '" width="600" style="display:block;width:100%;height:auto;border:0">'
+           : '<div style="background:#2A1305;padding:44px 20px;text-align:center;' + K + 'font-weight:800;font-size:30px;color:rgba(255,255,255,.9)">' + h_(rep.cn || rep.short) + '</div>') +
+    '<div style="padding:22px 22px 12px">' +
+    '<table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse"><tr>' +
+    (logoUrl ? '<td style="width:60px;vertical-align:top;padding-top:4px"><div style="width:48px;height:48px;border-radius:12px;background:#fff;border:1px solid ' + B + ';padding:5px;box-sizing:border-box;text-align:center"><img src="' + h_(logoUrl) + '" alt="" width="36" style="max-width:36px;max-height:36px;width:auto;height:auto;border:0;vertical-align:middle"></div></td>' : '') +
+    '<td style="vertical-align:top"><span style="display:inline-block;' + K + 'font-weight:800;font-size:13px;padding:4px 14px;border-radius:50px;' +
+    (exact ? 'background:#E0F4F1;color:#00806E">🎯 ตรงเกณฑ์ที่เลือก' : 'background:#EEE8F9;color:#6B46C1">🧭 ใกล้เคียงที่สุด') + '</span></td></tr></table>' +
+    '<div style="' + K + 'font-weight:900;font-size:24px;line-height:1.3;color:' + D + ';margin-top:10px">' + h_(rep.short) + '</div>' +
+    '<div style="font-size:15px;color:' + M + ';margin-top:2px">' + (rep.cn ? h_(rep.cn) + ' · ' : '') + '📍 ' + h_(CITY_TH[rep.city] || rep.city) + '</div>' +
+    '<div style="' + K + 'font-weight:700;font-size:17px;color:' + O + ';line-height:1.45;margin-top:12px">' + h_(LV_TH_[rep.lv] || rep.lv) + ' · ' + h_(rep.prog) + (rep.track ? ' (' + h_(rep.track) + ')' : '') + '</div>' +
+    (rep.sch ? '<div style="display:inline-block;margin-top:10px;font-size:13px;' + K + 'font-weight:700;color:#00806E;background:#E0F4F1;padding:4px 12px;border-radius:50px">✓ มีทุนให้สมัคร</div>' : '') +
+    '<table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;margin-top:16px">' + facts2 + '</table>' +
+    '</div></div>' +
+    // plan
+    (pl.headline ? '<div style="margin-top:16px;' + K + 'font-weight:700;font-size:17px;line-height:1.6;color:' + D + ';background:#fff;border-left:4px solid ' + O + ';border-radius:0 14px 14px 0;padding:14px 18px">' + h_(pl.headline) + '</div>' : '') +
+    box('💡 ทำไมที่นี่เหมาะกับนักเรียน', pl.why_fit) + box('📝 สิ่งที่ควรเตรียม', pl.prepare) + box('⚠ ข้อควรรู้', pl.watch_out, true) + steps +
+    (rep.others.length ? '<div style="background:#fff;border:1px solid #F0E4D8;border-radius:18px;padding:16px 18px;margin-top:14px"><div style="' + K + 'font-weight:700;font-size:16px;color:' + D + '">🏫 มหาวิทยาลัยอื่นที่น่าดู</div>' +
+      '<div style="font-size:13px;color:' + S + ';margin:2px 0 10px">ดูรายละเอียดเพิ่มเติมได้บนเว็บไซต์</div>' +
+      rep.others.map(function (o) { return '<span style="display:inline-block;margin:0 6px 6px 0;padding:6px 14px;border:1px solid ' + B + ';border-radius:50px;background:#FFFBF7;font-size:14px;' + K + 'font-weight:600;color:#5C4A3E">' + h_(o.short) + (o.city ? ' · ' + h_(CITY_TH[o.city] || o.city) : '') + '</span>'; }).join('') + '</div>' : '') +
+    // buttons
+    '<div style="text-align:center;margin:24px 0 6px">' +
+    '<a href="' + h_(CONFIG.lineUrl) + '" style="display:inline-block;background:#06C755;color:#fff;text-decoration:none;' + K + 'font-weight:800;font-size:16px;padding:14px 28px;border-radius:999px;margin:4px">💬 ปรึกษาฟรีทาง LINE @chiwchiw</a>' +
+    '<a href="' + h_(url) + '" style="display:inline-block;background:#fff;color:' + O + ';border:2px solid ' + O + ';text-decoration:none;' + K + 'font-weight:800;font-size:15px;padding:12px 24px;border-radius:999px;margin:4px">🔎 ดูหลักสูตรอื่น</a></div>' +
+    '<p style="margin:14px 0 0;font-size:13px;line-height:1.7;color:' + M + ';text-align:center">ทีม Chinese Chiwchiw จะช่วยเช็กเกณฑ์ ค่าใช้จ่าย และวันปิดรับสมัครล่าสุดกับมหาวิทยาลัยให้อีกครั้งก่อนยื่นจริง ตอบกลับอีเมลนี้ได้เลยหากมีคำถามค่ะ 🧡</p>' +
+    '<p style="margin:16px 0 0;font-size:11px;line-height:1.6;color:#B5A396;text-align:center">ผลนี้เป็นคำแนะนำเบื้องต้นจาก CHIWCHIW AI ไม่ใช่การรับประกันการตอบรับเข้าเรียนหรือทุน ข้อมูลอ้างอิงจากฐานข้อมูลของ Chinese Chiwchiw ณ วันที่ส่ง และอาจเปลี่ยนแปลงตามประกาศของมหาวิทยาลัย<br>คุณได้รับอีเมลนี้เพราะขอรายงานผลจาก ' + h_(url) + '</p>' +
+    '</div></div>';
   var text = 'สวัสดีค่ะ คุณ' + L.name.slice(0, 60) + '\n\nผล CHIWCHIW MATCH ของคุณ: ' + rep.short + ' (' + cityTh_(rep.city) + ')\n' + rep.prog + '\n\n' +
     facts.map(function (f) { return f[0] + ': ' + f[1]; }).join('\n') +
     (pl.headline ? '\n\n' + pl.headline : '') +
@@ -767,6 +795,20 @@ function sendMissingReports() {
     console.log((i + 2) + ': ' + res);
   });
   console.log('Reports sent: ' + done);
+}
+
+// The university's logo in the WordPress media library, named like the website guesses it
+// ("<university-name>-logo.webp/png/jpg/gif"); '' when none exists, so the email never shows a broken image.
+function findLogo_(rep) {
+  if (/^https:\/\//.test(rep.logo || '')) return rep.logo;
+  var slug = String(rep.u || '').replace(/\s*\([^()]*\)\s*$/, '').toLowerCase().replace(/['’]/g, '').replace(/&/g, ' and ').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  if (!slug) return '';
+  var exts = ['webp', 'png', 'jpg', 'gif'];
+  for (var i = 0; i < exts.length; i++) {
+    var u = CONFIG.logoBase + slug + '-logo.' + exts[i];
+    try { if (UrlFetchApp.fetch(u, {method: 'get', muteHttpExceptions: true, followRedirects: true}).getResponseCode() === 200) return u; } catch (err) {}
+  }
+  return '';
 }
 
 // Short alert to the team. Reply goes straight to the student.
