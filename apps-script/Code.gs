@@ -651,7 +651,8 @@ function h_(v) { return String(v == null ? '' : v).replace(/&/g, '&amp;').replac
 function commas_(n) { return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
 function cityTh_(c) { return CITY_TH[c] ? CITY_TH[c] + ' (' + c + ')' : String(c || ''); }
 function langTh_(l) { return l === 'zh' ? 'ภาษาจีน' : l === 'en' ? 'ภาษาอังกฤษ' : 'จีน / อังกฤษ'; }
-function mailLeft_() { try { return MailApp.getRemainingDailyQuota(); } catch (err) { return 0; } }
+// Emails left today, or -1 when Google won't let the script send email (permission not given yet).
+function mailLeft_() { try { return MailApp.getRemainingDailyQuota(); } catch (err) { console.error('MailApp: ' + err); return -1; } }
 
 // The student's report. Returns the value for the "Report sent?" column.
 function sendReport_(L, rep) {
@@ -659,7 +660,9 @@ function sendReport_(L, rep) {
   if (!rep) return 'No (match expired)';
   var cache = CacheService.getScriptCache(), mk = 'mail:' + L.email;
   if (cache.get(mk)) return 'No (sent earlier today)';   // one report per address every 6 hours
-  if (mailLeft_() < 2) return 'No (daily email limit)';
+  var left = mailLeft_();
+  if (left < 0) return 'No (email not allowed yet: run testEmail)';
+  if (left < 2) return 'No (daily email limit)';
   var cost = rep.tot || rep.tu, pl = rep.plan, url = CONFIG.siteUrl + 'university-match/';
   var facts = [
     ['ระดับ', LV_TH_[rep.lv] || rep.lv],
@@ -722,9 +725,48 @@ function sendReport_(L, rep) {
   return 'Yes';
 }
 
+// Run from the editor (choose testEmail next to ▷ Run). The first run makes Google ask for
+// permission to send email and open the Website leads sheet; then one test email goes to
+// CONFIG.alertTo. If something is still blocked, the error shows in the Execution log.
+function testEmail() {
+  var left = MailApp.getRemainingDailyQuota();
+  var tab = CONFIG.webLeadsId ? SpreadsheetApp.openById(CONFIG.webLeadsId).getSheetByName(CONFIG.webLeadsTab) : null;
+  MailApp.sendEmail({to: CONFIG.alertTo, subject: 'Chiwchiw Match: อีเมลใช้งานได้แล้ว ✅',
+    body: 'ระบบส่งอีเมลของ Chiwchiw Match ใช้งานได้แล้ว\nส่งได้อีกวันนี้: ' + left + ' ฉบับ\nWebsite leads tab: ' + (tab ? 'พบแล้ว' : 'ไม่พบ'), name: 'Chiwchiw Match'});
+  console.log('OK: test email sent to ' + CONFIG.alertTo + ' · emails left today: ' + (left - 1) + ' · Website leads tab ' + (tab ? 'found' : 'NOT found'));
+}
+
+// Run from the editor to email the report to every lead in "Matcher Leads" whose
+// "Report sent?" isn't Yes (for example leads from before the emails existed).
+// Uses the matched programme from the sheet; the AI plan from that day isn't kept,
+// so the email shows the programme details and invites them to talk to the team.
+function sendMissingReports() {
+  var sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(CONFIG.leadsSheet);
+  if (!sh || sh.getLastRow() < 2) { console.log('No leads yet.'); return; }
+  var rows = getData_().rows, byId = {}, done = 0;
+  rows.forEach(function (r) { byId[r.id] = r; });
+  var vals = sh.getRange(2, 1, sh.getLastRow() - 1, 13).getValues();
+  vals.forEach(function (v, i) {
+    if (String(v[12]) === 'Yes') return;
+    var email = String(v[2]).trim().toLowerCase(), r = byId[String(v[6]).trim()];
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return;
+    var lead = {name: String(v[1]), email: email};
+    var rep = r ? JSON.parse(JSON.stringify({id: r.id, u: r.u, short: shortName_(r.u), cn: r.cn, city: r.city, prog: clean_(r.prog, 200), track: clean_(r.track, 150),
+      lv: r.lv, lang: r.lang, dur: r.dur, tu: r.tu, tot: r.tot, hsk: r.hsk, hskTxt: r.hskTxt, ielts: r.ielts, dl: r.dl, past: r.past, sch: r.sch,
+      exact: String(v[9]) === 'Yes', ai: false, others: [],
+      plan: {headline: 'ทีม Chinese Chiwchiw พร้อมช่วยเช็กเกณฑ์และวางแผนยื่นสมัครให้ฟรี ทักมาทาง LINE ได้เลยค่ะ', why_fit: [], watch_out: [], prepare: [], timeline: []}})) : null;
+    var res;
+    try { res = sendReport_(lead, rep); } catch (err) { res = 'Failed'; console.error(email + ': ' + err); }
+    sh.getRange(i + 2, 13).setValue(res);
+    if (res === 'Yes') done++;
+    console.log((i + 2) + ': ' + res);
+  });
+  console.log('Reports sent: ' + done);
+}
+
 // Short alert to the team. Reply goes straight to the student.
 function sendAlert_(L, rep, sent) {
-  if (!CONFIG.alertTo || mailLeft_() < 1) return;
+  if (!CONFIG.alertTo || mailLeft_() < 1) return;   // also skips when email isn't allowed yet
   var rows = [
     ['ชื่อ', L.name], ['อีเมล', L.email], ['LINE', L.line || '-'], ['โทร', L.phone || '-'],
     ['คำตอบ', L.answers || '-'],
