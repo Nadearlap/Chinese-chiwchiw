@@ -81,20 +81,23 @@
 .um-sub{font-family:'Kanit',sans-serif;font-weight:700;color:#1A0A00;margin:18px 0 10px;font-size:1rem}
 .um-opts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .um-opt{position:relative;cursor:pointer;display:block;margin:0}
-.um-opt input,.um-chip input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+/* Quiz options are buttons (aria-pressed), not hidden radios/checkboxes inside labels: iPhones froze when a
+   ticked input inside a <label> made the theme's label:has(input:checked) rules re-check the page. */
+#uni-matcher button.um-opt,#uni-matcher button.um-chip{-webkit-appearance:none;appearance:none;background:none;border:0;padding:0;width:auto;height:auto;min-height:0;box-shadow:none;text-align:left;font:inherit;color:inherit;text-transform:none;letter-spacing:normal;border-radius:0;line-height:inherit;-webkit-tap-highlight-color:transparent}
+#uni-matcher button.um-opt{display:block;width:100%}
 .um-opt-in{display:flex;flex-direction:column;gap:2px;height:100%;padding:16px 18px;border:2px solid #EDE5DC;border-radius:16px;background:#FFFBF7;transition:border-color .2s,background .2s,transform .2s}
 .um-opt:hover .um-opt-in{border-color:#FFB347;transform:translateY(-2px)}
 .um-opt-in b{font-family:'Kanit',sans-serif;font-weight:700;color:#1A0A00;font-size:1.05rem;line-height:1.4}
 .um-opt-in small{font-size:.85rem;color:#7A6050;line-height:1.5}
-.um-opt input:checked+.um-opt-in{border-color:#FF6B00;background:#FFF3E8;box-shadow:0 0 0 3px rgba(255,107,0,.12)}
-.um-opt input:focus-visible+.um-opt-in,.um-chip input:focus-visible+span{outline:3px solid #FFB347;outline-offset:2px}
+.um-opt[aria-pressed="true"] .um-opt-in{border-color:#FF6B00;background:#FFF3E8;box-shadow:0 0 0 3px rgba(255,107,0,.12)}
+.um-opt:focus-visible .um-opt-in,.um-chip:focus-visible span{outline:3px solid #FFB347;outline-offset:2px}
 .um-chips{display:flex;flex-wrap:wrap;gap:10px}
 .um-chip{cursor:pointer;margin:0;position:relative}
 .um-chip span{display:inline-flex;align-items:center;gap:6px;font-family:'Kanit',sans-serif;font-weight:600;font-size:.98rem;color:#5C4A3E;background:#FFFBF7;border:2px solid #EDE5DC;padding:8px 18px;border-radius:50px;transition:all .2s;line-height:1.4}
 .um-chip span i{font-style:normal;font-size:.75rem;color:#9A7A60}
 .um-chip:hover span{border-color:#FFB347}
-.um-chip input:checked+span{border-color:#FF6B00;background:#FF6B00;color:#fff}
-.um-chip input:checked+span i{color:rgba(255,255,255,.8)}
+.um-chip[aria-pressed="true"] span{border-color:#FF6B00;background:#FF6B00;color:#fff}
+.um-chip[aria-pressed="true"] span i{color:rgba(255,255,255,.8)}
 #uni-matcher .um-text{width:100%;max-width:440px;margin-top:16px;border:2px solid #EDE5DC;border-radius:50px;padding:11px 20px;font-size:.98rem;color:#1A0A00;background:#FFFBF7;outline:0;box-shadow:none;height:auto}
 #uni-matcher .um-text:focus{border-color:#FF6B00}
 .um-nav{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:32px;padding-top:24px;border-top:1px solid #F1E6DA}
@@ -461,9 +464,9 @@
             <legend class="um-q">ตอนนี้นักเรียนอยู่ช่วงไหน?</legend>
             <p class="um-qhint">ไม่ต้องรีบตัดสินใจ ระบบจะวางแผนให้ตามจังหวะของนักเรียน</p>
             <div class="um-opts">
-              <label class="um-opt"><input type="radio" name="when" value="next"><span class="um-opt-in"><b>🚀 พร้อมยื่นรอบหน้า</b><small>อยากเริ่มเรียนปี <span class="um-y1">2027</span></small></span></label>
-              <label class="um-opt"><input type="radio" name="when" value="later"><span class="um-opt-in"><b>📅 วางแผนล่วงหน้า</b><small>เริ่มเรียนปี <span class="um-y2">2028</span> หรือหลังจากนั้น</small></span></label>
-              <label class="um-opt"><input type="radio" name="when" value="explore"><span class="um-opt-in"><b>🔍 แค่หาข้อมูลก่อน</b><small>อยากรู้ว่ามีทางเลือกอะไรบ้าง</small></span></label>
+              <button type="button" class="um-opt" data-n="when" data-v="next" aria-pressed="false"><span class="um-opt-in"><b>🚀 พร้อมยื่นรอบหน้า</b><small>อยากเริ่มเรียนปี <span class="um-y1">2027</span></small></span></button>
+              <button type="button" class="um-opt" data-n="when" data-v="later" aria-pressed="false"><span class="um-opt-in"><b>📅 วางแผนล่วงหน้า</b><small>เริ่มเรียนปี <span class="um-y2">2028</span> หรือหลังจากนั้น</small></span></button>
+              <button type="button" class="um-opt" data-n="when" data-v="explore" aria-pressed="false"><span class="um-opt-in"><b>🔍 แค่หาข้อมูลก่อน</b><small>อยากรู้ว่ามีทางเลือกอะไรบ้าง</small></span></button>
             </div>
           </fieldset>
 
@@ -471,9 +474,9 @@
             <legend class="um-q">อยากเรียนต่อระดับไหน?</legend>
             <p class="um-qhint">เลือกระดับที่จะยื่นสมัคร</p>
             <div class="um-opts">
-              <label class="um-opt"><input type="radio" name="deg" value="ug"><span class="um-opt-in"><b>🎓 ปริญญาตรี</b><small>จบ ม.6 หรือเทียบเท่า</small></span></label>
-              <label class="um-opt"><input type="radio" name="deg" value="ma"><span class="um-opt-in"><b>📘 ปริญญาโท</b><small>จบปริญญาตรีแล้ว</small></span></label>
-              <label class="um-opt"><input type="radio" name="deg" value="phd"><span class="um-opt-in"><b>🔬 ปริญญาเอก</b><small>จบปริญญาโทแล้ว</small></span></label>
+              <button type="button" class="um-opt" data-n="deg" data-v="ug" aria-pressed="false"><span class="um-opt-in"><b>🎓 ปริญญาตรี</b><small>จบ ม.6 หรือเทียบเท่า</small></span></button>
+              <button type="button" class="um-opt" data-n="deg" data-v="ma" aria-pressed="false"><span class="um-opt-in"><b>📘 ปริญญาโท</b><small>จบปริญญาตรีแล้ว</small></span></button>
+              <button type="button" class="um-opt" data-n="deg" data-v="phd" aria-pressed="false"><span class="um-opt-in"><b>🔬 ปริญญาเอก</b><small>จบปริญญาโทแล้ว</small></span></button>
             </div>
           </fieldset>
 
@@ -481,15 +484,15 @@
             <legend class="um-q">สนใจสาขาไหนบ้าง?</legend>
             <p class="um-qhint">เลือกได้หลายข้อ</p>
             <div class="um-chips">
-              <label class="um-chip"><input type="checkbox" name="major" value="eng.cs"><span>💻 คอมพิวเตอร์ &amp; AI</span></label>
-              <label class="um-chip"><input type="checkbox" name="major" value="eng"><span>🛠️ วิศวกรรม</span></label>
-              <label class="um-chip"><input type="checkbox" name="major" value="biz"><span>📈 ธุรกิจ &amp; เศรษฐศาสตร์</span></label>
-              <label class="um-chip"><input type="checkbox" name="major" value="med"><span>🩺 แพทย์ &amp; สุขภาพ</span></label>
-              <label class="um-chip"><input type="checkbox" name="major" value="lang"><span>📖 ภาษา &amp; มนุษยศาสตร์</span></label>
-              <label class="um-chip"><input type="checkbox" name="major" value="soc"><span>⚖️ กฎหมาย สังคม &amp; การศึกษา</span></label>
-              <label class="um-chip"><input type="checkbox" name="major" value="art"><span>🎨 ศิลปะ &amp; ออกแบบ</span></label>
-              <label class="um-chip"><input type="checkbox" name="major" value="sci"><span>🔬 วิทยาศาสตร์ &amp; เกษตร</span></label>
-              <label class="um-chip"><input type="checkbox" name="major" value="any"><span>🤔 ยังไม่แน่ใจ</span></label>
+              <button type="button" class="um-chip" data-n="major" data-v="eng.cs" data-multi="1" aria-pressed="false"><span>💻 คอมพิวเตอร์ &amp; AI</span></button>
+              <button type="button" class="um-chip" data-n="major" data-v="eng" data-multi="1" aria-pressed="false"><span>🛠️ วิศวกรรม</span></button>
+              <button type="button" class="um-chip" data-n="major" data-v="biz" data-multi="1" aria-pressed="false"><span>📈 ธุรกิจ &amp; เศรษฐศาสตร์</span></button>
+              <button type="button" class="um-chip" data-n="major" data-v="med" data-multi="1" aria-pressed="false"><span>🩺 แพทย์ &amp; สุขภาพ</span></button>
+              <button type="button" class="um-chip" data-n="major" data-v="lang" data-multi="1" aria-pressed="false"><span>📖 ภาษา &amp; มนุษยศาสตร์</span></button>
+              <button type="button" class="um-chip" data-n="major" data-v="soc" data-multi="1" aria-pressed="false"><span>⚖️ กฎหมาย สังคม &amp; การศึกษา</span></button>
+              <button type="button" class="um-chip" data-n="major" data-v="art" data-multi="1" aria-pressed="false"><span>🎨 ศิลปะ &amp; ออกแบบ</span></button>
+              <button type="button" class="um-chip" data-n="major" data-v="sci" data-multi="1" aria-pressed="false"><span>🔬 วิทยาศาสตร์ &amp; เกษตร</span></button>
+              <button type="button" class="um-chip" data-n="major" data-v="any" data-multi="1" aria-pressed="false"><span>🤔 ยังไม่แน่ใจ</span></button>
             </div>
             <input class="um-text" id="um-mtext" type="text" placeholder="หรือพิมพ์ชื่อสาขา (อังกฤษ) เช่น finance, mechanical" autocomplete="off">
           </fieldset>
@@ -498,9 +501,9 @@
             <legend class="um-q">อยากเรียนเป็นภาษาอะไร?</legend>
             <p class="um-qhint">หลักสูตรสอนภาษาจีนมีให้เลือกมากกว่า และค่าเรียนมักถูกกว่า</p>
             <div class="um-opts">
-              <label class="um-opt"><input type="radio" name="lang" value="zh"><span class="um-opt-in"><b>🇨🇳 ภาษาจีน</b><small>ใช้ผล HSK ยื่น</small></span></label>
-              <label class="um-opt"><input type="radio" name="lang" value="en"><span class="um-opt-in"><b>🇬🇧 ภาษาอังกฤษ</b><small>ใช้ผล IELTS / TOEFL ยื่น</small></span></label>
-              <label class="um-opt"><input type="radio" name="lang" value="both"><span class="um-opt-in"><b>✌️ ได้ทั้งคู่</b><small>ดูทั้งสองแบบ</small></span></label>
+              <button type="button" class="um-opt" data-n="lang" data-v="zh" aria-pressed="false"><span class="um-opt-in"><b>🇨🇳 ภาษาจีน</b><small>ใช้ผล HSK ยื่น</small></span></button>
+              <button type="button" class="um-opt" data-n="lang" data-v="en" aria-pressed="false"><span class="um-opt-in"><b>🇬🇧 ภาษาอังกฤษ</b><small>ใช้ผล IELTS / TOEFL ยื่น</small></span></button>
+              <button type="button" class="um-opt" data-n="lang" data-v="both" aria-pressed="false"><span class="um-opt-in"><b>✌️ ได้ทั้งคู่</b><small>ดูทั้งสองแบบ</small></span></button>
             </div>
           </fieldset>
 
@@ -510,23 +513,23 @@
             <div class="um-lv-zh">
               <div class="um-sub">🇨🇳 HSK</div>
               <div class="um-chips">
-                <label class="um-chip"><input type="radio" name="hsk" value="0"><span>ยังไม่มี</span></label>
-                <label class="um-chip"><input type="radio" name="hsk" value="2"><span>HSK 1–2</span></label>
-                <label class="um-chip"><input type="radio" name="hsk" value="3"><span>HSK 3</span></label>
-                <label class="um-chip"><input type="radio" name="hsk" value="4"><span>HSK 4</span></label>
-                <label class="um-chip"><input type="radio" name="hsk" value="5"><span>HSK 5</span></label>
-                <label class="um-chip"><input type="radio" name="hsk" value="6"><span>HSK 6 ขึ้นไป</span></label>
+                <button type="button" class="um-chip" data-n="hsk" data-v="0" data-multi="0" aria-pressed="false"><span>ยังไม่มี</span></button>
+                <button type="button" class="um-chip" data-n="hsk" data-v="2" data-multi="0" aria-pressed="false"><span>HSK 1–2</span></button>
+                <button type="button" class="um-chip" data-n="hsk" data-v="3" data-multi="0" aria-pressed="false"><span>HSK 3</span></button>
+                <button type="button" class="um-chip" data-n="hsk" data-v="4" data-multi="0" aria-pressed="false"><span>HSK 4</span></button>
+                <button type="button" class="um-chip" data-n="hsk" data-v="5" data-multi="0" aria-pressed="false"><span>HSK 5</span></button>
+                <button type="button" class="um-chip" data-n="hsk" data-v="6" data-multi="0" aria-pressed="false"><span>HSK 6 ขึ้นไป</span></button>
               </div>
             </div>
             <div class="um-lv-en">
               <div class="um-sub">🇬🇧 IELTS (หรือเทียบจาก TOEFL)</div>
               <div class="um-chips">
-                <label class="um-chip"><input type="radio" name="ielts" value="0"><span>ยังไม่มี</span></label>
-                <label class="um-chip"><input type="radio" name="ielts" value="5"><span>5.0</span></label>
-                <label class="um-chip"><input type="radio" name="ielts" value="5.5"><span>5.5</span></label>
-                <label class="um-chip"><input type="radio" name="ielts" value="6"><span>6.0</span></label>
-                <label class="um-chip"><input type="radio" name="ielts" value="6.5"><span>6.5</span></label>
-                <label class="um-chip"><input type="radio" name="ielts" value="7"><span>7.0 ขึ้นไป</span></label>
+                <button type="button" class="um-chip" data-n="ielts" data-v="0" data-multi="0" aria-pressed="false"><span>ยังไม่มี</span></button>
+                <button type="button" class="um-chip" data-n="ielts" data-v="5" data-multi="0" aria-pressed="false"><span>5.0</span></button>
+                <button type="button" class="um-chip" data-n="ielts" data-v="5.5" data-multi="0" aria-pressed="false"><span>5.5</span></button>
+                <button type="button" class="um-chip" data-n="ielts" data-v="6" data-multi="0" aria-pressed="false"><span>6.0</span></button>
+                <button type="button" class="um-chip" data-n="ielts" data-v="6.5" data-multi="0" aria-pressed="false"><span>6.5</span></button>
+                <button type="button" class="um-chip" data-n="ielts" data-v="7" data-multi="0" aria-pressed="false"><span>7.0 ขึ้นไป</span></button>
               </div>
             </div>
           </fieldset>
@@ -535,11 +538,11 @@
             <legend class="um-q">งบต่อปีประมาณเท่าไหร่?</legend>
             <p class="um-qhint">รวมค่าเรียน ที่พัก และค่าครองชีพโดยประมาณ (บาท/ปี)</p>
             <div class="um-opts">
-              <label class="um-opt"><input type="radio" name="budget" value="150000"><span class="um-opt-in"><b>ไม่เกิน ฿150,000</b></span></label>
-              <label class="um-opt"><input type="radio" name="budget" value="250000"><span class="um-opt-in"><b>ไม่เกิน ฿250,000</b></span></label>
-              <label class="um-opt"><input type="radio" name="budget" value="350000"><span class="um-opt-in"><b>ไม่เกิน ฿350,000</b></span></label>
-              <label class="um-opt"><input type="radio" name="budget" value="500000"><span class="um-opt-in"><b>ไม่เกิน ฿500,000</b></span></label>
-              <label class="um-opt"><input type="radio" name="budget" value="0"><span class="um-opt-in"><b>มากกว่านั้น / ยังไม่จำกัด</b></span></label>
+              <button type="button" class="um-opt" data-n="budget" data-v="150000" aria-pressed="false"><span class="um-opt-in"><b>ไม่เกิน ฿150,000</b></span></button>
+              <button type="button" class="um-opt" data-n="budget" data-v="250000" aria-pressed="false"><span class="um-opt-in"><b>ไม่เกิน ฿250,000</b></span></button>
+              <button type="button" class="um-opt" data-n="budget" data-v="350000" aria-pressed="false"><span class="um-opt-in"><b>ไม่เกิน ฿350,000</b></span></button>
+              <button type="button" class="um-opt" data-n="budget" data-v="500000" aria-pressed="false"><span class="um-opt-in"><b>ไม่เกิน ฿500,000</b></span></button>
+              <button type="button" class="um-opt" data-n="budget" data-v="0" aria-pressed="false"><span class="um-opt-in"><b>มากกว่านั้น / ยังไม่จำกัด</b></span></button>
             </div>
           </fieldset>
 
@@ -547,7 +550,7 @@
             <legend class="um-q">อยากไปเมืองไหน?</legend>
             <p class="um-qhint">เลือกได้หลายเมือง ตัวเลขคือจำนวนหลักสูตรในระดับที่เลือก</p>
             <div class="um-chips um-cities">
-              <label class="um-chip"><input type="checkbox" name="city" value="any" checked><span>🌏 ที่ไหนก็ได้</span></label>
+              <button type="button" class="um-chip" data-n="city" data-v="any" data-multi="1" aria-pressed="true"><span>🌏 ที่ไหนก็ได้</span></button>
             </div>
           </fieldset>
 
@@ -555,9 +558,9 @@
             <legend class="um-q">ทุนการศึกษาสำคัญแค่ไหน?</legend>
             <p class="um-qhint">ระบบจะให้น้ำหนักกับสาขาที่มีทุนให้สมัคร (มีทุนให้สมัคร ≠ ได้ทุนแน่นอน)</p>
             <div class="um-opts">
-              <label class="um-opt"><input type="radio" name="schol" value="must"><span class="um-opt-in"><b>🎁 อยากได้ทุนมาก</b><small>ให้สาขาที่มีทุนมาก่อน</small></span></label>
-              <label class="um-opt"><input type="radio" name="schol" value="nice"><span class="um-opt-in"><b>🙂 มีก็ดี</b><small>ไม่ใช่เงื่อนไขหลัก</small></span></label>
-              <label class="um-opt"><input type="radio" name="schol" value="no"><span class="um-opt-in"><b>💪 ไม่จำเป็น</b><small>ดูที่ความเหมาะสมอย่างเดียว</small></span></label>
+              <button type="button" class="um-opt" data-n="schol" data-v="must" aria-pressed="false"><span class="um-opt-in"><b>🎁 อยากได้ทุนมาก</b><small>ให้สาขาที่มีทุนมาก่อน</small></span></button>
+              <button type="button" class="um-opt" data-n="schol" data-v="nice" aria-pressed="false"><span class="um-opt-in"><b>🙂 มีก็ดี</b><small>ไม่ใช่เงื่อนไขหลัก</small></span></button>
+              <button type="button" class="um-opt" data-n="schol" data-v="no" aria-pressed="false"><span class="um-opt-in"><b>💪 ไม่จำเป็น</b><small>ดูที่ความเหมาะสมอย่างเดียว</small></span></button>
             </div>
           </fieldset>
 
@@ -638,10 +641,10 @@
         <div class="um-fg"><label class="um-fl" for="um-max">ค่าเรียนสูงสุดต่อปี</label><input type="range" id="um-max" min="10000" max="120000" step="2000" value="120000"><span class="um-rangev">ไม่จำกัด</span></div>
         <div class="um-fg"><span class="um-fl">กลุ่มมหาวิทยาลัย</span><div class="um-fchips" data-f="tier"></div></div>
         <div class="um-fg">
-          <label class="um-check"><input type="checkbox" id="um-f-open">เปิดรับสมัครรอบ 2027 แล้ว</label>
-          <label class="um-check"><input type="checkbox" id="um-f-nohsk">ไม่ต้องใช้ HSK</label>
-          <label class="um-check"><input type="checkbox" id="um-f-nocsca">ไม่ต้องสอบ CSCA</label>
-          <label class="um-check"><input type="checkbox" id="um-f-sch">มีทุนให้สมัคร</label>
+          <span class="um-check"><input type="checkbox" id="um-f-open"><label for="um-f-open">เปิดรับสมัครรอบ 2027 แล้ว</label></span>
+          <span class="um-check"><input type="checkbox" id="um-f-nohsk"><label for="um-f-nohsk">ไม่ต้องใช้ HSK</label></span>
+          <span class="um-check"><input type="checkbox" id="um-f-nocsca"><label for="um-f-nocsca">ไม่ต้องสอบ CSCA</label></span>
+          <span class="um-check"><input type="checkbox" id="um-f-sch"><label for="um-f-sch">มีทุนให้สมัคร</label></span>
         </div>
       </aside>
 
@@ -930,8 +933,8 @@
   /* ═════════════ QUIZ ═════════════ */
   var form=$('.um-form'),steps=$$('.um-step'),backBtn=$('.um-back'),nextBtn=$('.um-next'),app=$('#um-app'),resultsEl=$('.um-results');
   var cur=0;
-  function val(n){var el=form.querySelector('input[name="'+n+'"]:checked');return el?el.value:'';}
-  function vals(n){return $$('input[name="'+n+'"]:checked',form).map(function(e){return e.value;});}
+  function val(n){var el=form.querySelector('button[data-n="'+n+'"][aria-pressed="true"]');return el?el.getAttribute('data-v'):'';}
+  function vals(n){return $$('button[data-n="'+n+'"][aria-pressed="true"]',form).map(function(e){return e.getAttribute('data-v');});}
   function answers(){
     return {when:val('when')||'next',deg:val('deg'),groups:vals('major').filter(function(v){return v!=='any';}),anyMajor:vals('major').indexOf('any')>-1,
       text:($('#um-mtext').value||'').trim().toLowerCase().slice(0,80),lang:val('lang'),
@@ -1007,26 +1010,29 @@
     var lv={ug:'UG',ma:'PG',phd:'PHD'}[val('deg')]||'UG',picked=vals('city');
     var list=META?Object.keys(META.cities).filter(function(c){return META.cities[c][lv]>0;}).sort(function(a,b){return META.cities[b][lv]-META.cities[a][lv];}):CITY_FALLBACK;
     picked.forEach(function(c){if(c!=='any'&&list.indexOf(c)<0)list=list.concat(c);});   // never drop a city already ticked
-    var html='<label class="um-chip"><input type="checkbox" name="city" value="any"'+(!picked.length||picked.indexOf('any')>-1?' checked':'')+'><span>🌏 ที่ไหนก็ได้</span></label>';
+    var html='<button type="button" class="um-chip" data-n="city" data-v="any" data-multi="1" aria-pressed="'+(!picked.length||picked.indexOf('any')>-1)+'"><span>🌏 ที่ไหนก็ได้</span></button>';
     list.forEach(function(c){
-      html+='<label class="um-chip"><input type="checkbox" name="city" value="'+esc(c)+'"'+(picked.indexOf(c)>-1?' checked':'')+'><span>📍 '+esc(cityTH(c))+(META&&META.cities[c]?' <i>'+META.cities[c][lv]+'</i>':'')+'</span></label>';
+      html+='<button type="button" class="um-chip" data-n="city" data-v="'+esc(c)+'" data-multi="1" aria-pressed="'+(picked.indexOf(c)>-1)+'"><span>📍 '+esc(cityTH(c))+(META&&META.cities[c]?' <i>'+META.cities[c][lv]+'</i>':'')+'</span></button>';
     });
     box.innerHTML=html;
     if(!META)metaP.then(function(){if(steps[cur].getAttribute('data-step')==='city')renderQuizCities();},function(){});
   }
-  form.addEventListener('change',function(e){
-    var t=e.target;
-    if(t.type==='checkbox'&&(t.name==='major'||t.name==='city')){
-      var boxes=$$('input[name="'+t.name+'"]',form);
-      if(t.value==='any'&&t.checked)boxes.forEach(function(b){if(b!==t)b.checked=false;});
-      else if(t.checked)boxes.forEach(function(b){if(b.value==='any')b.checked=false;});
-      if(t.name==='city'&&!vals('city').length)boxes[0].checked=true;
-    }
+  form.addEventListener('click',function(e){
+    var b=e.target.closest&&e.target.closest('button[data-n]');if(!b)return;
+    var n=b.getAttribute('data-n'),multi=b.getAttribute('data-multi')==='1',group=$$('button[data-n="'+n+'"]',form);
+    var press=function(x,on){x.setAttribute('aria-pressed',on?'true':'false');};
+    if(multi){
+      var on=b.getAttribute('aria-pressed')!=='true';press(b,on);
+      if(b.getAttribute('data-v')==='any'&&on)group.forEach(function(x){if(x!==b)press(x,false);});
+      else if(on)group.forEach(function(x){if(x.getAttribute('data-v')==='any')press(x,false);});
+      if(n==='city'&&!vals('city').length)press(group[0],true);
+    }else group.forEach(function(x){press(x,x===b);});
     refreshNav();
-    if(t.type==='radio'&&stepValid(cur)&&cur<steps.length-1&&steps[cur].getAttribute('data-step')!=='level'){
+    if(!multi&&stepValid(cur)&&cur<steps.length-1&&steps[cur].getAttribute('data-step')!=='level'){
       setTimeout(function(){if(stepValid(cur))show(cur+1);},REDUCED?0:260);
     }
   });
+  form.addEventListener('change',refreshNav);
   $('#um-mtext').addEventListener('input',refreshNav);
   form.addEventListener('input',function(e){if(e.target.closest('.um-contact'))$('.um-cmsg').textContent='';});
   form.addEventListener('submit',function(e){
@@ -1044,7 +1050,7 @@
 
   // Quiz answers as Thai labels: one line for the sheet, and one field per column of the Website leads sheet.
   function quizLabels(a){
-    var majors=$$('input[name="major"]:checked',form).map(function(i){return i.nextElementSibling.textContent.replace(/^\S+\s/,'');});
+    var majors=$$('button[data-n="major"][aria-pressed="true"]',form).map(function(b){return b.textContent.trim().replace(/^\S+\s/,'');});
     if(a.text)majors.push(a.text);
     var tests=[];
     if(a.lang!=='en')tests.push(a.hsk?'HSK '+(a.hsk===2?'1–2':a.hsk===6?'6+':a.hsk):'ยังไม่มี HSK');
