@@ -79,7 +79,7 @@ var CONFIG = {
   webLeadsTab: 'UG/PG',
   alertTo: 'admin@chinesechiwchiw.com',   // new-lead alert ('' = off)
   sendReport: true,        // email the match report to the student
-  lineUrl: 'https://line.me/ti/p/~@chiwchiw',
+  lineUrl: 'https://lin.ee/C0CmZGa',   // official LINE OA link (opens the LINE app on phones)
   siteUrl: 'https://chinesechiwchiw.com/'
 };
 
@@ -671,7 +671,7 @@ function sendReport_(L, rep) {
     cost ? ['ค่าใช้จ่าย', '≈ ' + commas_(cost * CONFIG.thbPerRmb) + ' บาท/ปี' + (rep.tot ? ' (รวมค่าเรียน ที่พัก และค่าครองชีพโดยประมาณ)' : ' (เฉพาะค่าเรียน)')] : null,
     rep.lang !== 'en' && rep.hsk ? ['เกณฑ์ภาษาจีน', String(rep.hskTxt || 'HSK ' + rep.hsk).replace(/\s*\+\s*HSKK.*$/i, '')] : null,
     rep.lang !== 'zh' && rep.ielts ? ['เกณฑ์ภาษาอังกฤษ', 'IELTS ' + rep.ielts] : null,
-    rep.dl ? ['ปิดรับสมัคร', rep.dl + (rep.past ? ' (อ้างอิงรอบที่ผ่านมา ทีมจะยืนยันวันของรอบใหม่)' : '')] : null,
+    ['ปิดรับสมัคร', 'ทีม Chinese Chiwchiw จะเช็กวันปิดรับสมัครล่าสุดให้ค่ะ'],   // sheet dates are often last year's round
     rep.sch ? ['ทุนการศึกษา', 'มีทุนให้ยื่นสมัคร'] : null
   ].filter(Boolean);
   var O = '#FF6B00', D = '#1A0A00', font = "font-family:'Noto Sans Thai',Tahoma,Arial,sans-serif;";
@@ -681,7 +681,12 @@ function sendReport_(L, rep) {
     return '<h3 style="margin:24px 0 8px;font-size:17px;color:' + D + '">' + title + '</h3><ul style="margin:0;padding-left:20px;line-height:1.7">' +
       items.map(function (x) { return '<li>' + h_(x) + '</li>'; }).join('') + '</ul>';
   };
-  var tl = (pl.timeline || []).filter(function (x) { return x && x.task; });
+  // Timeline labels without years (e.g. "ต.ค. 2026" → "ต.ค."); the team confirms the real dates.
+  var noYear = function (t) {
+    return String(t || '').replace(/(ต้น|กลาง|ปลาย)?\s*(?:ภายใน|ใน)?ปี\s*(?:พ\.ศ\.|ค\.ศ\.)?\s*(?:20|25)\d{2}\b/g, function (m, part) { return part ? ' ' + part + 'ปี' : ''; })
+      .replace(/\s*(?:พ\.ศ\.|ค\.ศ\.)?\s*(?:20|25)\d{2}\b/g, '').replace(/\s{2,}/g, ' ').trim();
+  };
+  var tl = (pl.timeline || []).filter(function (x) { return x && x.task; }).map(function (x) { return {when: noYear(x.when) || '•', task: noYear(x.task)}; });
   var html = '<div style="background:#FFFBF7;padding:24px 12px;' + font + 'color:' + D + '">' +
     '<div style="max-width:600px;margin:0 auto;background:#fff;border:1px solid #EDE5DC;border-radius:16px;overflow:hidden">' +
     '<div style="background:' + O + ';color:#fff;padding:22px 24px"><div style="font-size:13px;letter-spacing:1px">CHIWCHIW MATCH · CHINESE CHIWCHIW</div>' +
