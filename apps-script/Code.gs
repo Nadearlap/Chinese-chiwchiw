@@ -81,7 +81,7 @@ var CONFIG = {
   webLeadsTab: 'UG/PG',
   alertTo: 'admin@chinesechiwchiw.com',   // new-lead alert ('' = off)
   sendReport: true,        // email the match report to the student
-  reportEveryDays: 30,     // one report per email address in this many days (checked in Matcher Leads)
+  reportEveryDays: 0,      // 0 = beta: one report per address every 6 hours. Set 30 to allow one report per address every 30 days (checked in Matcher Leads)
   lineUrl: 'https://lin.ee/C0CmZGa',   // official LINE OA link (opens the LINE app on phones)
   siteUrl: 'https://chinesechiwchiw.com/'
 };
@@ -675,7 +675,8 @@ function sendReport_(L, rep) {
   if (!CONFIG.sendReport) return 'Off';
   if (!rep) return 'No (match expired)';
   var cache = CacheService.getScriptCache(), mk = 'mail:' + L.email;
-  if (cache.get(mk) || reportSentRecently_(L.email)) return 'No (already sent in the last ' + CONFIG.reportEveryDays + ' days)';
+  if (cache.get(mk)) return 'No (sent earlier today)';   // one report per address every 6 hours
+  if (CONFIG.reportEveryDays > 0 && reportSentRecently_(L.email)) return 'No (already sent in the last ' + CONFIG.reportEveryDays + ' days)';
   var left = mailLeft_();
   if (left < 0) return 'No (email not allowed yet: run testEmail)';
   if (left < 2) return 'No (daily email limit)';
