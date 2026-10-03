@@ -800,6 +800,28 @@
   }
   if(!apiOK&&window.console)console.warn('University Matcher: set data-api on #uni-matcher to the Apps Script Web app URL.');
 
+  /* ---------- diagnostic mode (?debug=1 only) ----------
+     A small box: a clock that ticks every second (stops if the page's code is frozen), the element under
+     the last touch (names anything invisible covering the page), scroll position and scroll locks. */
+  if(/[?&]debug=1/.test(location.search))(function(){
+    var box=document.createElement('div'),t0=Date.now(),last='-',touches=0;
+    box.style.cssText='position:fixed;left:6px;bottom:6px;z-index:2147483647;max-width:70vw;padding:6px 8px;border-radius:8px;background:rgba(0,0,0,.78);color:#fff;font:11px/1.35 monospace;pointer-events:none;white-space:pre-wrap;word-break:break-all';
+    document.body.appendChild(box);
+    function name(el){if(!el||!el.tagName)return String(el);var c=typeof el.className==='string'?el.className.trim().split(/\s+/).slice(0,2).join('.'):'';return el.tagName.toLowerCase()+(el.id?'#'+el.id:'')+(c?'.'+c:'');}
+    document.addEventListener('touchstart',function(e){
+      touches++;var t=e.touches&&e.touches[0];if(!t)return;
+      var el=document.elementFromPoint(t.clientX,t.clientY),chain=[],n=el;
+      for(var k=0;n&&k<3;k++){chain.push(name(n));n=n.parentElement;}
+      last=chain.join(' < ');
+    },{capture:true,passive:true});
+    setInterval(function(){
+      var h=document.documentElement,b=document.body;
+      box.textContent='⏱ '+Math.round((Date.now()-t0)/1000)+'s · touches '+touches+'\ntap: '+last+
+        '\nscrollY '+Math.round(window.pageYOffset)+' · html '+(h.style.overflow||getComputedStyle(h).overflow)+' · body '+(b.style.overflow||getComputedStyle(b).overflow)+
+        '\nstep '+(typeof cur==='number'?cur:'?');
+    },1000);
+  })();
+
   /* ---------- anonymous usage stats ----------
      One row per visit in the "Matcher Stats" tab: how far into the quiz, the match, searches, filters,
      universities opened and clicks. No names, emails or cookies; the visit id lives only in this page. */
