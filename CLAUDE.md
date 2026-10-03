@@ -11,6 +11,13 @@ Chiwchiw Match (MAIN, Oct 2026)".
 - During beta (from 3 Oct 2026) she does NOT want live changes unless she asks. Prepare changes in
   the repo and let her decide when to paste/deploy.
 
+## Skills and tools
+- `.claude/skills/chiwchiw-wp-publish` — publish any page safely (page map, backup, verify).
+- `.claude/skills/chiwchiw-matcher` — everything about Chiwchiw Match (architecture, rules, tests, costs).
+- `.claude/skills/chiwchiw-apps-script` — guide Dear through Code.gs deploys, permissions, email fixes.
+- `.claude/skills/chiwchiw-mobile-debug` — iPhone-only freezes / blank pages (`?debug=1` box).
+- `tools/matcher-tests/` — `flow.js`, `gs-mock.js`, `live-tap.js` (run with `NODE_PATH=$(npm root -g)`).
+
 ## What lives where
 | Thing | Where | How it changes |
 |---|---|---|
