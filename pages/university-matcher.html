@@ -185,6 +185,9 @@
 .um-hp{position:absolute!important;left:-9999px!important;width:1px;height:1px;overflow:hidden}
 .um-formmsg{margin:12px 0 0;font-size:.9rem;color:#A12C2C;min-height:1px}
 .um-leadbox .um-btn{margin-top:18px}
+.um-contact .um-fgrid{margin-top:4px}
+.um-leadst{text-align:center}
+.um-leadst p{margin:6px 0 0!important}
 .um-thanks{text-align:center;padding:10px 0}
 .um-ico{font-size:2.4rem;line-height:1}
 .um-err{text-align:center;padding:24px 10px}
@@ -416,7 +419,7 @@
     <div class="um-hero-txt">
       <span class="um-kicker">✨ CHIWCHIW MATCH 2027</span>
       <h1 class="um-h1"><span class="um-nw">ไปเรียนจีนที่ไหนดี?</span><br><span class="um-h1-o">ให้ Chiwchiw <span class="um-nw">ช่วยหา 🧡</span></span></h1>
-      <p class="um-lead">ตอบ <span class="um-sc">8</span> คำถามง่าย ๆ แล้วเราจะช่วยคัดมหาวิทยาลัยและหลักสูตรที่เหมาะกับคุณ</p>
+      <p class="um-lead">ตอบ <span class="um-sc">8</span> คำถามง่าย ๆ แล้วเราจะช่วยคัดมหาวิทยาลัยและหลักสูตรที่เหมาะกับคุณ พร้อมส่ง<b>รายงานฉบับเต็ม</b>ให้ทางอีเมลฟรี 📩</p>
       <div class="um-cta-row">
         <a class="um-btn um-btn-pri um-btn-lg" href="#um-app">✨ เริ่ม Match เลย →</a>
         <a class="um-textlink" href="#um-finder">ดูมหาวิทยาลัยทั้งหมด →</a>
@@ -442,7 +445,7 @@
 
       <!-- 2a. Quiz -->
       <div class="um-quiz">
-        <div class="um-qtop"><span class="um-stepinfo">ข้อ <span class="um-sn">1</span> จาก <span class="um-sc">8</span></span></div>
+        <div class="um-qtop"><span class="um-stepinfo">ข้อ <span class="um-sn">1</span> จาก <span class="um-sc">8</span></span><span class="um-stepinfo um-stepfinal" hidden>📩 ขั้นสุดท้าย · รับผลทางอีเมล</span></div>
         <div class="um-prog"><div class="um-prog-bar"></div></div>
         <form class="um-form" novalidate>
           <fieldset class="um-step" data-step="when">
@@ -547,6 +550,21 @@
               <label class="um-opt"><input type="radio" name="schol" value="nice"><span class="um-opt-in"><b>🙂 มีก็ดี</b><small>ไม่ใช่เงื่อนไขหลัก</small></span></label>
               <label class="um-opt"><input type="radio" name="schol" value="no"><span class="um-opt-in"><b>💪 ไม่จำเป็น</b><small>ดูที่ความเหมาะสมอย่างเดียว</small></span></label>
             </div>
+          </fieldset>
+
+          <fieldset class="um-step um-contact" data-step="contact">
+            <legend class="um-q">📩 ข้อสุดท้าย! จะให้ส่งผลจับคู่ไปที่ไหนดี?</legend>
+            <p class="um-qhint">กรอกชื่อและอีเมล แล้วดูผลได้ทันที เราจะส่ง<b>รายงานฉบับเต็ม</b>พร้อม Timeline เตรียมตัวไปให้ทางอีเมลด้วย ฟรี ไม่มีค่าใช้จ่าย</p>
+            <div class="um-fgrid">
+              <div class="um-field"><label for="um-c-name">ชื่อเล่น / ชื่อ <i>*</i></label><input id="um-c-name" type="text" autocomplete="name" maxlength="100"></div>
+              <div class="um-field"><label for="um-c-email">อีเมล <i>*</i></label><input id="um-c-email" type="email" autocomplete="email" maxlength="150" placeholder="name@gmail.com"></div>
+              <div class="um-field"><label for="um-c-line">LINE ID</label><input id="um-c-line" type="text" maxlength="60" autocomplete="off"></div>
+              <div class="um-field"><label for="um-c-phone">เบอร์โทรศัพท์</label><input id="um-c-phone" type="tel" autocomplete="tel" maxlength="30"></div>
+            </div>
+            <div class="um-hp" aria-hidden="true"><label for="um-c-web">Website</label><input id="um-c-web" type="text" tabindex="-1" autocomplete="off"></div>
+            <label class="um-consent"><input type="checkbox" id="um-c-consent"><span>ฉันได้อ่านและยอมรับ <a href="https://chinesechiwchiw.com/privacy-policy/" target="_blank" rel="noopener">นโยบายความเป็นส่วนตัว</a> และยินยอมให้ Chinese Chiwchiw ใช้ข้อมูลนี้เพื่อส่งรายงานผลจับคู่ ติดต่อกลับเรื่องการเรียนต่อ และวิเคราะห์เพื่อพัฒนาบริการ <i>*</i></span></label>
+            <label class="um-consent"><input type="checkbox" id="um-c-marketing"><span>ฉันต้องการรับข่าวสาร โปรโมชัน และเคล็ดลับเรียนต่อจีนทางอีเมล (ยกเลิกได้ทุกเมื่อ)</span></label>
+            <p class="um-formmsg um-cmsg" role="alert"></p>
           </fieldset>
 
           <div class="um-nav">
@@ -769,6 +787,43 @@
   }
   if(!apiOK&&window.console)console.warn('University Matcher: set data-api on #uni-matcher to the Apps Script Web app URL.');
 
+  /* ---------- anonymous usage stats ----------
+     One row per visit in the "Matcher Stats" tab: how far into the quiz, the match, searches, filters,
+     universities opened and clicks. No names, emails or cookies; the visit id lives only in this page. */
+  var S=(function(){
+    var q=new URLSearchParams(location.search),r=document.referrer,host='';
+    try{host=r?new URL(r).hostname.replace(/^www\./,''):'';}catch(e){}
+    var src=q.get('utm_source')||(q.get('fbclid')?'facebook':'')||(q.get('_ly_src')||q.get('ldtag_cl')?'line':'')||
+      (host==='chinesechiwchiw.com'?'เว็บไซต์ (หน้าอื่น)':host)||'direct';
+    return {sid:Math.random().toString(36).slice(2,10)+Date.now().toString(36),dev:window.matchMedia('(max-width: 760px)').matches?'mobile':'desktop',
+      src:src.slice(0,60),step:0,done:0,email:0,uni:'',ans:'',q:[],fl:[],unis:[],cl:[],t0:Date.now(),dirty:1};
+  })();
+  function sAdd(k,v){
+    v=String(v||'').trim().slice(0,60);if(!v)return;
+    var L=S[k],last=L[L.length-1];
+    if(k==='q'&&last&&(v.indexOf(last)===0||last.indexOf(v)===0)){L[L.length-1]=v;S.dirty=1;return;}   // typing "fud" then "fudan" counts once
+    if(L.indexOf(v)===-1&&15>L.length){L.push(v);S.dirty=1;}
+  }
+  function sSend(){
+    if(!apiOK||!S.dirty)return;
+    S.dirty=0;
+    var body=JSON.stringify({t:'stats',sid:S.sid,dev:S.dev,src:S.src,step:S.step,done:S.done,email:S.email,uni:S.uni,ans:S.ans,
+      q:S.q,fl:S.fl,unis:S.unis,cl:S.cl,secs:Math.round((Date.now()-S.t0)/1000)});
+    try{if(navigator.sendBeacon&&navigator.sendBeacon(API,body))return;}catch(e){}
+    try{fetch(API,{method:'POST',body:body,keepalive:true}).catch(function(){});}catch(e){}
+  }
+  document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden')sSend();});
+  window.addEventListener('pagehide',sSend);
+  var CLICK_NAMES={'um-readmore':'อ่านข้อมูลเพิ่มเติม (ผล)','um-ochip':'มหาลัยอื่นในผล','um-csca':'CSCA','um-legal-link':'อ่านข้อจำกัด'};
+  document.addEventListener('click',function(e){
+    var el=e.target.closest&&e.target.closest('a,button');if(!el)return;
+    var h=el.getAttribute('href')||'';
+    if(/line\.me|lin\.ee/.test(h)){sAdd('cl','LINE');return;}
+    if(/^tel:/.test(h)){sAdd('cl','โทร');return;}
+    if(/facebook\.com|m\.me/.test(h)){sAdd('cl','Facebook');return;}
+    for(var c in CLICK_NAMES)if(el.classList.contains(c)){sAdd('cl',CLICK_NAMES[c]);return;}
+  },true);
+
   /* ---------- logo ---------- */
   if(safeImg(LOGO)&&$('.um-logo-link')){$('.um-logo-link').innerHTML='<img src="'+esc(LOGO)+'" alt="Chinese Chiwchiw">';}
   $$('.um-rate').forEach(function(el){el.textContent=RATE;});
@@ -851,18 +906,36 @@
       case 'level':var l=val('lang');return (l==='en'||!!val('hsk'))&&(l==='zh'||!!val('ielts'));
       case 'budget':return !!val('budget');
       case 'schol':return !!val('schol');
+      case 'contact':return !leadErr(contact());
       default:return true;
     }
   }
+  var EMAIL_RE=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/,PHONE_RE=/^[0-9+\-\s()]{6,30}$/;
+  function contact(){
+    return {name:$('#um-c-name').value.trim(),email:$('#um-c-email').value.trim(),line:$('#um-c-line').value.trim(),phone:$('#um-c-phone').value.trim(),
+      hp:$('#um-c-web').value,consent:$('#um-c-consent').checked,marketing:$('#um-c-marketing').checked};
+  }
+  // [message, field] for the first problem, or null when the contact details are complete.
+  function leadErr(d){
+    if(!d.name)return ['กรุณากรอกชื่อ','name'];
+    if(!EMAIL_RE.test(d.email))return ['กรุณากรอกอีเมลให้ถูกต้อง','email'];
+    if(d.phone&&!PHONE_RE.test(d.phone))return ['กรุณากรอกเบอร์โทรเป็นตัวเลข','phone'];
+    if(!d.consent)return ['กรุณากดยอมรับนโยบายความเป็นส่วนตัวก่อนดูผล','consent'];
+    return null;
+  }
   function refreshNav(){
-    nextBtn.disabled=!stepValid(cur);
+    // On the contact step the button stays clickable so a click can say what is missing.
+    nextBtn.disabled=steps[cur].getAttribute('data-step')!=='contact'&&!stepValid(cur);
     backBtn.disabled=cur===0;
     nextBtn.textContent=cur===steps.length-1?'🧭 ดูผลจับคู่':'ถัดไป →';
   }
   function show(i,initial){
     cur=i;
+    if(i>S.step){S.step=i;S.dirty=1;}
     steps.forEach(function(s,k){s.classList.toggle('um-on',k===i);});
     $('.um-sn').textContent=i+1;
+    var last=steps[i].getAttribute('data-step')==='contact';
+    $('.um-stepinfo').hidden=last;$('.um-stepfinal').hidden=!last;
     $('.um-prog-bar').style.width=((i+1)/steps.length*100)+'%';
     var name=steps[i].getAttribute('data-step');
     if(name==='level'){var l=val('lang');$('.um-lv-zh').hidden=l==='en';$('.um-lv-en').hidden=l==='zh';}
@@ -903,13 +976,18 @@
     }
   });
   $('#um-mtext').addEventListener('input',refreshNav);
+  form.addEventListener('input',function(e){if(e.target.closest('.um-contact'))$('.um-cmsg').textContent='';});
   form.addEventListener('submit',function(e){
     e.preventDefault();
-    if(!stepValid(cur))return;
+    if(!stepValid(cur)){
+      var er=steps[cur].getAttribute('data-step')==='contact'&&leadErr(contact());
+      if(er){$('.um-cmsg').textContent=er[0];$('#um-c-'+er[1]).focus();}
+      return;
+    }
     if(cur<steps.length-1)show(cur+1);else runMatch();
   });
   backBtn.addEventListener('click',function(){if(cur>0)show(cur-1);});
-  (function(){var d=new Date(),ny=d.getFullYear()+(d.getMonth()>=6?1:0);$$('.um-y1').forEach(function(e){e.textContent=ny;});$$('.um-y2').forEach(function(e){e.textContent=ny+1;});$$('.um-sc').forEach(function(e){e.textContent=steps.length;});})();
+  (function(){var d=new Date(),ny=d.getFullYear()+(d.getMonth()>=6?1:0);$$('.um-y1').forEach(function(e){e.textContent=ny;});$$('.um-y2').forEach(function(e){e.textContent=ny+1;});$$('.um-sc').forEach(function(e){e.textContent=steps.length-1;});})();
   show(0,true);
 
   // Quiz answers as Thai labels: one line for the sheet, and one field per column of the Website leads sheet.
@@ -963,11 +1041,13 @@
     var stopLoad=startLoading(a);
     app.scrollIntoView({behavior:REDUCED?'auto':'smooth',block:'start'});
     api('match',{a:a}).then(function(res){
+      sendLead(a,res);
       setTimeout(function(){stopLoad(true);setTimeout(function(){root.classList.remove('um-v-loading');root.classList.add('um-v-results');renderMatch(res,a);if(res&&res.item)setTimeout(confetti,250);},REDUCED?0:450);},REDUCED?0:Math.max(0,2600-(Date.now()-t0)));
     },function(){
+      sendLead(a,null);
       stopLoad(false);
       root.classList.remove('um-v-loading');root.classList.add('um-v-results');
-      resultsEl.innerHTML='<div class="um-err"><div class="um-ico">🐼</div><h3 style="color:#1A0A00">ระบบจับคู่ขัดข้องชั่วคราว</h3><p>ลองรีเฟรชหน้านี้อีกครั้งในอีกสักครู่</p></div>';
+      resultsEl.innerHTML='<div class="um-err"><div class="um-ico">🐼</div><h3 style="color:#1A0A00">ระบบจับคู่ขัดข้องชั่วคราว</h3><p>ลองรีเฟรชหน้านี้อีกครั้งในอีกสักครู่ ทีมได้รับข้อมูลของนักเรียนแล้ว และจะติดต่อกลับทางอีเมล</p></div>';
     });
   }
 
@@ -975,8 +1055,9 @@
     var p=res.item;
     if(!p){
       lastMatch={a:a,res:res};
-      resultsEl.innerHTML='<div class="um-err"><div class="um-ico">🔍</div><h3 style="color:#1A0A00">ยังไม่มีหลักสูตรในระดับนี้ในระบบ</h3><p>ทิ้งข้อมูลไว้ แล้วทีมจะช่วยหาตัวเลือกให้ทางอีเมล</p></div>'+leadHTML();
-      bindLead();return;
+      S.done=1;S.uni='(ไม่พบหลักสูตร)';S.ans=profileText(a);S.dirty=1;
+      resultsEl.innerHTML='<div class="um-err"><div class="um-ico">🔍</div><h3 style="color:#1A0A00">ยังไม่มีหลักสูตรในระดับนี้ในระบบ</h3><p>ทีมจะช่วยหาตัวเลือกที่ใกล้เคียงให้ทางอีเมล</p></div><div class="um-lead-slot"></div>';
+      paintLead();return;
     }
     var u=res.uni,g=res.gaps,exact=res.exact,R=[];
     R.push(g.major?['ok','ตรงสาขาที่สนใจ']:['warn','สาขาใกล้เคียง (ไม่ตรงกลุ่มที่เลือก)']);
@@ -996,6 +1077,7 @@
     var missing=R.filter(function(r){return r[0]==='warn';}).map(function(r){return r[1];});
 
     lastMatch={a:a,res:res};
+    S.done=1;S.uni=u.short;S.ans=profileText(a);S.dirty=1;
     resultsEl.innerHTML=
       '<div class="um-mhead"><span class="um-eyebrow">'+(exact?'✦ มหาวิทยาลัยที่เหมาะกับนักเรียนที่สุด ✦':'✦ ตัวเลือกที่ใกล้เคียงที่สุด ✦')+'</span>'+(res.ai?'<span class="um-aib">✨ วิเคราะห์โดย AI</span>':'')+'</div>'+
       '<article class="um-mcard"><div class="um-mban" '+banner(u.photo,u.cn,u.name)+'>'+bannerText(u.photo,u.cn,u.short)+logo(u,'um-logo-b')+credit(u)+'</div>'+
@@ -1010,8 +1092,8 @@
       '</div></article>'+planHTML(res.plan)+othersHTML(res.others)+
       '<p class="um-mnote">ผลนี้เป็นคำแนะนำเบื้องต้นจาก CHIWCHIW AI ไม่ใช่การรับประกันการตอบรับเข้าเรียนหรือทุน ข้อมูลอาจเปลี่ยนแปลง โปรดตรวจสอบก่อนยื่นสมัคร · <a href="#um-legal" class="um-legal-link">อ่านเพิ่มเติม</a></p>'+
       '<div class="um-readmore-wrap"><a class="um-btn um-btn-ghost um-readmore" href="#um-finder">📖 อ่านข้อมูลเพิ่มเติม ↓</a></div>'+
-      leadHTML();
-    bindLead();
+      '<div class="um-lead-slot"></div>';
+    paintLead();
     $$('.um-ochip',resultsEl).forEach(function(b){b.addEventListener('click',function(){openUni(b.getAttribute('data-uni'),b);});});
     $('.um-readmore',resultsEl).addEventListener('click',function(e){
       e.preventDefault();
@@ -1057,23 +1139,48 @@
       '<button type="submit" class="um-btn um-btn-pri">📩 ส่งรายงานให้ฉัน</button>'+
       '</form></div>';
   }
+  // The details from the last quiz step go out as soon as the match is back. The results page
+  // shows the status; the full form only appears if sending failed, already filled in, to retry.
+  var LEAD={st:'',email:''};
+  function leadPayload(d,a,res){
+    var p=res&&res.item;
+    d.answers=a?profileText(a):'';
+    d.matchId=p?p.id:'';d.matchUni=p?p.u:'';d.matchProg=p?p.prog:'';d.exact=!!(res&&res.exact);
+    d.rid=res&&res.rid||'';d.q=a?quizLabels(a):{};d.page=location.href.split('#')[0];
+    return d;
+  }
+  function sendLead(a,res){
+    var d=contact();
+    if(leadErr(d)||(LEAD.st==='ok'&&LEAD.email===d.email))return;
+    LEAD.st='sending';LEAD.email=d.email;
+    apiPost(leadPayload(d,a,res)).then(function(){LEAD.st='ok';S.email=1;S.dirty=1;paintLead();},function(){LEAD.st='fail';paintLead();});
+  }
+  function paintLead(){
+    var slot=$('.um-lead-slot',resultsEl);if(!slot)return;
+    if(LEAD.st==='ok'||LEAD.st==='sending'){
+      var ok=LEAD.st==='ok';
+      slot.innerHTML='<div class="um-leadbox um-leadst"><div class="um-ico">'+(ok?'✅':'📩')+'</div><h3>'+(ok?'เราได้รับข้อมูลแล้ว ขอบคุณค่ะ':'กำลังส่งข้อมูล…')+'</h3>'+
+        '<p>รายงานฉบับเต็มจะถูกส่งไปที่ <b>'+esc(LEAD.email)+'</b> ภายในไม่กี่นาที (ถ้าไม่เห็น ลองเช็กในโฟลเดอร์ Spam / Promotions นะคะ)</p></div>';
+      return;
+    }
+    slot.innerHTML=leadHTML();
+    var f=$('.um-lead',slot),c=contact();
+    f.name.value=c.name;f.email.value=c.email;f.line.value=c.line;f.phone.value=c.phone;f.consent.checked=c.consent;f.marketing.checked=c.marketing;
+    if(LEAD.st==='fail')$('.um-formmsg',f).textContent='ส่งข้อมูลไม่สำเร็จ กดส่งอีกครั้งได้เลย';
+    bindLead();
+  }
   function bindLead(){
     var f=$('.um-lead',resultsEl);if(!f)return;
     f.addEventListener('submit',function(e){
       e.preventDefault();
       var msg=$('.um-formmsg',f),btn=$('button[type=submit]',f);
       var d={name:f.name.value.trim(),email:f.email.value.trim(),line:f.line.value.trim(),phone:f.phone.value.trim(),hp:f.website.value,consent:f.consent.checked,marketing:f.marketing.checked};
-      if(!d.name){msg.textContent='กรุณากรอกชื่อ';f.name.focus();return;}
-      if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(d.email)){msg.textContent='กรุณากรอกอีเมลให้ถูกต้อง';f.email.focus();return;}
-      if(d.phone&&!/^[0-9+\-\s()]{6,30}$/.test(d.phone)){msg.textContent='กรุณากรอกเบอร์โทรเป็นตัวเลข';f.phone.focus();return;}
-      if(!d.consent){msg.textContent='กรุณากดยอมรับนโยบายความเป็นส่วนตัวก่อนส่งข้อมูล';return;}
+      var er=leadErr(d);
+      if(er){msg.textContent=er[0].replace('ก่อนดูผล','ก่อนส่งข้อมูล');if(f[er[1]])f[er[1]].focus();return;}
       msg.textContent='';btn.disabled=true;btn.textContent='กำลังส่ง…';
-      var m=lastMatch||{},p=m.res&&m.res.item;
-      d.answers=m.a?profileText(m.a):'';
-      d.matchId=p?p.id:'';d.matchUni=p?p.u:'';d.matchProg=p?p.prog:'';d.exact=!!(m.res&&m.res.exact);
-      d.rid=m.res&&m.res.rid||'';d.q=m.a?quizLabels(m.a):{};d.page=location.href.split('#')[0];
-      apiPost(d).then(function(){
-        f.parentNode.innerHTML='<div class="um-thanks"><div class="um-ico">✅</div><h3>ได้รับข้อมูลแล้ว ขอบคุณค่ะ</h3><p>เราจะส่งรายงานผลจับคู่ไปที่ <b>'+esc(d.email)+'</b> ภายในไม่กี่นาที (ถ้าไม่เห็น ลองเช็กในโฟลเดอร์ Spam / Promotions นะคะ)</p></div>';
+      var m=lastMatch||{};
+      apiPost(leadPayload(d,m.a,m.res)).then(function(){
+        LEAD.st='ok';LEAD.email=d.email;S.email=1;S.dirty=1;paintLead();
       },function(){
         btn.disabled=false;btn.textContent='📩 ส่งรายงานให้ฉัน';
         msg.textContent='ส่งไม่สำเร็จ ลองใหม่อีกครั้งในอีกสักครู่';
@@ -1145,7 +1252,13 @@
   }
 
   function runSearch(append){
-    if(!append)F.page=1;
+    if(!append){
+      F.page=1;
+      if(F.q)sAdd('q',F.q);
+      ['lv','city','sub','lang','tier'].forEach(function(k){F[k].forEach(function(v){sAdd('fl',k+': '+v);});});
+      ['open','nohsk','nocsca','sch'].forEach(function(k){if(F[k])sAdd('fl',k);});
+      if(F.max&&120000>F.max){S.fl=S.fl.filter(function(x){return x.indexOf('ค่าเรียน')!==0;});sAdd('fl','ค่าเรียน ≤ ¥'+F.max);}
+    }else sAdd('cl','โหลดเพิ่ม (ค้นหา)');
     var my=++seq,f=filterParams();f.view=F.view;f.page=F.page;
     if(!append){listEl.innerHTML=F.view==='uni'?'<div class="um-ugrid"><div class="um-skel"></div><div class="um-skel"></div></div>':'<div class="um-skel" style="height:160px"></div>';moreWrap.hidden=true;}
     api('search',{f:f}).then(function(res){
@@ -1226,6 +1339,7 @@
   var moList=modal.querySelector('.um-mo-list'),moMore=modal.querySelector('.um-mo-more'),moCount=modal.querySelector('.um-count'),moQ=modal.querySelector('.um-mo-q');
 
   function openUni(name,from){
+    sAdd('unis',String(name||'').replace(/\s*\([^)]*\)\s*$/,''));
     M.name=name;M.dq='';M.page=1;M.last=from||document.activeElement;
     moQ.value='';
     modal.querySelector('#um-mo-title').textContent='';

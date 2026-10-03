@@ -29,6 +29,12 @@
  *   Portfolio Required? | Entrance Exam Required? | Interview Required? | Study Plan Required?
  *   Without them, the script looks for these words in "Academic Prerequisites".
  *
+ * STATS: every visit to the matcher page adds one anonymous row to "Matcher Stats"
+ * (device, where they came from, how many quiz questions answered, the match, searches,
+ * filters, universities opened, clicks, time on page). "Matcher Dashboard" adds it all
+ * up and also lists AI matches per day from before the stats existed.
+ * To rebuild the dashboard: run setupMatcherDashboard() from the editor.
+ *
  * LEADS from the email form go to three places:
  *   1. the "Matcher Leads" tab here (created automatically),
  *   2. the "UG/PG" tab of the Website leads sheet (CONFIG.webLeadsId), source "Chiwchiw Match",
@@ -54,6 +60,8 @@
 var CONFIG = {
   dataSheet: 'Master Data',
   leadsSheet: 'Matcher Leads',
+  statsSheet: 'Matcher Stats',          // one anonymous row per visit (no names or emails)
+  dashSheet: 'Matcher Dashboard',       // totals and charts-ready tables, built from the two tabs above
   onlyCanApply: false,     // true = hide programmes where "Chinese Chiwchiw Can Apply?" isn't Yes
   thbPerRmb: 4.6,          // keep in sync with data-rate on the page
   pageSize: 12,
@@ -66,6 +74,7 @@ var CONFIG = {
   aiDailyLimit: 300,       // AI calls per day; after that the rule-based plan is used
   aiCacheSeconds: 21600,   // same answers within 6 hours reuse the saved AI result
   leadsPerHour: 60,        // spam guard: at most this many new leads are saved per hour
+  statsPerHour: 1500,      // and at most this many new visit rows
   webLeadsId: '1JsmK4E5_GQb3IZP4h7tMGi3dyiNCZHgnVOj3plTly4o',   // "Website leads" sheet ('' = off)
   webLeadsTab: 'UG/PG',
   alertTo: 'admin@chinesechiwchiw.com',   // new-lead alert ('' = off)
@@ -198,7 +207,7 @@ function doPost(e) {
   var out;
   try {
     var body = JSON.parse((e && e.postData && e.postData.contents) || '{}');
-    out = saveLead_(body);
+    out = body.t === 'stats' ? saveStats_(body) : saveLead_(body);
   } catch (err) {
     out = {error: 'invalid'};
   }
@@ -256,7 +265,7 @@ function buildData_(ss) {
   // counts as profile data, whatever the tab is called.
   ss.getSheets().forEach(function (t) {
     var n = t.getName();
-    if (n === CONFIG.dataSheet || n === CONFIG.leadsSheet || SKIP_TABS_[n] || t.getLastRow() < 2) return;
+    if (n === CONFIG.dataSheet || n === CONFIG.leadsSheet || n === CONFIG.statsSheet || n === CONFIG.dashSheet || SKIP_TABS_[n] || t.getLastRow() < 2) return;
     var head = t.getRange(1, 1, 1, Math.max(1, t.getLastColumn())).getDisplayValues()[0].join('|').toLowerCase();
     if (!/(^|\|)university( name)?( \((en|english)\))?(\||$)/.test(head) || !/description|logo|photo/.test(head)) return;
     // Cells that show a picture via =IMAGE("https://…") display as empty, so use the link inside the formula.
@@ -371,7 +380,7 @@ function headerRow_(values) {
 function readProgrammes_(ss, stats) {
   var sheets = ss.getSheets().filter(function (t) {
     var n = t.getName();
-    return !SKIP_TABS_[n] && n !== CONFIG.leadsSheet && t.getLastRow() > 1;
+    return !SKIP_TABS_[n] && n !== CONFIG.leadsSheet && n !== CONFIG.statsSheet && n !== CONFIG.dashSheet && t.getLastRow() > 1;
   });
   sheets.sort(function (a, b) { return (b.getName() === CONFIG.dataSheet) - (a.getName() === CONFIG.dataSheet); });
   var rows = [], seen = {}, tabs = [];
@@ -519,6 +528,119 @@ function webLead_(L, rep) {
   };
   var head = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0];
   sh.appendRow(head.map(function (h) { var v = val[String(h).trim()]; return v == null ? '' : safe_(String(v)); }));
+}
+
+/* ───────────── visit stats ───────────── */
+
+var STATS_HEAD_ = ['เวลา', 'Visit', 'อุปกรณ์', 'มาจาก', 'ตอบ quiz (ข้อ)', 'ดูผลแล้ว', 'ส่งอีเมลแล้ว', 'มหาลัยที่ได้',
+  'คำตอบ quiz', 'คำค้นหา', 'ตัวกรองที่ใช้', 'มหาลัยที่เปิดดู', 'คลิก', 'เวลาบนหน้า (วินาที)'];
+
+// The page sends its row when the visitor leaves or switches tab, and again if they come back
+// and do more; the same visit id updates its own row instead of adding a new one.
+function saveStats_(b) {
+  var sid = clean_(b.sid, 30);
+  if (!/^[a-z0-9]{8,30}$/.test(sid)) return {ok: true};
+  var list = function (v) {
+    return (Array.isArray(v) ? v : []).slice(0, 15).map(function (x) { return clean_(x, 60).replace(/\|/g, '/'); }).filter(String).join(' | ');
+  };
+  var step = Math.max(0, Math.min(8, Math.floor(+b.step || 0)));
+  var row = [sid, b.dev === 'mobile' ? 'มือถือ' : 'คอม', clean_(b.src, 60) || 'direct', step, b.done ? 1 : 0, b.email ? 1 : 0,
+    clean_(b.uni, 120), clean_(b.ans, 400), list(b.q), list(b.fl), list(b.unis), list(b.cl), Math.max(0, Math.min(86400, Math.round(+b.secs || 0)))]
+    .map(function (v) { return typeof v === 'string' ? safe_(v) : v; });
+  var cache = CacheService.getScriptCache(), rk = 'srow:' + sid, at = +(cache.get(rk) || 0);
+  if (!at) {
+    var hourKey = 'stats:' + Utilities.formatDate(new Date(), 'Asia/Bangkok', 'yyyyMMddHH'), n = +(cache.get(hourKey) || 0);
+    if (n >= CONFIG.statsPerHour) return {ok: true};
+    cache.put(hourKey, String(n + 1), 3700);
+  }
+  var lock = LockService.getScriptLock();
+  try { lock.waitLock(5000); } catch (err) { return {ok: true}; }
+  try {
+    var sh = statsSheet_();
+    if (at && at <= sh.getLastRow() && sh.getRange(at, 2).getValue() === sid) {
+      sh.getRange(at, 2, 1, row.length).setValues([row]);
+    } else {
+      sh.appendRow([new Date()].concat(row));
+      cache.put(rk, String(sh.getLastRow()), 21600);
+    }
+  } finally {
+    lock.releaseLock();
+  }
+  return {ok: true};
+}
+
+function statsSheet_() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet(), sh = ss.getSheetByName(CONFIG.statsSheet);
+  if (sh) return sh;
+  sh = ss.insertSheet(CONFIG.statsSheet);
+  sh.appendRow(STATS_HEAD_);
+  sh.setFrozenRows(1);
+  sh.getRange(1, 1, 1, STATS_HEAD_.length).setFontWeight('bold').setBackground('#FFF1E6');
+  sh.getRange('A:A').setNumberFormat('yyyy-mm-dd hh:mm');
+  try { setupMatcherDashboard(); } catch (err) { console.error('Dashboard: ' + err); }
+  return sh;
+}
+
+// Builds (or rebuilds) the "Matcher Dashboard" tab. Everything on it is a formula over
+// "Matcher Stats" and "Matcher Leads", so it updates by itself.
+function setupMatcherDashboard() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  if (!ss.getSheetByName(CONFIG.statsSheet)) { statsSheet_(); return; }   // statsSheet_ builds the dashboard
+  var old = ss.getSheetByName(CONFIG.dashSheet);
+  if (old) ss.deleteSheet(old);
+  var d = ss.insertSheet(CONFIG.dashSheet, 0), S = "'" + CONFIG.statsSheet + "'!", L = "'" + CONFIG.leadsSheet + "'!";
+  var top = function (col, label, limit) {
+    return '=IFERROR(QUERY(FLATTEN(ARRAYFORMULA(IFERROR(TRIM(SPLIT(' + S + col + '2:' + col + ',"|"))))),"select Col1, count(Col1) where Col1 <> \'\' group by Col1 order by count(Col1) desc limit ' +
+      limit + ' label Col1 \'' + label + '\', count(Col1) \'ครั้ง\'",0),"ยังไม่มีข้อมูล")';
+  };
+  var cells = [
+    ['A1', '📊 Chiwchiw Match — สถิติ (อัปเดตอัตโนมัติ)'],
+    ['A3', 'ผู้เข้าชมหน้า Matcher'], ['B3', '=COUNTA(' + S + 'B2:B)'],
+    ['A4', 'เริ่มทำ quiz (ตอบ ≥ 1 ข้อ)'], ['B4', '=COUNTIF(' + S + 'E2:E,">=1")'],
+    ['A5', 'ตอบครบ 8 ข้อ (ถึงหน้ากรอกอีเมล)'], ['B5', '=COUNTIF(' + S + 'E2:E,">=8")'],
+    ['A6', 'กรอกอีเมล + ดูผลจับคู่'], ['B6', '=SUM(' + S + 'F2:F)'],
+    ['A7', 'Lead ที่บันทึกสำเร็จ (ตั้งแต่เริ่มเก็บสถิติ)'], ['B7', '=SUM(' + S + 'G2:G)'],
+    ['A8', '% ผู้เข้าชม → lead'], ['B8', '=IFERROR(B7/B3,0)'],
+    ['A9', '% ตอบครบ 8 ข้อ → กรอกอีเมล'], ['B9', '=IFERROR(B6/B5,0)'],
+    ['A10', 'ใช้ช่องค้นหา / ตัวกรอง'], ['B10', '=SUMPRODUCT((LEN(' + S + 'J2:J)+LEN(' + S + 'K2:K)>0)*1)'],
+    ['A11', 'คลิก LINE'], ['B11', '=COUNTIF(' + S + 'M2:M,"*LINE*")'],
+    ['A12', 'เวลาเฉลี่ยบนหน้า (นาที)'], ['B12', '=IFERROR(ROUND(AVERAGE(' + S + 'N2:N)/60,1),0)'],
+    ['A13', 'Lead ทั้งหมดใน Matcher Leads'], ['B13', '=IFERROR(COUNTA(' + L + 'A2:A),0)'],
+    ['A14', 'AI จับคู่ทั้งหมด (นับตั้งแต่เปิดใช้)'], ['B14', '=SUM(V3:V)'],
+    ['D2', 'ตอบ quiz ถึงข้อ'], ['E2', 'คน'],
+    ['G2', 'รายวัน'],
+    ['G3', '=IFERROR(QUERY(' + S + 'A2:G,"select toDate(A), count(B), sum(F), sum(G) where A is not null group by toDate(A) order by toDate(A) desc label toDate(A) \'วันที่\', count(B) \'ผู้เข้าชม\', sum(F) \'ดูผล\', sum(G) \'Lead\'",0),"ยังไม่มีข้อมูล")'],
+    ['L2', 'AI จับคู่ให้บ่อยที่สุด'],
+    ['L3', '=IFERROR(QUERY(' + S + 'H2:H,"select H, count(H) where H <> \'\' group by H order by count(H) desc limit 10 label H \'มหาลัย\', count(H) \'ครั้ง\'",0),"ยังไม่มีข้อมูล")'],
+    ['L16', 'มหาลัยที่คนเปิดดูมากสุด'], ['L17', top('L', 'มหาลัย', 15)],
+    ['O2', 'คำค้นหายอดนิยม'], ['O3', top('J', 'คำค้นหา', 15)],
+    ['O20', 'ตัวกรองที่ใช้บ่อย'], ['O21', top('K', 'ตัวกรอง', 15)],
+    ['R2', 'คลิก'], ['R3', top('M', 'ปุ่ม', 12)],
+    ['A17', 'มาจากไหน'],
+    ['A18', '=IFERROR(QUERY(' + S + 'D2:D,"select D, count(D) where D <> \'\' group by D order by count(D) desc limit 15 label D \'ที่มา\', count(D) \'คน\'",0),"ยังไม่มีข้อมูล")'],
+    ['D14', 'อุปกรณ์'],
+    ['D15', '=IFERROR(QUERY(' + S + 'C2:C,"select C, count(C) where C <> \'\' group by C label C \'อุปกรณ์\', count(C) \'คน\'",0),"ยังไม่มีข้อมูล")'],
+    ['U1', 'ก่อนมีสถิติ: AI จับคู่ต่อวัน'], ['U2', 'วันที่'], ['V2', 'ครั้ง'],
+    ['X1', 'Lead ต่อวัน (Matcher Leads)'],
+    ['X2', '=IFERROR(QUERY(' + L + 'A2:A,"select toDate(A), count(A) where A is not null group by toDate(A) order by toDate(A) desc label toDate(A) \'วันที่\', count(A) \'Lead\'",0),"ยังไม่มีข้อมูล")']
+  ];
+  for (var k = 1; k <= 8; k++) cells.push(['D' + (k + 2), k], ['E' + (k + 2), '=COUNTIF(' + S + 'E2:E,">=' + k + '")']);
+  cells.forEach(function (c) {
+    var r = d.getRange(c[0]);
+    if (typeof c[1] === 'string' && c[1].charAt(0) === '=') r.setFormula(c[1]); else r.setValue(c[1]);
+  });
+  // AI matches per day, counted by takeAiQuota_ since launch (repeat answers served from the
+  // 6-hour cache aren't counted, so real quiz runs were a little higher).
+  var props = PropertiesService.getScriptProperties().getProperties(), hist = [];
+  Object.keys(props).forEach(function (key) { var m = key.match(/^aiCount:(\d{4}-\d{2}-\d{2})$/); if (m) hist.push([m[1], +props[key] || 0]); });
+  hist.sort(function (x, y) { return x[0] < y[0] ? 1 : -1; });
+  if (hist.length) d.getRange(3, 21, hist.length, 2).setValues(hist);
+  d.getRange('A1').setFontSize(16).setFontWeight('bold').setFontColor('#FF6B00');
+  ['A3:A14', 'D2:E2', 'G2', 'L2', 'L16', 'O2', 'O20', 'R2', 'A17', 'D14', 'U1:V2', 'X1'].forEach(function (a) { d.getRange(a).setFontWeight('bold'); });
+  d.getRange('B3:B14').setFontWeight('bold').setFontColor('#1A0A00').setBackground('#FFF1E6');
+  d.getRange('B8:B9').setNumberFormat('0.0%');
+  d.setColumnWidth(1, 270);
+  d.setFrozenRows(1);
 }
 
 /* ───────────── emails ───────────── */
