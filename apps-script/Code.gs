@@ -639,6 +639,7 @@ function setupMatcherDashboard() {
   ['A3:A14', 'D2:E2', 'G2', 'L2', 'L16', 'O2', 'O20', 'R2', 'A17', 'D14', 'U1:V2', 'X1'].forEach(function (a) { d.getRange(a).setFontWeight('bold'); });
   d.getRange('B3:B14').setFontWeight('bold').setFontColor('#1A0A00').setBackground('#FFF1E6');
   d.getRange('B8:B9').setNumberFormat('0.0%');
+  ['G4:G', 'U3:U', 'X3:X'].forEach(function (a) { d.getRange(a).setNumberFormat('dd/mm/yyyy'); });   // QUERY's toDate() shows as a plain number otherwise
   d.setColumnWidth(1, 270);
   d.setFrozenRows(1);
 }
