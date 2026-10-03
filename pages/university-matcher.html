@@ -548,7 +548,7 @@
 
           <fieldset class="um-step" data-step="city">
             <legend class="um-q">อยากไปเมืองไหน?</legend>
-            <p class="um-qhint">เลือกได้หลายเมือง ตัวเลขคือจำนวนหลักสูตรในระดับที่เลือก</p>
+            <p class="um-qhint">เลือกได้หลายเมือง ตัวเลขคือจำนวนหลักสูตรในระดับที่เลือก (ดูเมืองอื่น ๆ ได้ในรายชื่อมหาวิทยาลัยด้านล่าง)</p>
             <div class="um-chips um-cities">
               <button type="button" class="um-chip" data-n="city" data-v="any" data-multi="1" aria-pressed="true"><span>🌏 ที่ไหนก็ได้</span></button>
             </div>
@@ -1004,11 +1004,12 @@
     }
   }
   // Shown straight away if the live numbers haven't arrived yet; replaced by the live list (with counts) when they do.
-  var CITY_FALLBACK=['Beijing','Shanghai','Guangzhou','Wuhan','Shenzhen','Zhuhai','Dalian','Nanjing',"Xi'an",'Changsha','Hangzhou','Chengdu','Qingdao','Harbin','Nanning','Chongqing','Hefei','Suzhou','Xiamen','Wuxi','Tianjin','Kunming','Ningbo','Fuzhou','Changchun','Jinan','Zhengzhou','Shenyang','Guiyang','Lanzhou'];
+  // The quiz offers only the 7 cities students ask about most (plus "anywhere"); the finder below still has every city.
+  var QUIZ_CITIES=['Shanghai','Beijing','Guangzhou','Shenzhen','Hangzhou','Chengdu','Wuhan'];
   function renderQuizCities(){
     var box=$('.um-cities');
     var lv={ug:'UG',ma:'PG',phd:'PHD'}[val('deg')]||'UG',picked=vals('city');
-    var list=META?Object.keys(META.cities).filter(function(c){return META.cities[c][lv]>0;}).sort(function(a,b){return META.cities[b][lv]-META.cities[a][lv];}):CITY_FALLBACK;
+    var list=QUIZ_CITIES.filter(function(c){return !META||!META.cities[c]||META.cities[c][lv]>0;});
     picked.forEach(function(c){if(c!=='any'&&list.indexOf(c)<0)list=list.concat(c);});   // never drop a city already ticked
     var html='<button type="button" class="um-chip" data-n="city" data-v="any" data-multi="1" aria-pressed="'+(!picked.length||picked.indexOf('any')>-1)+'"><span>🌏 ที่ไหนก็ได้</span></button>';
     list.forEach(function(c){
