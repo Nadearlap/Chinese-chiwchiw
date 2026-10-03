@@ -1160,6 +1160,7 @@ function bestMatch_(rows, profiles, a, deps) {
     } catch (err) {}
   }
   if (!plan) plan = fallbackPlan_(chosen.r, chosen.g, a, deps.today || '');
+  else plan = noUnconfirmedDates_(plan, chosen.r, chosen.g, a, deps.today || '');
 
   var all = rows.filter(function (x) { return x.u === chosen.r.u; });
   var us = uniSummary_(chosen.r.u, all, profiles);
@@ -1176,6 +1177,25 @@ function bestMatch_(rows, profiles, a, deps) {
   return {item: pub_(chosen.r), uni: {name: us.name, short: us.short, cn: us.cn, city: us.city, photo: us.photo, logo: us.logo, credit: us.credit, src: us.src, desc: us.desc, tiers: us.tiers},
     gaps: chosen.g, exact: chosen.g.exact, ai: usedAI, others: others,
     plan: {headline: plan.headline, why_fit: plan.why_fit, watch_out: plan.watch_out, prepare: plan.prepare, timeline: plan.timeline}};
+}
+
+// Month names (Thai short/long, English) or a year. Used to keep guessed dates out of plans.
+var DATE_WORD_ = /(ม\.ค\.|ก\.พ\.|มี\.ค\.|เม\.ย\.|พ\.ค\.|มิ\.ย\.|ก\.ค\.|ส\.ค\.|ก\.ย\.|ต\.ค\.|พ\.ย\.|ธ\.ค\.|มกรา|กุมภา|มีนาคม|เมษายน|พฤษภา|มิถุนา|กรกฎา|สิงหาคม|กันยายน|ตุลาคม|พฤศจิกา|ธันวา|\b(?:january|february|march|april|june|july|august|september|october|november|december|jan|feb|mar|apr|jun|jul|aug|sep|sept|oct|nov|dec)\b|\b(?:20|25)\d{2}\b)/i;
+
+// When the database has no confirmed date for the coming round (old round or no deadline), the plan
+// may not name months, dates or years. An AI timeline that does is replaced by the rule-based one,
+// and any other sentence with a date in it is dropped.
+function noUnconfirmedDates_(plan, r, g, a, today) {
+  if (!r.past && r.dl) return plan;
+  var bad = function (t) { return DATE_WORD_.test(String(t || '')); };
+  var keep = function (list) { return (list || []).filter(function (x) { return !bad(x); }); };
+  var fb = null, getFb = function () { return fb || (fb = fallbackPlan_(r, g, a, today)); };
+  var out = {pick_id: plan.pick_id, headline: plan.headline, why_fit: keep(plan.why_fit), watch_out: keep(plan.watch_out), prepare: keep(plan.prepare), timeline: plan.timeline || []};
+  if (bad(out.headline)) out.headline = getFb().headline;
+  if (out.timeline.some(function (x) { return bad(x.when) || bad(x.task); })) out.timeline = getFb().timeline;
+  if (!out.why_fit.length) out.why_fit = getFb().why_fit;
+  if (!out.prepare.length) out.prepare = getFb().prepare;
+  return out;
 }
 
 var MONTH_TH = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
@@ -1219,7 +1239,8 @@ function fallbackPlan_(r, g, a, today) {
   if (when === 'explore') prep = ['เทียบมหาวิทยาลัยนี้กับอีก 2–3 แห่งในรายชื่อด้านล่าง ดูค่าใช้จ่าย เมือง และเกณฑ์ภาษา',
     'ลองเรียนภาษาจีนหรือไปค่ายระยะสั้นก่อน เพื่อดูว่าชอบการใช้ชีวิตที่จีนไหม'].concat(prep).slice(0, 5);
   var dm = deadlineMonth_(r.dl), tm = String(today || '').match(/^(\d{4})-(\d{2})/);
-  var dmLabel = dm > -1 ? MONTH_TH[dm] : '';
+  var confirmed = !r.past && dm > -1 && !!deadlineYear_(r.dl);   // a date for the coming round, not last year's
+  var dmLabel = confirmed ? MONTH_TH[dm] : '';
   if (when !== 'next') {
     // Not applying this round: phases relative to the application year, no fixed dates.
     if (when === 'explore') {
@@ -1235,15 +1256,15 @@ function fallbackPlan_(r, g, a, today) {
     if (req.indexOf('portfolio') > -1 || needPlan) tl.push({when: '2–3 เดือนก่อนปิดรับ', task: [req.indexOf('portfolio') > -1 ? 'ทำ Portfolio' : '', needPlan ? 'เขียน Study Plan' : ''].filter(String).join(' และ ')});
     tl.push({when: '1–2 เดือนก่อนปิดรับ', task: 'รวบรวมเอกสารและยื่นใบสมัคร' + (r.sch ? ' พร้อมใบสมัครทุน' : '')});
     if (req.indexOf('exam') > -1 || req.indexOf('audition') > -1 || req.indexOf('interview') > -1) tl.push({when: 'หลังยื่นสมัคร', task: 'สอบเข้า / Audition / สัมภาษณ์ ตามที่คณะกำหนด'});
-    tl.push({when: dmLabel ? dmLabel + ' ของปีที่ยื่น' : 'วันปิดรับสมัคร', task: 'ปิดรับสมัคร' + (dmLabel ? ' (อ้างอิงเดือนของรอบที่ผ่านมา ทีมจะยืนยันให้)' : '')});
+    tl.push({when: dmLabel ? dmLabel + ' ของปีที่ยื่น' : 'เมื่อมหาวิทยาลัยประกาศรอบใหม่', task: 'ปิดรับสมัคร' + (dmLabel ? '' : ' (ทีมจะยืนยันวันของรอบใหม่ให้)')});
     tl.push({when: 'หลังได้รับผล', task: 'ขอวีซ่านักเรียน เตรียมที่พัก และเข้าร่วม Pre-Departure กับทีม'});
-  } else if (dm > -1 && tm) {
+  } else if (confirmed && tm) {
     // Months counted as year*12+month. A round that hasn't opened yet reuses last
     // round's deadline month and is shown without a year.
     var now = +tm[1] * 12 + (+tm[2] - 1), dy = deadlineYear_(r.dl), dl;
     if (!r.past && dy) dl = dy * 12 + dm;
     else { dl = Math.floor(now / 12) * 12 + dm; if (dl <= now) dl += 12; }
-    var showYear = !r.past;
+    var showYear = false;   // months only; the team confirms exact dates
     var lab = function (x) { x = Math.max(now, x); return MONTH_TH[x % 12] + (showYear ? ' ' + Math.floor(x / 12) : ''); };
     var lgap = (r.lang !== 'en' && g.hskGap) || (r.lang !== 'zh' && g.ieltsGap);
     tl.push({when: lab(now), task: 'คุยกับทีมเพื่อยืนยันหลักสูตรและวางแผนการสอบ'});
@@ -1262,6 +1283,7 @@ function fallbackPlan_(r, g, a, today) {
     if (r.lang !== 'en' && r.hsk) tl.push({when: 'ภายใน 3–6 เดือน', task: 'สอบหรือเตรียมใบผล HSK ' + r.hsk + (r.hskk ? ' และ HSKK' : '')});
     if (r.lang !== 'zh' && r.ielts) tl.push({when: 'ภายใน 3–6 เดือน', task: 'สอบหรือเตรียมใบผล IELTS ' + r.ielts + ' ขึ้นไป'});
     if (r.csca) tl.push({when: 'ก่อนยื่นสมัคร', task: 'สอบ CSCA และเก็บผลสอบไว้ยื่น'});
+    tl.push({when: 'เมื่อมหาวิทยาลัยประกาศรอบใหม่', task: 'ทีมจะยืนยันวันเปิด–ปิดรับสมัครของรอบใหม่ให้'});
     tl.push({when: 'ก่อนปิดรับ', task: 'รวบรวมเอกสารและยื่นใบสมัคร' + (r.sch ? ' พร้อมใบสมัครทุน' : '')});
     tl.push({when: 'หลังได้รับผล', task: 'ขอวีซ่านักเรียน เตรียมที่พัก และเข้าร่วม Pre-Departure กับทีม'});
   }
@@ -1282,11 +1304,11 @@ var AI_SYSTEM = [
   '',
   'How to choose: first the student\'s chosen fields of study, then whether they meet the language requirement or can realistically close the gap before the deadline, then budget, preferred cities and how much they want a scholarship. "gaps" is the rule-based check for each programme; use it, but you may pick a programme with a small gap if it is clearly the better fit, and say so in watch_out.',
   '',
-  'Facts: use only the data given for each programme. Never invent fees, requirements, rankings, deadlines, scholarships or anything about campus life. If something is missing, say the team will confirm it (ทีมจะยืนยันให้). Never promise admission, a visa or a scholarship; "scholarship available" means the student can apply, not that they will receive it. If cycle_past is true, say the dates are from the previous round and the new round is usually announced around the same time.',
+  'Facts: use only the data given for each programme. Never invent fees, requirements, rankings, deadlines, scholarships or anything about campus life. If something is missing, say the team will confirm it (ทีมจะยืนยันให้). Never promise admission, a visa or a scholarship; "scholarship available" means the student can apply, not that they will receive it. Dates: a programme has a confirmed date only when cycle_past is false and a deadline is given. For any other programme NEVER write a month name, a date or a year anywhere in the plan (headline, why_fit, watch_out, prepare or timeline); say that the team will confirm the new round\'s dates (ทีมจะยืนยันวันของรอบใหม่ให้).',
   '',
-  'Timeline: 4 to 6 short steps from today (given) until departure, worked back from the deadline. Use real Thai month abbreviations and NEVER write a year (for example มี.ค., not มี.ค. 2027); the team confirms the exact dates. If cycle_past is true, base the months on the previous round\'s deadline and say in one step that the team will confirm the new round\'s dates. Cover the language test, CSCA if required, a portfolio or entrance exam or audition if listed in extra_requirements, writing the study plan (always for master and PhD, and whenever studyplan is listed; for bachelor scholarships mention that some scholarships ask for one), documents, the application, the scholarship application if available, interview preparation if interview is listed, and visa and pre-departure. Keep the steps in order. Living costs inside total cost are estimates; say so if you mention the total.',
+  'Timeline: 4 to 6 short steps from today (given) until departure. Month names are allowed ONLY when the chosen programme has cycle_past false and a deadline: then work back from that deadline with Thai month abbreviations and NEVER a year (for example มี.ค., not มี.ค. 2027). Otherwise use relative phases only (for example ตอนนี้, ประมาณ 3–4 เดือนก่อนปิดรับ, 1–2 เดือนก่อนปิดรับ, เมื่อมหาวิทยาลัยประกาศรอบใหม่, หลังได้รับผล) and include one step saying the team will confirm the new round\'s dates. Cover the language test, CSCA if required, a portfolio or entrance exam or audition if listed in extra_requirements, writing the study plan (always for master and PhD, and whenever studyplan is listed; for bachelor scholarships mention that some scholarships ask for one), documents, the application, the scholarship application if available, interview preparation if interview is listed, and visa and pre-departure. Keep the steps in order. Living costs inside total cost are estimates; say so if you mention the total.',
   '',
-  'Start plan: if the student is applying in the next round, use the dated timeline above. If they are planning ahead for a later year, use phases relative to the application year (for example ประมาณ 1 ปีก่อนยื่นสมัคร, 2–3 เดือนก่อนปิดรับ) with no years, and treat language gaps as time to prepare. If they are just exploring, do not push them to apply: make the plan about comparing 2–3 options from the list on the page, trying Chinese lessons or a short camp, and choosing a start year with the team; use relative phases with no dates.',
+  'Start plan: if the student is applying in the next round, follow the timeline rule above. If they are planning ahead for a later year, use phases relative to the application year (for example ประมาณ 1 ปีก่อนยื่นสมัคร, 2–3 เดือนก่อนปิดรับ) with no years, and treat language gaps as time to prepare. If they are just exploring, do not push them to apply: make the plan about comparing 2–3 options from the list on the page, trying Chinese lessons or a short camp, and choosing a start year with the team; use relative phases with no dates.',
   '',
   'Writing: Thai, warm and encouraging, in the voice of the Chinese Chiwchiw team. Address the reader as นักเรียน and never as น้อง. Keep it brief so it reads well on a phone: one short sentence per bullet, no emoji, no markdown. watch_out lists honest gaps (language, budget, city) and is an empty array when there are none.'
 ].join('\n');
