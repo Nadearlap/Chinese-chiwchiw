@@ -116,7 +116,8 @@
 #uni-matcher .um-loading h3{font-size:1.4rem;font-weight:800;color:#1A0A00!important;margin-top:2px}
 .um-pbar{height:8px;max-width:420px;margin:16px auto 0;border-radius:99px;background:#F8EFE6;overflow:hidden}
 .um-pbar span{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#FFB300,#FF6B00);transition:width .45s ease}
-.um-pct{margin:6px 0 0;font-size:.8rem;color:#9A7A60}.um-pct b{font-family:'Kanit',sans-serif;color:#FF6B00}
+.um-pct{margin:6px 0 0;font-size:.8rem;color:#9A7A60}
+.um-wait{margin:8px 0 0;font-size:.82rem;color:#9A7A60;line-height:1.5}.um-pct b{font-family:'Kanit',sans-serif;color:#FF6B00}
 .um-think{list-style:none;padding:0;margin:18px auto 0;max-width:460px;text-align:left;color:#7A6050;font-size:.95rem}
 .um-think li{display:flex;align-items:center;gap:10px;padding:7px 12px;border-radius:12px;opacity:.35;transition:opacity .3s,background .3s}
 .um-think li::before{content:"";flex:none;width:18px;height:18px;border-radius:50%;border:2px solid #E8DCD0;box-sizing:border-box}
@@ -585,6 +586,7 @@
         <h3>กำลังหา Best Match ให้นักเรียน…</h3>
         <div class="um-pbar" aria-hidden="true"><span></span></div>
         <p class="um-pct"><b>0</b>%</p>
+        <p class="um-wait">⏳ ใช้เวลาประมาณ 15–30 วินาที อย่าเพิ่งปิดหรือสลับหน้านี้นะคะ</p>
         <ul class="um-think"></ul>
         <div class="um-fact"><span>💡 รู้หรือไม่?</span><p></p></div>
       </div>
@@ -1040,7 +1042,8 @@
     root.classList.add('um-v-loading');
     var stopLoad=startLoading(a);
     app.scrollIntoView({behavior:REDUCED?'auto':'smooth',block:'start'});
-    api('match',{a:a}).then(function(res){
+    // One automatic retry: phones can drop a long request (e.g. Safari pauses it when the student switches apps).
+    api('match',{a:a}).catch(function(){return api('match',{a:a});}).then(function(res){
       sendLead(a,res);
       setTimeout(function(){stopLoad(true);setTimeout(function(){root.classList.remove('um-v-loading');root.classList.add('um-v-results');renderMatch(res,a);if(res&&res.item)setTimeout(confetti,250);},REDUCED?0:450);},REDUCED?0:Math.max(0,2600-(Date.now()-t0)));
     },function(){
@@ -1073,7 +1076,7 @@
     var costF=cost?'<b>≈ '+baht(cost*RATE)+'/ปี</b><small>'+yuan(cost)+(p.tot?' รวมค่าเรียน ที่พัก และค่าครองชีพ (ค่าครองชีพเป็นค่าประมาณ)':' (เฉพาะค่าเรียน)')+'</small>':'<b>สอบถามทีม</b><small>ทีมจะแจ้งในรายงาน</small>';
     var hskF=g.useZh||p.lang==='zh'?(p.hsk?'<b>'+esc(p.hskTxt?p.hskTxt.replace(/\s*\+\s*HSKK.*$/i,''):'HSK '+p.hsk)+'</b><small>'+(p.hskk?'+ HSKK '+esc(p.hskkLv||''):'&nbsp;')+'</small>':'<b>ไม่ระบุ</b><small>&nbsp;</small>'):
       '<b>'+(p.ielts?'IELTS '+p.ielts:'ไม่ระบุ')+'</b><small>'+(p.toefl?'หรือ TOEFL '+p.toefl:'หลักสูตรสอนภาษาอังกฤษ')+'</small>';
-    var dlF=p.dl?'<b>'+esc(fmtDl(p))+'</b><small>'+(p.past?'อ้างอิงรอบที่ผ่านมา · ทีมจะยืนยันวันของรอบใหม่':'&nbsp;')+'</small>':'<b>รอประกาศ</b><small>&nbsp;</small>';
+    var dlF=p.dl&&!p.past?'<b>'+esc(fmtDl(p))+'</b><small>&nbsp;</small>':'<b>ทีมจะเช็กให้</b><small>วันปิดรับสมัครล่าสุด</small>';
     var missing=R.filter(function(r){return r[0]==='warn';}).map(function(r){return r[1];});
 
     lastMatch={a:a,res:res};

@@ -70,7 +70,7 @@ var CONFIG = {
   answerSeconds: 1800,     // a ready-made answer (list page, search) is reused for 30 minutes
   aiModel: 'claude-sonnet-5-5',
   aiEffort: 'low',         // low keeps answers fast; medium/high think longer and cost more
-  aiShortlist: 15,
+  aiShortlist: 10,         // fewer candidates = a faster AI answer
   aiDailyLimit: 300,       // AI calls per day; after that the rule-based plan is used
   aiCacheSeconds: 21600,   // same answers within 6 hours reuse the saved AI result
   leadsPerHour: 60,        // spam guard: at most this many new leads are saved per hour
@@ -1267,11 +1267,11 @@ var AI_SYSTEM = [
   '',
   'Facts: use only the data given for each programme. Never invent fees, requirements, rankings, deadlines, scholarships or anything about campus life. If something is missing, say the team will confirm it (ทีมจะยืนยันให้). Never promise admission, a visa or a scholarship; "scholarship available" means the student can apply, not that they will receive it. If cycle_past is true, say the dates are from the previous round and the new round is usually announced around the same time.',
   '',
-  'Timeline: 5 to 9 steps from today (given) until departure, worked back from the deadline. Use real Thai month abbreviations for every step. If cycle_past is false, add the Christian-era year (for example มี.ค. 2027). If cycle_past is true, the new round has not opened yet: base the months on the previous round\'s deadline, write months WITHOUT a year (for example มี.ค.), and say in one step that the team will confirm the new round\'s dates. Cover the language test, CSCA if required, a portfolio or entrance exam or audition if listed in extra_requirements, writing the study plan (always for master and PhD, and whenever studyplan is listed; for bachelor scholarships mention that some scholarships ask for one), documents, the application, the scholarship application if available, interview preparation if interview is listed, and visa and pre-departure. Keep the steps in order. Living costs inside total cost are estimates; say so if you mention the total.',
+  'Timeline: 4 to 6 short steps from today (given) until departure, worked back from the deadline. Use real Thai month abbreviations and NEVER write a year (for example มี.ค., not มี.ค. 2027); the team confirms the exact dates. If cycle_past is true, base the months on the previous round\'s deadline and say in one step that the team will confirm the new round\'s dates. Cover the language test, CSCA if required, a portfolio or entrance exam or audition if listed in extra_requirements, writing the study plan (always for master and PhD, and whenever studyplan is listed; for bachelor scholarships mention that some scholarships ask for one), documents, the application, the scholarship application if available, interview preparation if interview is listed, and visa and pre-departure. Keep the steps in order. Living costs inside total cost are estimates; say so if you mention the total.',
   '',
   'Start plan: if the student is applying in the next round, use the dated timeline above. If they are planning ahead for a later year, use phases relative to the application year (for example ประมาณ 1 ปีก่อนยื่นสมัคร, 2–3 เดือนก่อนปิดรับ) with no years, and treat language gaps as time to prepare. If they are just exploring, do not push them to apply: make the plan about comparing 2–3 options from the list on the page, trying Chinese lessons or a short camp, and choosing a start year with the team; use relative phases with no dates.',
   '',
-  'Writing: Thai, warm and encouraging, in the voice of the Chinese Chiwchiw team. Address the reader as นักเรียน and never as น้อง. Short sentences, one idea per bullet, at most two sentences each, no emoji, no markdown. watch_out lists honest gaps (language, budget, city) and is an empty array when there are none.'
+  'Writing: Thai, warm and encouraging, in the voice of the Chinese Chiwchiw team. Address the reader as นักเรียน and never as น้อง. Keep it brief so it reads well on a phone: one short sentence per bullet, no emoji, no markdown. watch_out lists honest gaps (language, budget, city) and is an empty array when there are none.'
 ].join('\n');
 
 var AI_SCHEMA_BASE = {
@@ -1280,11 +1280,11 @@ var AI_SCHEMA_BASE = {
   properties: {
     pick_id: {type: 'string', description: 'id of the chosen programme, copied exactly from the shortlist'},
     headline: {type: 'string', description: 'one Thai sentence saying why this is the best fit'},
-    why_fit: {type: 'array', items: {type: 'string'}, description: '3 or 4 reasons this programme fits this student'},
-    watch_out: {type: 'array', items: {type: 'string'}, description: '0 to 3 honest gaps or caveats'},
-    prepare: {type: 'array', items: {type: 'string'}, description: '3 to 6 concrete preparation steps'},
+    why_fit: {type: 'array', items: {type: 'string'}, description: '2 or 3 reasons this programme fits this student'},
+    watch_out: {type: 'array', items: {type: 'string'}, description: '0 to 2 honest gaps or caveats'},
+    prepare: {type: 'array', items: {type: 'string'}, description: '3 or 4 concrete preparation steps'},
     timeline: {type: 'array', items: {type: 'object', additionalProperties: false, required: ['when', 'task'],
-      properties: {when: {type: 'string'}, task: {type: 'string'}}}, description: '5 to 9 steps in order'}
+      properties: {when: {type: 'string'}, task: {type: 'string'}}}, description: '4 to 6 steps in order, months without years'}
   }
 };
 
