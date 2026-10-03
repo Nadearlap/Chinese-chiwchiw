@@ -45,6 +45,8 @@
  * The first deploy after this change asks for two new permissions (open another
  * spreadsheet, send email as you). Gmail allows ~100 emails/day on a free account,
  * ~1,500 on Google Workspace; when the quota runs out the lead is still saved.
+ * Each address gets one report per CONFIG.reportEveryDays (checked against "Matcher Leads");
+ * a repeat still saves the lead and alerts the team.
  *
  * AI MATCHING (Claude by Anthropic)
  * The rules below shortlist ~15 programmes; Claude picks the best one from that
@@ -79,6 +81,7 @@ var CONFIG = {
   webLeadsTab: 'UG/PG',
   alertTo: 'admin@chinesechiwchiw.com',   // new-lead alert ('' = off)
   sendReport: true,        // email the match report to the student
+  reportEveryDays: 30,     // one report per email address in this many days (checked in Matcher Leads)
   lineUrl: 'https://lin.ee/C0CmZGa',   // official LINE OA link (opens the LINE app on phones)
   siteUrl: 'https://chinesechiwchiw.com/'
 };
@@ -654,12 +657,25 @@ function langTh_(l) { return l === 'zh' ? 'ภาษาจีน' : l === 'en' ?
 // Emails left today, or -1 when Google won't let the script send email (permission not given yet).
 function mailLeft_() { try { return MailApp.getRemainingDailyQuota(); } catch (err) { console.error('MailApp: ' + err); return -1; } }
 
+// True when "Matcher Leads" already has a report sent to this address within CONFIG.reportEveryDays.
+function reportSentRecently_(email) {
+  var sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(CONFIG.leadsSheet);
+  if (!sh || sh.getLastRow() < 2) return false;
+  var since = Date.now() - CONFIG.reportEveryDays * 86400000;
+  var rows = sh.getRange(2, 1, sh.getLastRow() - 1, 13).getValues();   // A Timestamp … C Email … M Report sent?
+  for (var i = rows.length - 1; i >= 0; i--) {
+    var t = rows[i][0] instanceof Date ? rows[i][0].getTime() : Date.parse(rows[i][0]);
+    if (String(rows[i][2]).trim().toLowerCase() === email && String(rows[i][12]) === 'Yes' && t >= since) return true;
+  }
+  return false;
+}
+
 // The student's report. Returns the value for the "Report sent?" column.
 function sendReport_(L, rep) {
   if (!CONFIG.sendReport) return 'Off';
   if (!rep) return 'No (match expired)';
   var cache = CacheService.getScriptCache(), mk = 'mail:' + L.email;
-  if (cache.get(mk)) return 'No (sent earlier today)';   // one report per address every 6 hours
+  if (cache.get(mk) || reportSentRecently_(L.email)) return 'No (already sent in the last ' + CONFIG.reportEveryDays + ' days)';
   var left = mailLeft_();
   if (left < 0) return 'No (email not allowed yet: run testEmail)';
   if (left < 2) return 'No (daily email limit)';
