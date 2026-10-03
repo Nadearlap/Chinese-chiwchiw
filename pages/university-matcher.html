@@ -183,8 +183,9 @@
 .um-consent+.um-consent{margin-top:10px}
 .um-consent{display:flex;gap:10px;align-items:flex-start;margin:16px 0 0;font-size:.88rem;line-height:1.65;cursor:pointer}
 #uni-matcher .um-consent input{width:18px;height:18px;margin-top:3px;accent-color:#FF6B00;flex:none}
-.um-hp{position:absolute!important;left:-9999px!important;width:1px;height:1px;overflow:hidden}
+.um-hp{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
 .um-formmsg{margin:12px 0 0;font-size:.9rem;color:#A12C2C;min-height:1px}
+.um-qerr{margin:14px 0 0;padding:10px 12px;border-radius:12px;background:#FDECEC;color:#A12C2C;font-size:.85rem;line-height:1.5;word-break:break-word}
 .um-leadbox .um-btn{margin-top:18px}
 .um-contact .um-fgrid{margin-top:4px}
 .um-leadst{text-align:center}
@@ -568,6 +569,7 @@
             <p class="um-formmsg um-cmsg" role="alert"></p>
           </fieldset>
 
+          <p class="um-qerr" role="alert" hidden></p>
           <div class="um-nav">
             <button type="button" class="um-back" disabled>← ย้อนกลับ</button>
             <button type="submit" class="um-btn um-btn-pri um-next" disabled>ถัดไป →</button>
@@ -793,21 +795,27 @@
      One row per visit in the "Matcher Stats" tab: how far into the quiz, the match, searches, filters,
      universities opened and clicks. No names, emails or cookies; the visit id lives only in this page. */
   var S=(function(){
+    var base={sid:'',dev:'',src:'direct',step:0,done:0,email:0,uni:'',ans:'',q:[],fl:[],unis:[],cl:[],t0:Date.now(),dirty:0};
+    try{
     var q=new URLSearchParams(location.search),r=document.referrer,host='';
     try{host=r?new URL(r).hostname.replace(/^www\./,''):'';}catch(e){}
     var src=q.get('utm_source')||(q.get('fbclid')?'facebook':'')||(q.get('_ly_src')||q.get('ldtag_cl')?'line':'')||
       (host==='chinesechiwchiw.com'?'เว็บไซต์ (หน้าอื่น)':host)||'direct';
     return {sid:Math.random().toString(36).slice(2,10)+Date.now().toString(36),dev:window.matchMedia('(max-width: 760px)').matches?'mobile':'desktop',
       src:src.slice(0,60),step:0,done:0,email:0,uni:'',ans:'',q:[],fl:[],unis:[],cl:[],t0:Date.now(),dirty:1};
+    }catch(e){return base;}
   })();
   function sAdd(k,v){
+    try{sAdd_(k,v);}catch(e){}
+  }
+  function sAdd_(k,v){
     v=String(v||'').trim().slice(0,60);if(!v)return;
     var L=S[k],last=L[L.length-1];
     if(k==='q'&&last&&(v.indexOf(last)===0||last.indexOf(v)===0)){L[L.length-1]=v;S.dirty=1;return;}   // typing "fud" then "fudan" counts once
     if(L.indexOf(v)===-1&&15>L.length){L.push(v);S.dirty=1;}
   }
   function sSend(){
-    if(!apiOK||!S.dirty)return;
+    if(!apiOK||!S.dirty||!S.sid)return;
     S.dirty=0;
     var body=JSON.stringify({t:'stats',sid:S.sid,dev:S.dev,src:S.src,step:S.step,done:S.done,email:S.email,uni:S.uni,ans:S.ans,
       q:S.q,fl:S.fl,unis:S.unis,cl:S.cl,secs:Math.round((Date.now()-S.t0)/1000)});
@@ -912,6 +920,15 @@
       default:return true;
     }
   }
+  // Shows a script error inside the quiz (so a screenshot tells us what went wrong on that phone).
+  function qErr(e){
+    try{var b=$('.um-qerr');if(!b)return;b.hidden=false;
+      b.textContent='⚠️ เกิดข้อผิดพลาด กรุณาแคปหน้าจอนี้ส่งให้ทีม: '+String(e&&(e.message||e)).slice(0,160)+(e&&e.line?' @'+e.line:'');}catch(x){}
+  }
+  window.addEventListener('error',function(ev){
+    if(ev&&ev.filename&&ev.filename.split('#')[0].split('?')[0]!==location.href.split('#')[0].split('?')[0])return;   // only this page's own script
+    qErr({message:ev.message,line:ev.lineno+':'+ev.colno});
+  });
   var EMAIL_RE=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/,PHONE_RE=/^[0-9+\-\s()]{6,30}$/;
   function contact(){
     return {name:$('#um-c-name').value.trim(),email:$('#um-c-email').value.trim(),line:$('#um-c-line').value.trim(),phone:$('#um-c-phone').value.trim(),
@@ -933,16 +950,18 @@
   }
   function show(i,initial){
     cur=i;
-    if(i>S.step){S.step=i;S.dirty=1;}
+    // Switch the visible question first; nothing below may stop the quiz from moving on.
     steps.forEach(function(s,k){s.classList.toggle('um-on',k===i);});
-    $('.um-sn').textContent=i+1;
-    var last=steps[i].getAttribute('data-step')==='contact';
-    $('.um-stepinfo').hidden=last;$('.um-stepfinal').hidden=!last;
-    $('.um-prog-bar').style.width=((i+1)/steps.length*100)+'%';
-    var name=steps[i].getAttribute('data-step');
-    if(name==='level'){var l=val('lang');$('.um-lv-zh').hidden=l==='en';$('.um-lv-en').hidden=l==='zh';}
-    if(name==='city')renderQuizCities();
-    refreshNav();
+    try{if(i>S.step){S.step=i;S.dirty=1;}}catch(e){}
+    try{
+      $('.um-sn').textContent=i+1;
+      var name=steps[i].getAttribute('data-step'),last=name==='contact';
+      $('.um-stepinfo').hidden=last;$('.um-stepfinal').hidden=!last;
+      $('.um-prog-bar').style.width=((i+1)/steps.length*100)+'%';
+      if(name==='level'){var l=val('lang');$('.um-lv-zh').hidden=l==='en';$('.um-lv-en').hidden=l==='zh';}
+      if(name==='city')renderQuizCities();
+    }catch(e){qErr(e);}
+    try{refreshNav();}catch(e){qErr(e);nextBtn.disabled=false;}
     // A shorter question (e.g. scholarship after the long city list) would leave the reader looking
     // further down the page; bring the top of the quiz card back into view instead.
     if(!initial){
@@ -986,7 +1005,7 @@
       if(er){$('.um-cmsg').textContent=er[0];$('#um-c-'+er[1]).focus();}
       return;
     }
-    if(cur<steps.length-1)show(cur+1);else runMatch();
+    try{if(cur<steps.length-1)show(cur+1);else runMatch();}catch(err){qErr(err);}
   });
   backBtn.addEventListener('click',function(){if(cur>0)show(cur-1);});
   (function(){var d=new Date(),ny=d.getFullYear()+(d.getMonth()>=6?1:0);$$('.um-y1').forEach(function(e){e.textContent=ny;});$$('.um-y2').forEach(function(e){e.textContent=ny+1;});$$('.um-sc').forEach(function(e){e.textContent=steps.length-1;});})();
