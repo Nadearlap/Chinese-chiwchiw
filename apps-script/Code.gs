@@ -777,13 +777,13 @@ function sendAlert_(L, rep, sent) {
     ['คำตอบ', L.answers || '-'],
     ['Best match', (L.matchUni || '-') + (L.matchProg ? ' — ' + L.matchProg : '') + (L.exact ? '' : ' (ใกล้เคียงที่สุด)')],
     ['มหาลัยอื่น', rep && rep.others.length ? rep.others.map(function (o) { return o.short; }).join(', ') : '-'],
-    ['รับข่าวสาร', L.marketing ? 'Yes' : 'No'], ['ส่งรายงานให้น้องแล้ว?', sent]
+    ['รับข่าวสาร', L.marketing ? 'Yes' : 'No'], ['ส่งรายงานให้นักเรียนแล้ว?', sent]
   ];
   var sheetUrl = SpreadsheetApp.getActiveSpreadsheet().getUrl();
   var html = '<div style="font-family:Tahoma,Arial,sans-serif;font-size:14px;color:#1A0A00">' +
     '<p style="margin:0 0 10px"><b style="color:#FF6B00">🎓 Lead ใหม่จาก Chiwchiw Match</b></p><table style="border-collapse:collapse">' +
     rows.map(function (r) { return '<tr><td style="padding:4px 14px 4px 0;color:#7A6A5E;vertical-align:top">' + h_(r[0]) + '</td><td style="padding:4px 0;vertical-align:top">' + h_(r[1]) + '</td></tr>'; }).join('') +
-    '</table><p style="margin:14px 0 0;font-size:12px;color:#7A6A5E">กด Reply เพื่อตอบน้องได้เลย · <a href="' + h_(sheetUrl) + '">เปิด Matcher Leads</a></p></div>';
+    '</table><p style="margin:14px 0 0;font-size:12px;color:#7A6A5E">กด Reply เพื่อตอบนักเรียนได้เลย · <a href="' + h_(sheetUrl) + '">เปิด Matcher Leads</a></p></div>';
   MailApp.sendEmail({to: CONFIG.alertTo, subject: '🎓 Lead ใหม่: ' + L.name.slice(0, 60) + ' → ' + (rep ? rep.short : L.matchUni || 'Chiwchiw Match'),
     body: rows.map(function (r) { return r[0] + ': ' + r[1]; }).join('\n') + '\n\n' + sheetUrl, htmlBody: html, name: 'Chiwchiw Match', replyTo: L.email});
 }
