@@ -97,6 +97,7 @@
 .um-chip span i{font-style:normal;font-size:.75rem;color:#9A7A60}
 .um-chip:hover span{border-color:#FFB347}
 .um-chip[aria-pressed="true"] span{border-color:#FF6B00;background:#FF6B00;color:#fff}
+.um-cmore{display:block;width:100%;max-width:360px;margin-top:4px;padding:11px 14px;border:2px solid #FFB347;border-radius:12px;background:#fff;color:#1A0A00;font-size:1rem;font-family:inherit}
 .um-chip[aria-pressed="true"] span i{color:rgba(255,255,255,.8)}
 #uni-matcher .um-text{width:100%;max-width:440px;margin-top:16px;border:2px solid #EDE5DC;border-radius:50px;padding:11px 20px;font-size:.98rem;color:#1A0A00;background:#FFFBF7;outline:0;box-shadow:none;height:auto}
 #uni-matcher .um-text:focus{border-color:#FF6B00}
@@ -548,7 +549,7 @@
 
           <fieldset class="um-step" data-step="city">
             <legend class="um-q">อยากไปเมืองไหน?</legend>
-            <p class="um-qhint">เลือกได้หลายเมือง ตัวเลขคือจำนวนหลักสูตรในระดับที่เลือก (ดูเมืองอื่น ๆ ได้ในรายชื่อมหาวิทยาลัยด้านล่าง)</p>
+            <p class="um-qhint">เลือกได้หลายเมือง ตัวเลขคือจำนวนหลักสูตรในระดับที่เลือก · ไม่เจอเมืองที่อยากไป กด ➕ เมืองอื่น ๆ</p>
             <div class="um-chips um-cities">
               <button type="button" class="um-chip" data-n="city" data-v="any" data-multi="1" aria-pressed="true"><span>🌏 ที่ไหนก็ได้</span></button>
             </div>
@@ -1006,16 +1007,39 @@
   // Shown straight away if the live numbers haven't arrived yet; replaced by the live list (with counts) when they do.
   // The quiz offers only the 7 cities students ask about most (plus "anywhere"); the finder below still has every city.
   var QUIZ_CITIES=['Shanghai','Beijing','Guangzhou','Shenzhen','Hangzhou','Chengdu','Wuhan'];
+  // "เมืองอื่น ๆ" opens a dropdown of every other city; a city picked there joins the chips, already selected.
+  var QUIZ_EXTRA=[];
+  var MORE_FALLBACK=['Wuhan','Nanjing',"Xi'an",'Tianjin','Chongqing','Qingdao','Xiamen','Kunming','Nanning','Suzhou','Dalian','Harbin','Changsha','Zhuhai','Hefei','Jinan','Fuzhou','Ningbo','Shenyang','Changchun'];
   function renderQuizCities(){
     var box=$('.um-cities');
     var lv={ug:'UG',ma:'PG',phd:'PHD'}[val('deg')]||'UG',picked=vals('city');
-    var list=QUIZ_CITIES.filter(function(c){return !META||!META.cities[c]||META.cities[c][lv]>0;});
+    var list=QUIZ_CITIES.filter(function(c){return !META||!META.cities[c]||META.cities[c][lv]>0;}).concat(QUIZ_EXTRA.filter(function(c){return QUIZ_CITIES.indexOf(c)<0;}));
     picked.forEach(function(c){if(c!=='any'&&list.indexOf(c)<0)list=list.concat(c);});   // never drop a city already ticked
     var html='<button type="button" class="um-chip" data-n="city" data-v="any" data-multi="1" aria-pressed="'+(!picked.length||picked.indexOf('any')>-1)+'"><span>🌏 ที่ไหนก็ได้</span></button>';
     list.forEach(function(c){
       html+='<button type="button" class="um-chip" data-n="city" data-v="'+esc(c)+'" data-multi="1" aria-pressed="'+(picked.indexOf(c)>-1)+'"><span>📍 '+esc(cityTH(c))+(META&&META.cities[c]?' <i>'+META.cities[c][lv]+'</i>':'')+'</span></button>';
     });
+    var more=(META?Object.keys(META.cities).filter(function(c){return META.cities[c][lv]>0;}).sort(function(a,b){return META.cities[b][lv]-META.cities[a][lv];}):MORE_FALLBACK)
+      .filter(function(c){return list.indexOf(c)<0;});
+    if(more.length){
+      html+='<button type="button" class="um-chip um-chip-more" aria-expanded="false"><span>➕ เมืองอื่น ๆ</span></button>'+
+        '<select class="um-cmore" hidden aria-label="เลือกเมืองอื่น"><option value="">— เลือกเมืองอื่น —</option>'+
+        more.map(function(c){return '<option value="'+esc(c)+'">'+esc(cityTH(c))+(META&&META.cities[c]?' ('+META.cities[c][lv]+' หลักสูตร)':'')+'</option>';}).join('')+'</select>';
+    }
     box.innerHTML=html;
+    var sel=$('.um-cmore',box),moreBtn=$('.um-chip-more',box);
+    if(sel){
+      moreBtn.addEventListener('click',function(){var open=sel.hidden;sel.hidden=!open;moreBtn.setAttribute('aria-expanded',open);if(open)try{sel.focus();}catch(e){}});
+      sel.addEventListener('change',function(){
+        var c=sel.value;if(!c)return;
+        var keep=vals('city').filter(function(x){return x!=='any';});
+        if(keep.indexOf(c)<0)keep.push(c);
+        if(QUIZ_EXTRA.indexOf(c)<0)QUIZ_EXTRA.push(c);
+        renderQuizCities();   // the picked city now has its own chip
+        $$('button[data-n="city"]',box).forEach(function(b){b.setAttribute('aria-pressed',keep.indexOf(b.getAttribute('data-v'))>-1?'true':'false');});
+        refreshNav();
+      });
+    }
     if(!META)metaP.then(function(){if(steps[cur].getAttribute('data-step')==='city')renderQuizCities();},function(){});
   }
   form.addEventListener('click',function(e){
